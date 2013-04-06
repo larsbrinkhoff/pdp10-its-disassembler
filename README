@@ -1,0 +1,26 @@
+BINARY IMAGE format:
+  2 36-bit words in 9 8-bit bytes.
+
+CORE DUMP format:
+  The TM03 packs each 36-bit word into 5 consecutive tape frames.  The leftmost
+  32 bits of the word are stored in the first 4 tape frames (ordered from left
+  to right), and the remaining four bits are stored in the low half of the 5th
+  tape frame.  The left half of the 5th bit is written as 0000 and treated as
+  "don't care" data on read.
+
+INDUSTRY/ASCII/ANSI COMPATIBLE format:
+  See below.
+
+EVACUATE format:
+  ITS dump format.
+
+/*
+ * Format for storing 36 bits into 5 tape frames
+ *    DEC core-dump mode           ANSI compatible mode
+ * |00 01 02 03 04 05 06|07     |__ 00 01 02 03 04 05 06|
+ *  08 09 10 11 12 13|14 15     |__ 07 08 09 10 11 12 13|
+ *  16 17,18 19 20|21 22 23     |__ 14 15 16 17 18 19 20|
+ *  24 25 26 27|28 29 30 31     |__ 21 22 23 24 25 26 27|
+ *  __ __ __ __ 32 33 34|35|    |35|28 29 30 31 32 33 34|
+ * Note: "|" separate the 7-bit bytes, "__" are unused bits (which are zero).
+ */

@@ -1,0 +1,163 @@
+<HTML>
+<HEAD>
+<TITLE>SC-40 Computer System</TITLE>
+</HEAD>
+<BODY>
+<H1>SC-40 Computer Systems</H1>
+
+<P>The SC-40 is a very high-performance system.  Its CPU can
+run at an average rate up to 8 times that of the DEC KL10,
+yet a complete system -- CPU, memory, and I/O channels --
+fits in a standard 20-inch cabinet.
+
+<P>Another important benefit of the SC-40 is its modular
+expansion capability; both memory and I/O channels can
+easily be added in the field.  Compared to the KL10
+processor, these systems have much lower requirements for
+floor space, power, air conditioning, and maintenance.  Over
+the anticipated lifetime of a system, this results in
+substantial cost savings.
+
+
+<H2>Technical Description: SC-40 Computer</H2>
+
+<P>Each single processor SC-40 offers up to eight times the
+performance of a single processor KL10.  The base SC-40
+System includes 4 megawords of Random Access Memory (RAM)
+and two channels (one EX and one dual-port SX).
+
+<P>The CPU is compatible in user mode with the DEC KL10 and is
+capable of performing a typical instruction mix up to 8
+times faster than a KL10.  The I/O channels can sustain an
+aggregate data transfer rate of approximately 50 million
+eight-bit bytes per second.
+
+<P>To achieve this performance, the connections between CPU,
+memory, and channels are strictly internal to the unit.
+There are no external memory or I/O busses.
+
+<P>The system has only one backplane, which is used for CPU,
+memory, and I/O interfaces.  All external connections are
+through cable assemblies which can be easily replaced or
+reconfigured.  Due to the modular design of this system,
+additional memory and I/O channels can be easily added in
+the field.
+
+<P>For console, bootstrap, and diagnostic functions each system
+contains a 32-bit microprocessor.  It communicates with
+extensive diagnostic hardware in the CPU, memory units, and
+I/O channels.
+<H2>CPU</H2>
+
+<P>SC-40 CPU performance will vary depending on which particular
+instructions are being performed, but running some typical
+programs, the CPU can operate approximately 8 times faster
+than a KL10.  This means that a CPU will typically perform
+instructions at a rate exceeding 12 MIPS (million
+instructions per second).
+
+<P>The CPU is fully compatible in user mode with the extended-
+addressing KL10, including string instructions, the single-
+word global byte pointer, and G-format floating point.  In
+floating-point operations, the result may differ but will
+always be at least as accurate as the KL10 result.  TOPS-10
+and TOPS-20 can be run on the SC-40 with full user-mode
+compatibility.
+
+<P>The CPU has a 32K-word write-through cache, with special
+logic which eliminates the need for cache sweeps.  The SC-40
+CPU pager uses a page table with 2048 entries (1024 for user
+mode and 1024 for executive).
+
+<P>The CPU has a full 32K words by 80 bits of control memory
+for firmware.  This is all read/write, to facilitate the
+implementation of new or improved data formats and CPU
+instructions.
+
+
+<H2>Memory</H2>
+
+<P>An SC-40 system has a memory capacity of up to 64M words.
+
+<P>The SC-40 uses a 30-bit virtual address, comprising 4096
+sections of 256K words each.  Performance of a process is
+not reduced by pager contention until its size exceeds two
+sections.
+
+<P>The memory has ECC bits to ensure single-error correction
+and double-error detection, as well as detecting most errors
+of more than two bits.  All errors can be reported.  The
+memory has numerous diagnostic features to facilitate test,
+checkout, and maintenance.
+<H2>Channels</H2>
+
+<P>The SC-40 channel group can hold up to six channels,
+each of which can transfer data between memory and an I/O
+controller or device.
+
+<P>The CI (Computer Interconnect) channel can transfer data at
+rates up to 70 million bits per second, in accordance with
+the DEC Computer Interconnect standard.  This channel can
+be used for high-speed transfers to other computer systems.
+
+<P>For connecting to industry standard equipment and networks,
+the EX channel provides an Ethernet interface, conforming to
+Revision 2 of the Ethernet specification, and operating at a
+rate of 10 million bits per second.
+
+<P>An SA (Subsystem Adaptor) channel, which offers an IBM-
+compatible channel interface in conformance with FIPS PUB
+60-1, is available.  A wide variety of peripherals can be
+connected to this an interface, including control units for
+magnetic tape drives, disk drives, laser printers, and unit
+record equipment.  SA channels each have a maximum transfer
+capacity of 3 million eight-bit bytes per second.
+
+<P>The FX (FDDI) channel utilizes twisted-pair wiring and
+conforms to ANSI standard X3T9.  This channel is capable of
+transferring data at a 100 million bit per second rate and
+can used for connecting to an industry standard network
+backbone.
+
+<P>Each dual-port SX (SCSI) channel conforms to ANSI standard
+X3.131-1986.  Both SCSI I as well as SCSI II asynchronous
+and synchronous transfers are supported on each port at a
+sustained transfer rate of up to 10 million bytes per
+second.  This interface supports industry standard SCSI
+devices including disk drives, reel to reel tape, and
+4mm DDS-2 DAT drives.
+
+
+<H2>Diagnostic Microprocessor</H2>
+
+<P>A 32-bit SPARC processor running at a 25 MHz clock rate
+performs console, supervisory, and diagnostic functions for
+the entire system.  It performs error logging and analysis,
+and controls the loading of diagnostic programs and CPU
+firmware.  In addition, this processor can be directed to
+vary the system clock speed or power supply margins.
+
+<P>During normal operation this supervisory processor monitors
+the cabinet temperature and power-supply output voltages; if
+these readings exceed normal limits the SPARC posts a
+warning, and if necessary shuts the system down in an
+orderly manner.
+<H2>Packaging</H2>
+
+<P>Except for the main processor chip, all logic and memory
+elements in the SC-40 are standard commercially available
+parts.  These parts are mounted on plug-in controlled-
+impedance printed circuit boards, each of which can easily
+be removed or replaced for maintenance purposes.  These
+boards, and the system backpanel, have four or more layers,
+including inner ground and power planes.
+
+<P>The system is packaged in one cabinet which is 20 inches
+wide, 30 inches deep, and 60 inches tall.  Three feet of
+access depth is required at the front and rear for
+servicing, but side access is not necessary.  The system
+consumes at most 500 watts of power, and requires 1,800 BTU
+of conventional computer-room air cooling.
+
+</BODY>
+</HTML>
