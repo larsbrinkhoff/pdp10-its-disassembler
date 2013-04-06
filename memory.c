@@ -38,7 +38,7 @@ init_memory (struct pdp10_memory *memory)
 }
 
 int
-add_memory (struct pdp10_memory *memory, int address, int length, char *data)
+add_memory (struct pdp10_memory *memory, int address, int length, void *data)
 {
   struct pdp10_area *area;
 
