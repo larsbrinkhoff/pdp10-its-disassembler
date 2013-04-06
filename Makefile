@@ -13,7 +13,7 @@ clean:
 	rm -f $(OBJS)
 	rm -f dis10 core
 	rm -f $(UTILS)
-	rm -f bin2ascii.o bin2x.o its2x.o
+	rm -f bin2ascii.o bin2x.o its2x.o its2bin.o
 
 dis10: $(OBJS)
 	gcc $(OBJS) -o dis10
