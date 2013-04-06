@@ -9,7 +9,7 @@ extern void rewind_bin_word (FILE *f);
 extern void rewind_its_word (FILE *f);
 extern void rewind_x_word (FILE *f);
 
-int file_36bit_format = FORMAT_X;
+int file_36bit_format = FORMAT_ITS;
 
 word_t
 get_word (FILE *f)
