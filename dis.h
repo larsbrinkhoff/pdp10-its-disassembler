@@ -2,6 +2,7 @@
 #define DIS_H
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #define WORDMASK	(0777777777777LL)
 #define SIGNBIT		(0400000000000LL)
