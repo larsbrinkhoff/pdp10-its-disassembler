@@ -64,29 +64,34 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 	  {
 	    char str[7];
 	    int subblock_length;
+	    int global = 0;
 
 	    printf ("Symbol table:\n");
 
-	    squoze_to_ascii (get_word (f), str);
-	    printf ("  Header: %s\n", str);
-	    subblock_length = get_word (f);
-	    for (i = 0; i < (-(subblock_length >> 18) - 2) / 2; i++)
+	    while (!global)
 	      {
-		word_t x = get_word (f);
-		squoze_to_ascii (x , str);
-		printf ("    Symbol %s = ", str);
-		printf ("%llo   (", get_word (f));
-		if (x & SYHKL)
-		  printf (" halfkilled");
-		if (x & SYKIL)
-		  printf (" killed");
-		if (x & SYLCL)
-		  printf (" local");
-		if (x & SYGBL)
-		  printf (" global");
-		printf (")\n");
+		squoze_to_ascii (get_word (f), str);
+		printf ("  Header: %s\n", str);
+		global = (strcmp (str, "global") == 0);
+		subblock_length = get_word (f);
+		for (i = 0; i < (-(subblock_length >> 18) - 2) / 2; i++)
+		  {
+		    word_t x = get_word (f);
+		    squoze_to_ascii (x , str);
+		    printf ("    Symbol %s = ", str);
+		    printf ("%llo   (", get_word (f));
+		    if (x & SYHKL)
+		      printf (" halfkilled");
+		    if (x & SYKIL)
+		      printf (" killed");
+		    if (x & SYLCL)
+		      printf (" local");
+		    if (x & SYGBL)
+		      printf (" global");
+		    printf (")\n");
+		  }
 	      }
-	  
+
 	    goto checksum;
 	  }
 	case 1:
