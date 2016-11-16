@@ -14,6 +14,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include <stdio.h>
+#include <string.h>
 
 #include "dis.h"
 #include "memory.h"
@@ -57,6 +58,29 @@ squoze_to_ascii (word_t squoze, char *ascii)
       squoze /= 40;
     }
   ascii[6] = 0;
+}
+
+static void
+print_time (word_t t)
+{
+  /* The right half of this word is the time of day since midnight in
+     half-seconds.  Bits 3.1-3.5 are the day, bits 3.6-3.9 are the
+     month, and bits 4.1-4.7 are the year. */
+
+  int seconds = (t & 0777777) / 2;
+  int minutes = (seconds / 60);
+  int hours = (minutes / 60);
+  int date = (t >> 18);
+  int day = (date & 037);
+  int month = (date & 0740);
+  int year = (date & 0777000);
+
+  printf ("%u-%02u-%02u %02u:%02u:%02u",
+	  (year >> 9) + 1900, (month >> 5), day,
+	  hours, (minutes % 60), (seconds % 60));
+
+  if (year & 0600000)
+    printf (" [WARNING: overflowed year field]");
 }
 
 void
@@ -147,7 +171,9 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 		printf ("Assembly info:\n");
 		sixbit_to_ascii (get_word (f), str);
 		printf ("  User name:          %s\n", str);
-		printf ("  Disk format time:   %012llo\n", get_word (f));
+		printf ("  Creation time:      ");
+		print_time(get_word (f));
+		putchar ('\n');
 		sixbit_to_ascii (get_word (f), str);
 		printf ("  Source file device: %s\n", str);
 		sixbit_to_ascii (get_word (f), str);
