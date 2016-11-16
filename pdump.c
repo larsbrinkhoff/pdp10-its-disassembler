@@ -96,13 +96,25 @@ dis_pdump (FILE *f, int cpu_model)
   sblk_info (f, word, cpu_model);
 }
 
+static int read_page (word_t info)
+{
+  /* If the page map slot is zero, there is no page. */
+  if (info == 0)
+    return 0;
+
+  /* If it's an absolute or shared page, it's not in the file. */
+  if (info & (PAGE_ABS + PAGE_SHARE))
+    return 0;
+
+  /* If it's a readable or writable page, it's in the file. */
+  return (info & (PAGE_READ + PAGE_WRITE)) != 0;
+}
+
 void
 read_pdump (FILE *f, struct pdp10_memory *memory, int cpu_model)
 {
   word_t page_map[256];
-  int page;
   word_t word;
-  int pages;
   int i, j;
 
   printf ("PDUMP format\n\n");
@@ -112,7 +124,6 @@ read_pdump (FILE *f, struct pdp10_memory *memory, int cpu_model)
 
   printf ("Page map:\n");
   printf ("Page  Address  Page description\n");
-  pages = 0;
   for (i = 0; i < 256; i++)
     {
       word = get_word (f);
@@ -120,8 +131,6 @@ read_pdump (FILE *f, struct pdp10_memory *memory, int cpu_model)
 
       if (word != 0)
 	{
-	  pages++;
-
 	  printf ("%03o   %06o   %06o,,%06o  ",
 		  i, ITS_PAGESIZE * i, (int)(word >> 18), (int)word & 0777777);
 
@@ -143,10 +152,12 @@ read_pdump (FILE *f, struct pdp10_memory *memory, int cpu_model)
       get_word (f);
     }
 
-  page = 0;
-  for (i = 0; i < pages; i++)
+  for (i = 0; i < 256; i++)
     {
       char *data, *ptr;
+
+      if (!read_page(page_map[i]))
+	continue;
 
       data = malloc (5 * ITS_PAGESIZE);
       if (data == NULL)
@@ -154,9 +165,6 @@ read_pdump (FILE *f, struct pdp10_memory *memory, int cpu_model)
 	  fprintf (stderr, "out of memory\n");
 	  exit (1);
 	}
-
-      while (page_map[page] == 0 && page < 256)
-	page++;
 
       ptr = data;
       for (j = 0; j < ITS_PAGESIZE; j++)
@@ -169,8 +177,7 @@ read_pdump (FILE *f, struct pdp10_memory *memory, int cpu_model)
 	  *ptr++ = (word >>  0) & 0xff;
 	}
 
-      add_memory (memory, ITS_PAGESIZE * page, ITS_PAGESIZE, data);
-      page++;
+      add_memory (memory, ITS_PAGESIZE * i, ITS_PAGESIZE, data);
     }
 
   printf ("\n");
