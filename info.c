@@ -182,6 +182,10 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 		printf ("  Source file name 2: %s\n", str);
 		sixbit_to_ascii (get_word (f), str);
 		printf ("  Source file sname:  %s\n", str);
+		for (i = 0; i < block_length - subblock_length - 1; i++)
+		  {
+		    printf ("  (%012llo)\n", get_word(f));
+		  }
 		goto checksum;
 	      case 2:
 		printf ("Debugging info:\n");
