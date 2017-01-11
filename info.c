@@ -86,7 +86,7 @@ print_time (word_t t)
 void
 sblk_info (FILE *f, word_t word0, int cpu_model)
 {
-  int block_length;
+  int block_length, block_count;
   word_t word;
   int i;
 
@@ -108,7 +108,8 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 
 	    printf ("Symbol table:\n");
 
-	    while (!global)
+	    block_count = 0;
+	    while (block_count < block_length && !global)
 	      {
 		word = get_checksummed_word (f);
 		if (word == -1) {
@@ -118,13 +119,17 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 		squoze_to_ascii (word, str);
 		printf ("  Header: %s\n", str);
 		global = (strcmp (str, "global") == 0);
+
 		subblock_length = get_checksummed_word (f);
+		block_count += 2;
+
 		for (i = 0; i < (-(subblock_length >> 18) - 2) / 2; i++)
 		  {
 		    word_t x = get_checksummed_word (f);
 		    squoze_to_ascii (x , str);
 		    printf ("    Symbol %s = ", str);
 		    printf ("%llo   (", get_checksummed_word (f));
+
 		    if (x & SYHKL)
 		      printf (" halfkilled");
 		    if (x & SYKIL)
@@ -134,6 +139,8 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 		    if (x & SYGBL)
 		      printf (" global");
 		    printf (")\n");
+
+		    block_count += 2;
 		  }
 	      }
 
