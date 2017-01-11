@@ -37,6 +37,9 @@ struct pdp10_memory;
 
 extern int	file_36bit_format;
 extern word_t	get_word (FILE *f);
+extern word_t	get_checksummed_word (FILE *f);
+extern void	reset_checksum (word_t);
+extern void	check_checksum (word_t);
 extern void	rewind_word (FILE *f);
 extern void	dis_pdump (FILE *f, int cpu_model);
 extern void	dis_sblk (FILE *f, int cpu_model);

@@ -25,6 +25,7 @@ extern void rewind_its_word (FILE *f);
 extern void rewind_x_word (FILE *f);
 
 int file_36bit_format = FORMAT_ITS;
+static word_t checksum;
 
 word_t
 get_word (FILE *f)
@@ -37,6 +38,30 @@ get_word (FILE *f)
     }
 
   return -1;
+}
+
+void
+reset_checksum (word_t word)
+{
+  checksum = word;
+}
+
+void
+check_checksum (word_t word)
+{
+  if (word != checksum)
+    printf ("  [WARNING: bad checksum, %012llo /= %012llo]\n", word, checksum);
+}
+
+word_t
+get_checksummed_word (FILE *f)
+{
+  word_t word = get_word (f);
+
+  checksum = (checksum << 1) + (checksum >> 35) + word;
+  checksum &= 0777777777777ULL;
+
+  return word;
 }
 
 void

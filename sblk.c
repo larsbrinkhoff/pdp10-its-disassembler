@@ -88,6 +88,7 @@ read_sblk (FILE *f, struct pdp10_memory *memory, int cpu_model)
     {
       char *data, *ptr;
 
+      reset_checksum (word);
       block_length = -((word >> 18) | ((-1) & ~0777777));
       block_address = word & 0777777;
 
@@ -101,7 +102,7 @@ read_sblk (FILE *f, struct pdp10_memory *memory, int cpu_model)
       ptr = data;
       for (i = 0; i < block_length; i++)
 	{
-	  word = get_word (f);
+	  word = get_checksummed_word (f);
 	  *ptr++ = (word >> 32) & 0x0f;
 	  *ptr++ = (word >> 24) & 0xff;
 	  *ptr++ = (word >> 16) & 0xff;
@@ -112,7 +113,7 @@ read_sblk (FILE *f, struct pdp10_memory *memory, int cpu_model)
       add_memory (memory, block_address, block_length, data);
 
       word = get_word (f);
-      /*printf ("checksum: %012llo\n", word);*/
+      check_checksum (word);
     }
 
   printf ("\n");

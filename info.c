@@ -96,6 +96,7 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
   while ((word = get_word (f)) & SIGNBIT)
     {
       printf ("\n");
+      reset_checksum (word);
       block_length = -((word >> 18) | ((-1) & ~0777777));
       switch ((int)word & 0777777)
 	{
@@ -109,7 +110,7 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 
 	    while (!global)
 	      {
-		word = get_word (f);
+		word = get_checksummed_word (f);
 		if (word == -1) {
 		  printf ("  [WARNING: early end of file]\n");
 		  goto end;
@@ -117,13 +118,13 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 		squoze_to_ascii (word, str);
 		printf ("  Header: %s\n", str);
 		global = (strcmp (str, "global") == 0);
-		subblock_length = get_word (f);
+		subblock_length = get_checksummed_word (f);
 		for (i = 0; i < (-(subblock_length >> 18) - 2) / 2; i++)
 		  {
-		    word_t x = get_word (f);
+		    word_t x = get_checksummed_word (f);
 		    squoze_to_ascii (x , str);
 		    printf ("    Symbol %s = ", str);
-		    printf ("%llo   (", get_word (f));
+		    printf ("%llo   (", get_checksummed_word (f));
 		    if (x & SYHKL)
 		      printf (" halfkilled");
 		    if (x & SYKIL)
@@ -153,13 +154,13 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 		break;
 	      }
 
-	    sixbit_to_ascii (get_word (f), str);
+	    sixbit_to_ascii (get_checksummed_word (f), str);
 	    printf ("  Device name: %s\n", str);
-	    sixbit_to_ascii (get_word (f), str);
+	    sixbit_to_ascii (get_checksummed_word (f), str);
 	    printf ("  File name 1: %s\n", str);
-	    sixbit_to_ascii (get_word (f), str);
+	    sixbit_to_ascii (get_checksummed_word (f), str);
 	    printf ("  File name 2: %s\n", str);
-	    sixbit_to_ascii (get_word (f), str);
+	    sixbit_to_ascii (get_checksummed_word (f), str);
 	    printf ("  File sname:  %s\n", str);
 	    goto checksum;
 	  }
@@ -168,28 +169,28 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 	    int subblock_length;
 	    char str[7];
 
-	    word = get_word (f);
+	    word = get_checksummed_word (f);
 	    subblock_length = -((word >> 18) | ((-1) & ~0777777));
 	    switch ((int)word & 0777777)
 	      {
 	      case 1:
 		printf ("Assembly info:\n");
-		sixbit_to_ascii (get_word (f), str);
+		sixbit_to_ascii (get_checksummed_word (f), str);
 		printf ("  User name:          %s\n", str);
 		printf ("  Creation time:      ");
-		print_time(get_word (f));
+		print_time(get_checksummed_word (f));
 		putchar ('\n');
-		sixbit_to_ascii (get_word (f), str);
+		sixbit_to_ascii (get_checksummed_word (f), str);
 		printf ("  Source file device: %s\n", str);
-		sixbit_to_ascii (get_word (f), str);
+		sixbit_to_ascii (get_checksummed_word (f), str);
 		printf ("  Source file name 1: %s\n", str);
-		sixbit_to_ascii (get_word (f), str);
+		sixbit_to_ascii (get_checksummed_word (f), str);
 		printf ("  Source file name 2: %s\n", str);
-		sixbit_to_ascii (get_word (f), str);
+		sixbit_to_ascii (get_checksummed_word (f), str);
 		printf ("  Source file sname:  %s\n", str);
 		for (i = 0; i < block_length - subblock_length - 1; i++)
 		  {
-		    printf ("  (%012llo)\n", get_word(f));
+		    printf ("  (%012llo)\n", get_checksummed_word(f));
 		  }
 		goto checksum;
 	      case 2:
@@ -203,7 +204,7 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 	    printf ("    (%d words)\n", subblock_length);
 	    for (i = 0; i < subblock_length; i++)
 	      {
-		get_word (f);
+		get_checksummed_word (f);
 	      }
 
 	    goto checksum;
@@ -216,12 +217,12 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
       printf ("(%d words)\n", block_length);
       for (i = 0; i < block_length; i++)
 	{
-	  get_word (f);
+	  get_checksummed_word (f);
 	}
 
     checksum:
       word = get_word (f);
-      /*printf ("checksum: %012llo\n", word);*/
+      check_checksum (word);
     }
 
   printf ("\nDuplicate start instruction:\n");
