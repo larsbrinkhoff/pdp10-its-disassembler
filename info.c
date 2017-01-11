@@ -109,7 +109,12 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 
 	    while (!global)
 	      {
-		squoze_to_ascii (get_word (f), str);
+		word = get_word (f);
+		if (word == -1) {
+		  printf ("  [WARNING: early end of file]\n");
+		  goto end;
+		}
+		squoze_to_ascii (word, str);
 		printf ("  Header: %s\n", str);
 		global = (strcmp (str, "global") == 0);
 		subblock_length = get_word (f);
@@ -221,4 +226,7 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 
   printf ("\nDuplicate start instruction:\n");
   disassemble_word (NULL, word, -1, cpu_model);
+
+ end:
+  return;
 }
