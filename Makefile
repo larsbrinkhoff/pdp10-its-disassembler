@@ -5,7 +5,7 @@ OBJS =	main.o pdp10-opc.o info.o word.o bin-word.o its-word.o x-word.o \
 	sblk.o pdump.o dis.o timing.o timing_ka10.o timing_ki10.o memory.o
 	#file.o
 
-UTILS =	bin2ascii bin2x its2x its2bin
+UTILS =	bin2ascii bin2x its2x its2bin its2rim
 
 all: dis10 $(UTILS)
 
@@ -29,6 +29,9 @@ its2x: its2x.o word.o bin-word.o its-word.o x-word.o
 
 its2bin: its2bin.o word.o bin-word.o its-word.o x-word.o
 	$(CC) its2bin.o word.o bin-word.o its-word.o x-word.o -o its2bin
+
+its2rim: its2rim.o word.o bin-word.o its-word.o x-word.o
+	$(CC) its2rim.o word.o bin-word.o its-word.o x-word.o -o its2rim
 
 #dependencies
 bin-word.o: bin-word.c dis.h
