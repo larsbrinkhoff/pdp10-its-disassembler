@@ -50,6 +50,7 @@ extern void	dis (struct pdp10_memory *memory, int cpu_model);
 extern void	disassemble_word (struct pdp10_memory *memory, word_t word,
 				  int address, int cpu_model);
 extern void	sixbit_to_ascii (word_t sixbit, char *ascii);
-extern void	print_time (FILE *, word_t t);
+extern void	print_date (FILE *, word_t t);
+extern void	print_datime (FILE *, word_t t);
 
 #endif /* DIS_H */
