@@ -17,6 +17,7 @@
 
 #include "dis.h"
 
+#define OLD_ARC ((word_t)(0416243010101LL)) /* Sixbit ARC!!! */
 #define NEW_ARC ((word_t)(0416243210101LL)) /* Sixbit ARC1!! */
 
 extern word_t get_its_word (FILE *f);
@@ -74,11 +75,16 @@ main (int argc, char **argv)
 
   /* word_t arc_size = p - buffer; */
 
-  if (buffer[0] != NEW_ARC)
+  if (buffer[0] == OLD_ARC)
+    {
+      fprintf (stderr, "Old ARC format.  Not supported.\n");
+      exit (1);
+    }
+  else if (buffer[0] != NEW_ARC)
     {
       sixbit_to_ascii(buffer[0], string);
       fprintf (stderr, "First word: %012llo \"%s\"\n", buffer[0], string);
-      fprintf (stderr, "Old ARC format.  Not supported.\n");
+      fprintf (stderr, "Not an ARC file.\n");
       exit (1);
     }
 
