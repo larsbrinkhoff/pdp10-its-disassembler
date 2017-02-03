@@ -60,8 +60,8 @@ squoze_to_ascii (word_t squoze, char *ascii)
   ascii[6] = 0;
 }
 
-static void
-print_time (word_t t)
+void
+print_time (FILE *f, word_t t)
 {
   /* The right half of this word is the time of day since midnight in
      half-seconds.  Bits 3.1-3.5 are the day, bits 3.6-3.9 are the
@@ -75,9 +75,9 @@ print_time (word_t t)
   int month = (date & 0740);
   int year = (date & 0777000);
 
-  printf ("%u-%02u-%02u %02u:%02u:%02u",
-	  (year >> 9) + 1900, (month >> 5), day,
-	  hours, (minutes % 60), (seconds % 60));
+  fprintf (f, "%u-%02u-%02u %02u:%02u:%02u",
+	   (year >> 9) + 1900, (month >> 5), day,
+	   hours, (minutes % 60), (seconds % 60));
 
   if (year & 0600000)
     printf (" [WARNING: overflowed year field]");
@@ -185,7 +185,7 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 		sixbit_to_ascii (get_checksummed_word (f), str);
 		printf ("  User name:          %s\n", str);
 		printf ("  Creation time:      ");
-		print_time(get_checksummed_word (f));
+		print_time(stdout, get_checksummed_word (f));
 		putchar ('\n');
 		sixbit_to_ascii (get_checksummed_word (f), str);
 		printf ("  Source file device: %s\n", str);
