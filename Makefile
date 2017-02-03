@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -g -W -Wall
 
-OBJS =	main.o pdp10-opc.o info.o word.o bin-word.o its-word.o x-word.o \
+OBJS =	pdp10-opc.o info.o word.o bin-word.o its-word.o x-word.o \
 	sblk.o pdump.o dis.o timing.o timing_ka10.o timing_ki10.o memory.o
 	#file.o
 
@@ -15,8 +15,8 @@ clean:
 	rm -f $(UTILS)
 	rm -f bin2ascii.o bin2x.o its2x.o its2bin.o
 
-dis10: $(OBJS)
-	gcc $(OBJS) -o dis10
+dis10: main.o $(OBJS)
+	gcc $^ -o dis10
 
 bin2ascii: bin2ascii.o
 	$(CC) bin2ascii.o -o bin2ascii
