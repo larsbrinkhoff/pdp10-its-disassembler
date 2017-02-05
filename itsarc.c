@@ -25,6 +25,12 @@ extern word_t get_its_word (FILE *f);
 /* Just allocate a full moby to hold the file. */
 static word_t buffer[256 * 1024];
 
+static void usage (const char *x)
+{
+  fprintf (stderr, "Usage: %s -x|-t <file>\n", x);
+  exit (1);
+}
+
 static int
 byte_size (int code, int *leftovers)
 {
@@ -50,21 +56,82 @@ byte_size (int code, int *leftovers)
     }
 }
 
+static void
+write_word (FILE *f, word_t word)
+{
+  fputc ((word >> 29) & 0177, f);
+  fputc ((word >> 22) & 0177, f);
+  fputc ((word >> 15) & 0177, f);
+  fputc ((word >>  8) & 0177, f);
+  fputc (((word >> 1) & 0177) +
+	 ((word << 7) & 0200), f);
+}
+
+static void
+massage (char *filename)
+{
+  char *x;
+
+  filename[6] = ' ';
+  x = filename + 12;
+  while (*x == ' ')
+    {
+      *x = 0;
+      x--;
+    }
+
+  x = filename;
+  while (*x)
+    {
+      if (*x == '/')
+	*x = '|';
+      x++;
+    }
+}
+
+static void
+extract_file (char *filename, word_t *data, word_t length)
+{
+  FILE *f;
+  int i;
+
+  f = fopen(filename, "wb");
+  for (i = 0; i < length; i++)
+    {
+      write_word (f, *data++);
+    }
+  fclose (f);
+}
+
 int
 main (int argc, char **argv)
 {
+  int extract;
   char string[7];
   word_t word;
   word_t *p;
   FILE *f;
 
-  if (argc != 2)
+  if (argc != 3)
+    usage (argv[0]);
+
+  if (argv[1][0] != '-')
+    usage (argv[0]);
+
+  switch (argv[1][1])
     {
-      fprintf (stderr, "Usage: %s <file>\n", argv[0]);
-      exit (1);
+    case 't':
+      extract = 0;
+      break;
+    case 'x':
+      extract = 1;
+      break;
+    default:
+      usage (argv[0]);
+      break;
     }
 
-  f = fopen (argv[1], "rb");
+  f = fopen (argv[2], "rb");
   file_36bit_format = FORMAT_ITS;
 
   p = buffer;
@@ -72,6 +139,7 @@ main (int argc, char **argv)
     {
       *p++ = word;
     }
+  fclose (f);
 
   /* word_t arc_size = p - buffer; */
 
@@ -107,16 +175,17 @@ main (int argc, char **argv)
   int i;
   for (i = name_beg; i < 02000; i += 5)
     {
-      sixbit_to_ascii(buffer[i], string);
-      fprintf (stderr, "%s ", string);
-      sixbit_to_ascii(buffer[i+1], string);
-      fprintf (stderr, "%s  ", string);
+      char filename[14];
+
+      sixbit_to_ascii(buffer[i], filename);
+      fprintf (stderr, "%s ", filename);
+      sixbit_to_ascii(buffer[i+1], filename + 7);
+      fprintf (stderr, "%s  ", filename + 7);
 
       /* word_t flags = buffer[i+2] >> 18; */
       word_t data = buffer[i+2] & 0777777;
 
-      word_t length = buffer[data];
-      /* word_t header = buffer[data+3]; */
+      word_t length = buffer[data] - 3;
       fprintf (stderr, "%6lld  ", length);
 
       print_datime (stderr, buffer[i+3]);
@@ -131,6 +200,12 @@ main (int argc, char **argv)
       int leftovers;
       fprintf (stderr, "  %d\n",
 	       byte_size (buffer[i+4] & 0777, &leftovers));
+
+      if (extract)
+	{
+	  massage (filename);
+	  extract_file (filename, &buffer[data+3], length);
+	}
     }
 
   return 0;
