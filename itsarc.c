@@ -13,12 +13,17 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
+#include <time.h>
 #include <stdio.h>
+#include <sys/time.h>
 
 #include "dis.h"
 
 #define OLD_ARC ((word_t)(0416243010101LL)) /* Sixbit ARC!!! */
 #define NEW_ARC ((word_t)(0416243210101LL)) /* Sixbit ARC1!! */
+
+#define LEFT 0777777000000LL
+#define RIGHT 0777777LL
 
 extern word_t get_its_word (FILE *f);
 
@@ -87,6 +92,34 @@ massage (char *filename)
 	*x = '|';
       x++;
     }
+}
+
+static void
+unix_time (struct timeval *tv, word_t t)
+{
+  struct tm tm;
+  int seconds = (t & RIGHT) / 2;
+  int date = (t >> 18);
+
+  tm.tm_sec = seconds % 60;
+  tm.tm_min = (seconds / 60) % 60;
+  tm.tm_hour = seconds / 3600;
+  tm.tm_mday = (date & 037);
+  tm.tm_mon = ((date & 0740) >> 5) - 1;
+  tm.tm_year = (date & 0777000) >> 9;
+  tm.tm_isdst = 0;
+
+  tv->tv_sec = mktime (&tm);
+  tv->tv_usec = (t & 1) * 500000L;
+}
+
+static void
+timestamps (char *filename, word_t modified, word_t referenced)
+{
+  struct timeval tv[2];
+  unix_time (&tv[0], referenced);
+  unix_time (&tv[1], modified);
+  utimes (filename, tv);
 }
 
 static void
@@ -176,6 +209,7 @@ main (int argc, char **argv)
   for (i = name_beg; i < 02000; i += 5)
     {
       char filename[14];
+      word_t modified, referenced;
 
       sixbit_to_ascii(buffer[i], filename);
       fprintf (stderr, "%s ", filename);
@@ -183,14 +217,16 @@ main (int argc, char **argv)
       fprintf (stderr, "%s  ", filename + 7);
 
       /* word_t flags = buffer[i+2] >> 18; */
-      word_t data = buffer[i+2] & 0777777;
+      word_t data = buffer[i+2] & RIGHT;
 
       word_t length = buffer[data] - 3;
       fprintf (stderr, "%6lld  ", length);
 
-      print_datime (stderr, buffer[i+3]);
-      fprintf (stderr, " (");
-      print_date (stderr, buffer[i+4]);
+      modified = buffer[i+3];
+      referenced = (buffer[i+4] & LEFT);
+      print_datime (stderr, modified);
+      fputc ('(', stderr);
+      print_date (stderr, referenced);
       fputc (')', stderr);
 
       int author = (buffer[i+4] >> 9) & 0777;
@@ -205,6 +241,7 @@ main (int argc, char **argv)
 	{
 	  massage (filename);
 	  extract_file (filename, &buffer[data+3], length);
+	  timestamps (filename, modified, referenced);
 	}
     }
 
