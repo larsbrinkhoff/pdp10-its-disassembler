@@ -42,6 +42,16 @@ get_core_word (FILE *f)
 }
 
 void
+write_core_word (FILE *f, word_t word)
+{
+  fputc ((word >> 28) & 0xFF, f);
+  fputc ((word >> 20) & 0xFF, f);
+  fputc ((word >> 12) & 0xFF, f);
+  fputc ((word >>  4) & 0xFF, f);
+  fputc ( word        & 0x0F, f);
+}
+
+void
 rewind_core_word (FILE *f)
 {
   rewind (f);

@@ -25,6 +25,31 @@
 #define SYLCL       0100000000000
 #define SYGBL       0040000000000
 
+word_t
+ascii_to_sixbit (char *ascii)
+{
+  int i;
+  char c;
+  word_t w;
+  int zero = 0;
+
+  w = 0;
+  for (i = 0; i < 6; i++)
+    {
+      c = *ascii++;
+      if (c == 0)
+	zero = 1;
+      if (zero)
+	c = ' ';
+      w <<= 6;
+      if (c >= 'a' && c <= 'z')
+	c -= 32;
+      w += (c - 040);
+    }
+
+  return w;
+}
+
 void
 sixbit_to_ascii (word_t sixbit, char *ascii)
 {

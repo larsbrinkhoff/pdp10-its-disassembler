@@ -5,7 +5,7 @@ OBJS =	pdp10-opc.o info.o word.o bin-word.o its-word.o x-word.o \
 	sblk.o pdump.o dis.o timing.o timing_ka10.o timing_ki10.o memory.o
 	#file.o
 
-UTILS =	bin2ascii bin2x its2x its2bin its2rim itsarc magdmp
+UTILS =	bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm
 
 all: dis10 $(UTILS)
 
@@ -34,6 +34,9 @@ its2rim: its2rim.o word.o bin-word.o its-word.o x-word.o
 	$(CC) its2rim.o word.o bin-word.o its-word.o x-word.o -o its2rim
 
 magdmp: magdmp.c core-word.o $(OBJS)
+	$(CC) $^ -o $@
+
+magfrm: magfrm.c core-word.o $(OBJS)
 	$(CC) $^ -o $@
 
 itsarc: itsarc.o $(OBJS)
