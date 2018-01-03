@@ -4,3 +4,4 @@
 - Convert binary files to paper tape images.
 - Extract files from an ITS archive file.
 - View contents, and make MAGDMP tape images.
+- View disk image contents.
