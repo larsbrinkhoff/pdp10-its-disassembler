@@ -85,6 +85,8 @@ squoze_to_ascii (word_t squoze, char *ascii)
   ascii[6] = 0;
 }
 
+int supress_warning = 0;
+
 void
 print_date (FILE *f, word_t t)
 {
@@ -98,7 +100,7 @@ print_date (FILE *f, word_t t)
 
   fprintf (f, "%u-%02u-%02u", (year >> 9) + 1900, (month >> 5), day);
 
-  if (year & 0600000)
+  if ((year & 0600000) && !supress_warning)
     printf (" [WARNING: overflowed year field]");
 }
 
