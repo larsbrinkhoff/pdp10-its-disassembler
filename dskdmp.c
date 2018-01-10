@@ -119,12 +119,36 @@ ildb (word_t **w, int *p)
   return (int)b;
 }
 
+static void
+print_blocks (int start, int end, int end_words)
+{
+  int i, j, n = 1024;
+
+  return;
+
+  for (i = start; i <= end; i++)
+    {
+      if (i == end)
+	n = end_words;
+      for (j = 0; j < n; j++)
+	{
+	  word_t w = get_block (i)[j];
+	  putchar ((w >> 29) & 0177);
+	  putchar ((w >> 22) & 0177);
+	  putchar ((w >> 15) & 0177);
+	  putchar ((w >>  8) & 0177);
+	  putchar ((w >>  1) & 0177);
+	}
+    }
+}
+
 static int
 show_blocks (word_t *ufd, int undscp, int end_words, int print)
 {
   word_t *d;
   int i, o, b, n, n2, n3;
   int count = 0;
+  int start = -1, end;
 
   d = &ufd[11+undscp/6];
   o = undscp % 6;
@@ -132,6 +156,9 @@ show_blocks (word_t *ufd, int undscp, int end_words, int print)
   for (;;)
     {
       n = ildb (&d, &o);
+      if (start != -1)
+	print_blocks (start, end, n == 0 ? end_words : 1024);
+      start = -1;
       switch (n)
 	{
 	case 0:
@@ -140,6 +167,8 @@ show_blocks (word_t *ufd, int undscp, int end_words, int print)
 	case 7: case 8: case 9: case 10: case 11: case 12:
 	  if (print)
 	    fprintf (stderr, " %o-%o", b, b + n - 1);
+	  start = b;
+	  end = b + n - 1;
 	  b += n;
 	  count += n;
 	  break;
@@ -152,6 +181,7 @@ show_blocks (word_t *ufd, int undscp, int end_words, int print)
 	      fprintf (stderr, " [SKIP %o]", n-12);
 	      fprintf (stderr, " %o", b);
 	    }
+	  start = end = b;
 	  count++;
 	  b++;
 	  break;
@@ -165,6 +195,7 @@ show_blocks (word_t *ufd, int undscp, int end_words, int print)
 	  b = ((n & 037) << 12) + (n2 << 6) + n3;
 	  if (print)
 	    fprintf (stderr, " %o", b);
+	  start = end = b;
 	  count++;
 	  b++;
 	  break;
