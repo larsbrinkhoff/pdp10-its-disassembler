@@ -102,6 +102,23 @@ show_disk (void)
   fprintf (stderr, "TUTBLK = %o\n", tutblk);
 }
 
+static void
+show_tut (void)
+{
+  word_t *tut = get_block (tutblk);
+  char str[7];
+
+  fprintf (stderr, "\n--- TUT info ---\n");
+  fprintf (stderr, "QPKNUM = %llo\n", tut[0]);
+  sixbit_to_ascii (tut[1], str);
+  fprintf (stderr, "QPAKID = %s\n", str);
+  fprintf (stderr, "QTUTP = %llo\n", tut[2]);
+  fprintf (stderr, "QSWAPA = %llo\n", tut[3]);
+  fprintf (stderr, "QFRSTB = %llo\n", tut[4]);
+  fprintf (stderr, "QLASTB = %llo\n", tut[5]);
+  fprintf (stderr, "QTRSRV = %llo\n", tut[6]);
+}
+
 static int
 ildb (word_t **w, int *p)
 {
@@ -357,6 +374,7 @@ main (int argc, char **argv)
   tutblk = mfdblk-ntutbl;
 
   show_disk ();
+  show_tut();
   show_mfd();
 
   return 0;
