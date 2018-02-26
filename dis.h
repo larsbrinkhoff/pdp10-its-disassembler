@@ -53,5 +53,6 @@ extern void	disassemble_word (struct pdp10_memory *memory, word_t word,
 extern void	sixbit_to_ascii (word_t sixbit, char *ascii);
 extern void	print_date (FILE *, word_t t);
 extern void	print_datime (FILE *, word_t t);
+extern int	byte_size (int, int *);
 
 #endif /* DIS_H */

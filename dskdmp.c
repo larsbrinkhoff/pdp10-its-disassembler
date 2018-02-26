@@ -270,6 +270,13 @@ show_ufd (int index, char *name)
 	  fprintf (stderr, "%s", (ufd[i+2] & UNREAP) ? "$" : "");
 	  fprintf (stderr, "%s", (ufd[i+2] & UNDUMP) ? "  " : "! ");
 
+	  if ((ufd[i+4] & 0777LL) != 0777LL)
+	    {
+	      int b, c;
+	      b = byte_size ((int)(ufd[i+4] & 0777LL), &c);
+	      fprintf (stderr, " [%d, %d] ", b, c);
+	    }
+
 	  supress_warning = 1;
 	  print_datime (stderr, ufd[i+3]);
 

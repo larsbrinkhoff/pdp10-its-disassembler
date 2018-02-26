@@ -273,3 +273,28 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
  end:
   return;
 }
+
+int
+byte_size (int code, int *leftovers)
+{
+  if (code <= 17)
+    {
+      *leftovers = 0;
+      return 044 - code;
+    }
+  else if (code <= 111)
+    {
+      *leftovers = (code & 3);
+      return (code - 044) >> 2;
+    }
+  else if (code <= 248)
+    {
+      *leftovers = (code & 013);
+      return (code - 0200) >> 4;
+    }
+  else
+    {
+      *leftovers = (code & 077);
+      return (code - 0400) >> 6;
+    }
+}
