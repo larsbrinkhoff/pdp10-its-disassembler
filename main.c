@@ -28,14 +28,22 @@ main (int argc, char **argv)
   struct pdp10_memory memory;
   FILE *file;
   word_t word;
+  int argn = 1;
+  int raw_format = 0;
 
-  if (argc != 2)
+  if (strcmp (argv[argn], "-r") == 0)
+    {
+      argn++;
+      raw_format = 1;
+    }
+
+  if (argn != argc - 1)
     {
       fprintf (stderr, "Usage: %s <file>\n", argv[0]);
       exit (1);
     }
 
-  file = fopen (argv[1], "rb");
+  file = fopen (argv[argn], "rb");
   if (file == NULL)
     {
       fprintf (stderr, "%s: Error opening %s: %s\n",
@@ -47,7 +55,9 @@ main (int argc, char **argv)
 
   word = get_word (file);
   rewind_word (file);
-  if (word == 0)
+  if (raw_format)
+    read_raw (file, &memory, cpu_model);
+  else if (word == 0)
     read_pdump (file, &memory, cpu_model);
   else
     read_sblk (file, &memory, cpu_model);

@@ -15,7 +15,7 @@ clean:
 	rm -f $(UTILS)
 	rm -f bin2ascii.o bin2x.o its2x.o its2bin.o
 
-dis10: main.o $(OBJS)
+dis10: main.o $(OBJS) raw.o
 	gcc $^ -o dis10
 
 bin2ascii: bin2ascii.o
