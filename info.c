@@ -118,6 +118,65 @@ print_datime (FILE *f, word_t t)
   fprintf (f, " %02u:%02u:%02u", hours, (minutes % 60), (seconds % 60));
 }
 
+static void
+print_symbols (FILE *f, int length)
+{
+  char str[7];
+  int i;
+
+  for (i = 0; i < length / 2; i++)
+    {
+      word_t x = get_checksummed_word (f);
+      squoze_to_ascii (x , str);
+      printf ("    Symbol %s = ", str);
+      printf ("%llo   (", get_checksummed_word (f));
+
+      if (x & SYHKL)
+	printf (" halfkilled");
+      if (x & SYKIL)
+	printf (" killed");
+      if (x & SYLCL)
+	printf (" local");
+      if (x & SYGBL)
+	printf (" global");
+      printf (")\n");
+    }
+}
+
+static void
+print_old_symbols (FILE *f, word_t word, int length)
+{
+  char str[7];
+  int i;
+
+  for (i = 0; i < (length - 1) / 2; i++)
+    {
+      word_t x = (i == 0 ? word : get_checksummed_word (f));
+      squoze_to_ascii (x , str);
+      printf ("    Symbol %s = ", str);
+      printf ("%llo   (", get_checksummed_word (f));
+
+      if (x & SYHKL)
+	printf (" halfkilled");
+      if (x & SYKIL)
+	printf (" killed");
+      if (x & SYLCL)
+	printf (" local");
+      if (x & SYGBL)
+	printf (" global");
+      printf (")\n");
+    }
+}
+
+static int
+new_symbol_table (word_t x)
+{
+  return
+    (x & 0770000000000LL) == 0770000000000LL
+    && ((x & 0777777LL) == 0
+	|| (x & 0777777LL) == 3);
+}
+
 void
 sblk_info (FILE *f, word_t word0, int cpu_model)
 {
@@ -138,7 +197,7 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 	case 0:
 	  {
 	    char str[7];
-	    int subblock_length;
+	    word_t subblock_length;
 	    int global = 0;
 
 	    printf ("Symbol table:\n");
@@ -158,27 +217,18 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 		subblock_length = get_checksummed_word (f);
 		block_count += 2;
 
-		for (i = 0; i < (-(subblock_length >> 18) - 2) / 2; i++)
+		if (new_symbol_table (subblock_length))
 		  {
-		    word_t x = get_checksummed_word (f);
-		    squoze_to_ascii (x , str);
-		    printf ("    Symbol %s = ", str);
-		    printf ("%llo   (", get_checksummed_word (f));
-
-		    if (x & SYHKL)
-		      printf (" halfkilled");
-		    if (x & SYKIL)
-		      printf (" killed");
-		    if (x & SYLCL)
-		      printf (" local");
-		    if (x & SYGBL)
-		      printf (" global");
-		    printf (")\n");
-
-		    block_count += 2;
+		    print_symbols (f, -(subblock_length >> 18) - 2);
+		    block_count += -(subblock_length >> 18) - 2;
+		  }
+		else
+		  {
+		    print_old_symbols (f, subblock_length, block_length);
+		    /* No more blocks. */
+		    goto checksum;
 		  }
 	      }
-
 	    goto checksum;
 	  }
 	case 1:
