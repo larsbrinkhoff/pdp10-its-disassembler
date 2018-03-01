@@ -29,7 +29,7 @@ typedef long long word_t;
 
 #define JRST_1 ((word_t)(0254000000001LL))
 
-enum { FORMAT_BIN, FORMAT_ITS, FORMAT_X };
+enum { FORMAT_BIN, FORMAT_ITS, FORMAT_X, FORMAT_DTA };
 
 struct FILE;
 struct pdp10_file;

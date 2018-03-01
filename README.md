@@ -5,6 +5,7 @@
 - Extract files from an ITS archive file.
 - View contents, and make MAGDMP tape images.
 - View disk image contents.
+- Extract files from a DECtape image in MACDMP format.
 
 A Linux FUSE implementation of the networking filesystem protocol MLDEV
 is elsewhere: http://github.com/larsbrinkhoff/lmdev
