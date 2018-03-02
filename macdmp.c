@@ -14,6 +14,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include <stdio.h>
+#include <string.h>
 
 #include "dis.h"
 
@@ -34,6 +35,14 @@ int extract;
 
 word_t directory[027][2];
 char filename[027][14];
+int mode[027];
+
+/* Mode 0 = ASCII, written by TECO.
+ * Mode 1 = DUMP, written by MACDMP.
+ * Mode 2 = SBLK, written by MIDAS.
+ * Mode 3 = RELOC, written by MIDAS. */
+
+char *type = " !\"#";
 
 static word_t *
 get_block (int block)
@@ -58,7 +67,7 @@ static int read_block (FILE *f, word_t *buffer)
 }
 
 static void
-show_directory (void)
+process (void)
 {
   word_t *dir = get_block (0100);
   char fn1[7], fn2[7];
@@ -72,6 +81,21 @@ show_directory (void)
       sixbit_to_ascii (dir[1], fn2);
       sprintf (filename[i], "%s %s", fn1, fn2);
       dir += 2;
+    }
+
+  memset (mode, 0, sizeof mode);
+
+  for (i = 0; i < 027; i++)
+    {
+      if (*dir & 1)
+	mode[i] |= 1;
+      dir++;
+    }
+  for (i = 0; i < 027; i++)
+    {
+      if (*dir & 1)
+	mode[i] |= 2;
+      dir++;
     }
 }
 
@@ -168,12 +192,12 @@ show_files ()
 	    continue;
 	  else
 	    {
-	      printf ("File %d extension %llo\n", i, directory[i][1]);
+	      printf ("File %d extension %llo\n", i+1, directory[i][1]);
 	      continue;
 	    }
 	}
 
-      printf ("%s\n", filename[i]);
+      printf ("%2d. %s  %c\n", i+1, filename[i], type[mode[i]]);
       massage (filename[i]);
       extract_file (i+1, filename[i]);
     }
@@ -238,7 +262,7 @@ main (int argc, char **argv)
       blocks++;
     }
 
-  show_directory ();
+  process ();
   show_files ();
 
   return 0;
