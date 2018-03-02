@@ -133,6 +133,7 @@ static void
 write_block (FILE *f, int n)
 {
   int i;
+  blocks++;
   word_t *x = get_block (n);
   for (i = 0; i < 128; i++)
     write_word (f, *x++);
@@ -187,6 +188,7 @@ extract_file (int i, char *name)
     return;
 
   FILE *f = fopen (name, "wb");
+  blocks = 0;
   write_file (i, f);
   flush_word (f);
   fclose (f);
@@ -224,9 +226,10 @@ show_files ()
       if (directory[i][0] == 0)
 	continue;
 
-      printf ("%2d. %s  %c\n", i+1, filename[i], type[mode[i]]);
+      printf ("%2d. %s  %c", i+1, filename[i], type[mode[i]]);
       massage (filename[i]);
       extract_file (i+1, filename[i]);
+      printf ("   %4d\n", blocks);
     }
 
   extract_file (0, "free-blocks");
@@ -279,14 +282,12 @@ main (int argc, char **argv)
     }
 
   buffer = image;
-  blocks = 0;
   for (;;)
     {
       int n = read_block (f, buffer);
       if (n == -1)
 	break;
       buffer += BLOCK_WORDS;
-      blocks++;
     }
 
   process ();
