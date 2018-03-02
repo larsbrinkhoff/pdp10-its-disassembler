@@ -36,6 +36,7 @@ int extract;
 word_t directory[027][2];
 char filename[027][14];
 int mode[027];
+int extension[027];
 
 /* Mode 0 = ASCII, written by TECO.
  * Mode 1 = DUMP, written by MACDMP.
@@ -73,6 +74,8 @@ process (void)
   char fn1[7], fn2[7];
   int i;
 
+  memset (extension, 0, sizeof extension);
+
   for (i = 0; i < 027; i++)
     {
       directory[i][0] = dir[0];
@@ -81,6 +84,13 @@ process (void)
       sixbit_to_ascii (dir[1], fn2);
       sprintf (filename[i], "%s %s", fn1, fn2);
       dir += 2;
+
+      if (directory[i][0] == 0)
+	{
+	  int x = directory[i][1];
+	  if (x > 0 && x <= 027)
+	    extension[x] = i+1;
+	}
     }
 
   memset (mode, 0, sizeof mode);
@@ -128,6 +138,28 @@ write_block (FILE *f, int n)
     write_word (f, *x++);
 }
 
+static void write_file (int, FILE *);
+
+static void
+write_reverse_file (int n, FILE *f)
+{
+  word_t *dir = get_block (0100);
+  int i, j;
+
+  for (i = 127 - 2*027; i >= 0; i--)
+    {
+      word_t x = dir[i + 2*027];
+      for (j = 6; j >= 0; j--)
+	{
+	  if (((x >> ((5 * (6-j)) + 1)) & 037) == n)
+	    write_block (f, 7*i + j + 1);
+	}
+    }
+
+  if (extension[n])
+    write_file (extension[n], f);
+}
+
 static void
 write_file (int n, FILE *f)
 {
@@ -143,6 +175,9 @@ write_file (int n, FILE *f)
 	    write_block (f, 7*i + j + 1);
 	}
     }
+
+  if (extension[n])
+    write_reverse_file (extension[n], f);
 }
 
 static void
@@ -187,15 +222,7 @@ show_files ()
   for (i = 0; i < 027; i++)
     {
       if (directory[i][0] == 0)
-	{
-	  if (directory[i][1] == 0)
-	    continue;
-	  else
-	    {
-	      printf ("File %d extension %llo\n", i+1, directory[i][1]);
-	      continue;
-	    }
-	}
+	continue;
 
       printf ("%2d. %s  %c\n", i+1, filename[i], type[mode[i]]);
       massage (filename[i]);
