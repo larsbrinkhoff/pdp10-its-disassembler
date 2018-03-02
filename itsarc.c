@@ -36,8 +36,11 @@ static void usage (const char *x)
   exit (1);
 }
 
+static void (*write_word) (FILE *, word_t);
+static void (*flush_word) (FILE *);
+
 static void
-write_word (FILE *f, word_t word)
+write_aa_word (FILE *f, word_t word)
 {
   fputc ((word >> 29) & 0177, f);
   fputc ((word >> 22) & 0177, f);
@@ -45,6 +48,12 @@ write_word (FILE *f, word_t word)
   fputc ((word >>  8) & 0177, f);
   fputc (((word >> 1) & 0177) +
 	 ((word << 7) & 0200), f);
+}
+
+static void
+flush_aa_word (FILE *f)
+{
+  (void)f;
 }
 
 static void
@@ -108,6 +117,8 @@ extract_file (char *filename, word_t *data, word_t length)
     {
       write_word (f, *data++);
     }
+
+  flush_word (f);
   fclose (f);
 }
 
@@ -141,6 +152,10 @@ main (int argc, char **argv)
 
   f = fopen (argv[2], "rb");
   file_36bit_format = FORMAT_ITS;
+
+  /* Output format. */
+  write_word = write_its_word;
+  flush_word = flush_its_word;
 
   p = buffer;
   while ((word = get_its_word (f)) != -1)

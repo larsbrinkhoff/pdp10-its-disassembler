@@ -75,8 +75,11 @@ show_directory (void)
     }
 }
 
+static void (*write_word) (FILE *, word_t);
+static void (*flush_word) (FILE *);
+
 static void
-write_word (FILE *f, word_t word)
+write_aa_word (FILE *f, word_t word)
 {
   fputc ((word >> 29) & 0177, f);
   fputc ((word >> 22) & 0177, f);
@@ -84,6 +87,12 @@ write_word (FILE *f, word_t word)
   fputc ((word >>  8) & 0177, f);
   fputc (((word >> 1) & 0177) +
 	 ((word << 7) & 0200), f);
+}
+
+static void
+flush_aa_word (FILE *f)
+{
+  (void)f;
 }
 
 static void
@@ -120,6 +129,7 @@ extract_file (int i, char *name)
 
   FILE *f = fopen (name, "wb");
   write_file (i, f);
+  flush_word (f);
   fclose (f);
 }
 
@@ -178,7 +188,6 @@ usage (const char *x)
   exit (1);
 }
 
-
 int
 main (int argc, char **argv)
 {
@@ -206,6 +215,10 @@ main (int argc, char **argv)
       usage (argv[0]);
       break;
     }
+
+  /* Output format. */
+  write_word = write_its_word;
+  flush_word = flush_its_word;
 
   f = fopen (argv[2], "rb");
   if (f == NULL)

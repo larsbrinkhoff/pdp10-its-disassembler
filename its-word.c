@@ -157,3 +157,103 @@ rewind_its_word (FILE *f)
   there_is_some_leftover = 0;
   rewind (f);
 }
+
+static void
+fputc2 (int c1, int c2, FILE *f)
+{
+  fputc (c1, f);
+  fputc (c2, f);
+}
+
+static int previous_octet = -1;
+
+void
+flush_its_word (FILE *f)
+{
+  if (previous_octet == 015)
+    fputc (0356, f);
+  else if (previous_octet == 0177)
+    fputc (0357, f);
+  previous_octet = -1;
+}
+
+static void
+binary_word (FILE *f, word_t word)
+{
+  flush_its_word (f);
+
+  fputc (((word >> 32) &  017) + 0360, f);
+  fputc (((word >> 24) & 0377), f);
+  fputc (((word >> 16) & 0377), f);
+  fputc (((word >>  8) & 0377), f);
+  fputc (( word        & 0377), f);
+}
+
+static void
+ascii_word (FILE *f, word_t word)
+{
+  char c, octets[5];
+  int i;
+
+  octets[0] = (word >> 29) & 0177;
+  octets[1] = (word >> 22) & 0177;
+  octets[2] = (word >> 15) & 0177;
+  octets[3] = (word >>  8) & 0177;
+  octets[4] = (word >>  1) & 0177;
+
+  for (i = 0; i < 5; i++)
+    {
+      c = octets[i];
+
+      if (previous_octet == 015)
+	{
+	  if (c == 012)
+	    fputc (012, f);
+	  else if (c == 015)
+	    fputc2 (0356, 0356, f);
+	  else if (c == 0177)
+	    fputc2 (0356, 0357, f);
+	  else
+	    fputc2 (0356, c, f);
+	  previous_octet = -1;
+	}
+      else if (previous_octet == 0177)
+	{
+	  switch (c)
+	    {
+	    case 0007: fputc (0177, f); break;
+	    case 0012: fputc (0215, f); break;
+	    case 0015: fputc (0212, f); break;
+	    case 0177: fputc (0207, f); break;
+	    default:
+	      if (c < 0156)
+		fputc (c + 0200, f);
+	      else if (c == 012)
+		fputc2 (0357, 015, f);
+	      else if (c == 015)
+		fputc2 (0357, 0356, f);
+	      else if (c == 0177)
+		fputc2 (0357, 0357, f);
+	      else
+		fputc2 (0357, c, f);
+	      break;
+	    }
+	  previous_octet = -1;
+	}
+      else if (c == 015 || c == 0177)
+	previous_octet = c;
+      else if (c == 012)
+	fputc (015, f);
+      else
+	fputc (c, f);
+    }
+}
+
+void
+write_its_word (FILE *f, word_t word)
+{
+  if (word & 1)
+    binary_word (f, word);
+  else
+    ascii_word (f, word);
+}

@@ -41,6 +41,8 @@ extern word_t	get_checksummed_word (FILE *f);
 extern void	reset_checksum (word_t);
 extern void	check_checksum (word_t);
 extern void	rewind_word (FILE *f);
+extern void	write_its_word (FILE *, word_t);
+extern void	flush_its_word (FILE *);
 extern void	dis_pdump (FILE *f, int cpu_model);
 extern void	dis_sblk (FILE *f, int cpu_model);
 extern void	read_pdump (FILE *f, struct pdp10_memory *memory, int cpu);

@@ -25,14 +25,14 @@ bin2ascii: bin2ascii.o
 bin2x: bin2x.o
 	$(CC) bin2x.o -o bin2x
 
-its2x: its2x.o word.o bin-word.o its-word.o x-word.o
-	$(CC) its2x.o word.o bin-word.o its-word.o x-word.o -o its2x
+its2x: its2x.o word.o bin-word.o its-word.o x-word.o dta-word.o
+	$(CC) $^ -o its2x
 
-its2bin: its2bin.o word.o bin-word.o its-word.o x-word.o
-	$(CC) its2bin.o word.o bin-word.o its-word.o x-word.o -o its2bin
+its2bin: its2bin.o word.o bin-word.o its-word.o x-word.o dta-word.o
+	$(CC) $^ -o its2bin
 
-its2rim: its2rim.o word.o bin-word.o its-word.o x-word.o
-	$(CC) its2rim.o word.o bin-word.o its-word.o x-word.o -o its2rim
+its2rim: its2rim.o word.o bin-word.o its-word.o x-word.o dta-word.o
+	$(CC) $^ -o its2rim
 
 dskdmp: dskdmp.c $(OBJS)
 	$(CC) $^ -o $@
@@ -47,6 +47,12 @@ magfrm: magfrm.c core-word.o $(OBJS)
 	$(CC) $^ -o $@
 
 itsarc: itsarc.o $(OBJS)
+	$(CC) $^ -o $@
+
+test/test_write: test/test_write.o $(OBJS)
+	$(CC) $^ -o $@
+
+test/test_read: test/test_read.o $(OBJS)
 	$(CC) $^ -o $@
 
 #dependencies
