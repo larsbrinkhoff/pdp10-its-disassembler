@@ -32,6 +32,7 @@
 word_t image[580 * 128];
 int blocks;
 int extract;
+int verbose;
 
 word_t directory[027][2];
 char filename[027][14];
@@ -106,6 +107,61 @@ process (void)
       if (*dir & 1)
 	mode[i] |= 2;
       dir++;
+    }
+}
+
+static char *blocktype[040] =
+  {
+    "Free",
+    "file1", "file2", "file3", "file4", "file5", "file6", "file7", "file10",
+    "file11", "file12", "file13", "file14", "file15", "file14", "file17",
+    "file20", "file21", "file22", "file23",  "file24",  "file25",  "file26",
+    "file27", 
+    "Unused (code 30)", "Unused (code 31)", "Unused (code 32)",
+    "File directory",
+    "Unused (code 34)",
+    "Unfiled output",
+    "Reserved",
+    "End"
+  };
+
+static void
+show_blocks (void)
+{
+  int blocks[040];
+  word_t *dir = get_block (0100);
+  int empty = 1;
+  int i, j;
+
+  if (!verbose)
+    return;
+
+  memset (blocks, 0, sizeof blocks);
+
+  for (i = 0; i < 128 - 2*027; i++)
+    {
+      word_t x = dir[i + 2*027];
+      for (j = 0; j < 7; j++)
+	blocks[(x >> ((5 * (6-j)) + 1)) & 037]++;
+    }
+
+  for (i = 0; i < 040; i++)
+    {
+      if (i >= 1 && i <= 027)
+	continue;
+      if (blocks[i] == 0)
+	continue;
+      if (i == 033 && blocks[i] == 1)
+	continue; /* Expect 1 directory block. */
+      if (i == 036 && blocks[i] == 7)
+	continue; /* Expect 7 reserved blocks. */
+      if (i == 037 && blocks[i] == 4)
+	continue; /* Expect 4 end blocks. */
+
+      if (empty)
+	putchar ('\n');
+      printf ("%s blocks: %d\n", blocktype[i], blocks[i]);
+      empty = 0;
     }
 }
 
@@ -270,6 +326,8 @@ main (int argc, char **argv)
       break;
     }
 
+  verbose = 1;
+
   /* Output format. */
   write_word = write_its_word;
   flush_word = flush_its_word;
@@ -292,6 +350,7 @@ main (int argc, char **argv)
 
   process ();
   show_files ();
+  show_blocks ();
 
   return 0;
 }
