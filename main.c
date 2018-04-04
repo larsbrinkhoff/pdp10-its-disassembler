@@ -47,7 +47,7 @@ main (int argc, char **argv)
   if (file == NULL)
     {
       fprintf (stderr, "%s: Error opening %s: %s\n",
-	       argv[0], argv[1], strerror (errno));
+	       argv[0], argv[argn], strerror (errno));
       return 1;
     }
 
