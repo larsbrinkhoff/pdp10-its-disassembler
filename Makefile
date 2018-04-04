@@ -40,7 +40,7 @@ dskdmp: dskdmp.c $(OBJS)
 macdmp: macdmp.c $(OBJS)
 	$(CC) $^ -o $@
 
-saildart: saildart.c
+saildart: saildart.o
 	$(CC) $^ -o $@
 
 magdmp: magdmp.c core-word.o $(OBJS)
@@ -71,6 +71,7 @@ main.o: main.c dis.h opcode/pdp10.h memory.h
 memory.o: memory.c memory.h dis.h
 pdp10-opc.o: pdp10-opc.c opcode/pdp10.h
 pdump.o: pdump.c dis.h memory.h
+saildart.o: saildart.c dis.h
 sblk.o: sblk.c dis.h memory.h
 timing.o: timing.c opcode/pdp10.h timing.h dis.h
 timing_ka10.o: timing_ka10.c opcode/pdp10.h dis.h timing.h

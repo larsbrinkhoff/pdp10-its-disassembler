@@ -16,11 +16,13 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "dis.h"
+
 char line[1024];
 
 void convert (char *line)
 {
-  long long x = 0;
+  word_t x = 0;
   int i;
 
   for (i = 0; i < 12; i ++)
