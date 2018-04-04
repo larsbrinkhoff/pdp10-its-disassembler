@@ -16,10 +16,18 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "dis.h"
 #include "opcode/pdp10.h"
 #include "memory.h"
+
+static void
+usage (char **argv)
+{
+  fprintf (stderr, "Usage: %s [-r] <file>\n", argv[0]);
+  exit (1);
+}
 
 int
 main (int argc, char **argv)
@@ -28,26 +36,29 @@ main (int argc, char **argv)
   struct pdp10_memory memory;
   FILE *file;
   word_t word;
-  int argn = 1;
+  int opt;
   int raw_format = 0;
 
-  if (strcmp (argv[argn], "-r") == 0)
+  while ((opt = getopt (argc, argv, "r")) != -1)
     {
-      argn++;
-      raw_format = 1;
+      switch (opt)
+	{
+	case 'r':
+	  raw_format = 1;
+	  break;
+	default:
+	  usage (argv);
+	}
     }
 
-  if (argn != argc - 1)
-    {
-      fprintf (stderr, "Usage: %s <file>\n", argv[0]);
-      exit (1);
-    }
+  if (optind != argc - 1)
+    usage (argv);
 
-  file = fopen (argv[argn], "rb");
+  file = fopen (argv[optind], "rb");
   if (file == NULL)
     {
       fprintf (stderr, "%s: Error opening %s: %s\n",
-	       argv[0], argv[argn], strerror (errno));
+	       argv[0], argv[optind], strerror (errno));
       return 1;
     }
 
