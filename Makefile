@@ -40,7 +40,7 @@ dskdmp: dskdmp.c $(OBJS)
 macdmp: macdmp.c $(OBJS)
 	$(CC) $^ -o $@
 
-saildart: saildart.o
+saildart: saildart.o $(OBJS)
 	$(CC) $^ -o $@
 
 magdmp: magdmp.c core-word.o $(OBJS)

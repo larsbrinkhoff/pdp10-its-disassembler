@@ -31,11 +31,7 @@ void convert (char *line)
       x += (*line++ - '0');
     }
 
-  putchar ((x >> 29) & 0177);
-  putchar ((x >> 22) & 0177);
-  putchar ((x >> 15) & 0177);
-  putchar ((x >>  8) & 0177);
-  putchar (((x >> 1) & 0177) + ((x & 1) << 7));
+  write_its_word (stdout, x);
 }
 
 int main (void)
