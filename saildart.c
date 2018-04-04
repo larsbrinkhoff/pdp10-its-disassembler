@@ -40,12 +40,12 @@ int main (void)
 {
   int n = strlen ("<p id=\"u8lump\">");
 
-  for (;gets (line);)
+  for (;fgets (line, sizeof line, stdin);)
     {
       if (strncmp (line, "<p id=\"u8lump\">", n) == 0)
 	{
 	  convert (line + n);
-	  for (;gets (line);)
+	  for (;fgets (line, sizeof line, stdin);)
 	    {
 	      if (strncmp (line, "</p>", 4) == 0)
 		return 0;
