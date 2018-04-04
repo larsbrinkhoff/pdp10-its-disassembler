@@ -44,6 +44,7 @@ int main (void)
     {
       if (strncmp (line, "<p id=\"u8lump\">", n) == 0)
 	{
+	  /* HTML format - https://www.saildart.org/SOMETHING_blob */
 	  convert (line + n);
 	  for (;fgets (line, sizeof line, stdin);)
 	    {
@@ -51,6 +52,11 @@ int main (void)
 		return 0;
 	      convert (line);
 	    }
+	}
+      else
+	{
+	  /* Octal format - https://www.saildart.org/SOMETHING_octal */
+	  convert (line);
 	}
     }
   
