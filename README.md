@@ -2,6 +2,7 @@
 
 - Disassembler for ITS executables.
 - Convert binary files to paper tape images.
+- Convert SAILDART octal files to ITS binary files.
 - Extract files from an ITS archive file.
 - View contents, and make MAGDMP tape images.
 - View disk image contents.

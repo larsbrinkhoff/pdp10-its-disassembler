@@ -6,7 +6,7 @@ OBJS =	pdp10-opc.o info.o word.o bin-word.o its-word.o x-word.o dta-word.o \
 	#file.o
 
 UTILS =	bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
-	macdmp
+	macdmp saildart
 
 all: dis10 $(UTILS)
 
@@ -38,6 +38,9 @@ dskdmp: dskdmp.c $(OBJS)
 	$(CC) $^ -o $@
 
 macdmp: macdmp.c $(OBJS)
+	$(CC) $^ -o $@
+
+saildart: saildart.c
 	$(CC) $^ -o $@
 
 magdmp: magdmp.c core-word.o $(OBJS)
