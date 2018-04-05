@@ -37,14 +37,14 @@ main (int argc, char **argv)
   FILE *file;
   word_t word;
   int opt;
-  int raw_format = 0;
+  reader_t read_func = NULL;
 
   while ((opt = getopt (argc, argv, "r")) != -1)
     {
       switch (opt)
 	{
 	case 'r':
-	  raw_format = 1;
+	  read_func = read_raw;
 	  break;
 	default:
 	  usage (argv);
@@ -66,12 +66,14 @@ main (int argc, char **argv)
 
   word = get_word (file);
   rewind_word (file);
-  if (raw_format)
-    read_raw (file, &memory, cpu_model);
-  else if (word == 0)
-    read_pdump (file, &memory, cpu_model);
-  else
-    read_sblk (file, &memory, cpu_model);
+  if (!read_func)
+    {
+      if (word == 0)
+	read_func = read_pdump;
+      else
+	read_func = read_sblk;
+    }
+  read_func (file, &memory, cpu_model);
 
   while ((word = get_word (file)) != -1)
     printf ("(extra word: %012llo)\n", word);
