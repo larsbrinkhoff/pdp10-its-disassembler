@@ -284,6 +284,52 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
   return;
 }
 
+void
+dmp_info (struct pdp10_memory *memory, int cpu_model)
+{
+  word_t jbsa, jbda, jbsym;
+  int p;
+
+  /* For the PDP-6 monitor, JBSA is the start address. */
+  jbsa = get_word_at (memory, 0120);
+  printf ("Start address (PDP-6): %06llo\n", jbsa & 0777777);
+
+  /* For WAITS, JBDA is a JRST to the start address. */
+  jbda = get_word_at (memory, 0140);
+  printf ("Start address (WAITS): %06llo\n", jbda & 0777777);
+
+  /* .JBSYM is an AOBJN pointer to DDT's symbol table.  If the
+     executable doesn't have one, it may be an pointer past the end of
+     the executable. */
+  jbsym = get_word_at (memory, 0116);
+  p = jbsym & 0777777;
+  if (jbsym != -1 && p != 0 && get_word_at (memory, p) != -1)
+    {
+      char str[7];
+      int i;
+      int length = -((jbsym >> 18) | ((-1) & ~0777777));
+
+      printf ("\nSymbol table:\n");
+
+      for (i = 0; i < length / 2; i++)
+	{
+	  word_t x = get_word_at (memory, p++);
+	  squoze_to_ascii (x, str);
+	  printf ("    Symbol %s = ", str);
+	  printf ("%llo   (", get_word_at (memory, p++));
+	  if (x & SYHKL)
+	    printf (" halfkilled");
+	  if (x & SYKIL)
+	    printf (" killed");
+	  if (x & SYLCL)
+	    printf (" local");
+	  if (x & SYGBL)
+	    printf (" global");
+	  printf (")\n");
+	}
+    }
+}
+
 int
 byte_size (int code, int *leftovers)
 {
