@@ -25,7 +25,7 @@
 static void
 usage (char **argv)
 {
-  fprintf (stderr, "Usage: %s [-r] <file>\n", argv[0]);
+  fprintf (stderr, "Usage: %s [-6] [-r] <file>\n", argv[0]);
   exit (1);
 }
 
@@ -39,10 +39,13 @@ main (int argc, char **argv)
   int opt;
   reader_t read_func = NULL;
 
-  while ((opt = getopt (argc, argv, "r")) != -1)
+  while ((opt = getopt (argc, argv, "6r")) != -1)
     {
       switch (opt)
 	{
+	case '6':
+	  read_func = read_dmp;
+	  break;
 	case 'r':
 	  read_func = read_raw;
 	  break;
