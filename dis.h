@@ -45,6 +45,7 @@ extern void	write_its_word (FILE *, word_t);
 extern void	flush_its_word (FILE *);
 extern void	dis_pdump (FILE *f, int cpu_model);
 extern void	dis_sblk (FILE *f, int cpu_model);
+typedef void    (*reader_t) (FILE *f, struct pdp10_memory *memory, int cpu);
 extern void	read_pdump (FILE *f, struct pdp10_memory *memory, int cpu);
 extern void	read_sblk (FILE *f, struct pdp10_memory *memory, int cpu);
 extern void	read_raw (FILE *f, struct pdp10_memory *memory, int cpu);
