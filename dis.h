@@ -53,6 +53,7 @@ extern void	read_raw (FILE *f, struct pdp10_memory *memory, int cpu);
 extern void	read_raw_at (FILE *f, struct pdp10_memory *memory,
 			     int address);
 extern void	sblk_info (FILE *f, word_t word0, int cpu_model);
+extern void     dmp_info (struct pdp10_memory *memory, int cpu_model);
 extern void	dis (struct pdp10_memory *memory, int cpu_model);
 extern void	disassemble_word (struct pdp10_memory *memory, word_t word,
 				  int address, int cpu_model);
