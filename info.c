@@ -197,7 +197,7 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 	case 0:
 	  {
 	    char str[7];
-	    word_t subblock_length;
+	    int subblock_length;
 	    int global = 0;
 
 	    printf ("Symbol table:\n");
@@ -214,17 +214,18 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 		printf ("  Header: %s\n", str);
 		global = (strcmp (str, "global") == 0);
 
-		subblock_length = get_checksummed_word (f);
+		word = get_checksummed_word (f);
+		subblock_length = -((int)word >> 18) - 2;
 		block_count += 2;
 
-		if (new_symbol_table (subblock_length))
+		if (new_symbol_table (word))
 		  {
-		    print_symbols (f, -(subblock_length >> 18) - 2);
-		    block_count += -(subblock_length >> 18) - 2;
+		    print_symbols (f, subblock_length);
+		    block_count += subblock_length;
 		  }
 		else
 		  {
-		    print_old_symbols (f, subblock_length, block_length);
+		    print_old_symbols (f, word, block_length);
 		    /* No more blocks. */
 		    goto checksum;
 		  }
