@@ -28,7 +28,7 @@ read_sblk (FILE *f, struct pdp10_memory *memory, int cpu_model)
 
   int block_length, block_address;
 
-  printf ("SLBK format\n");
+  printf ("SBLK format\n");
 
   address = 0;
   while ((word = get_word (f)) != JRST_1)
