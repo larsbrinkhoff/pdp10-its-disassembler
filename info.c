@@ -24,6 +24,7 @@
 #define SYKIL       0200000000000
 #define SYLCL       0100000000000
 #define SYGBL       0040000000000
+#define SYFLG       0740000000000 /* all flags mask */
 
 /* Information block types */
 #define STBDEF      0
@@ -125,69 +126,29 @@ print_datime (FILE *f, word_t t)
 }
 
 static void
-print_symbols (FILE *f, int length)
+print_symbol (word_t word1, word_t word2)
 {
   char str[7];
-  int i;
 
-  for (i = 0; i < length / 2; i++)
-    {
-      word_t x = get_checksummed_word (f);
-      squoze_to_ascii (x , str);
-      printf ("    Symbol %s = ", str);
-      printf ("%llo   (", get_checksummed_word (f));
+  squoze_to_ascii (word1, str);
+  printf ("    Symbol %s = ", str);
+  printf ("%llo   (", word2);
 
-      if (x & SYHKL)
-	printf (" halfkilled");
-      if (x & SYKIL)
-	printf (" killed");
-      if (x & SYLCL)
-	printf (" local");
-      if (x & SYGBL)
-	printf (" global");
-      printf (")\n");
-    }
-}
-
-static void
-print_old_symbols (FILE *f, word_t word, int length)
-{
-  char str[7];
-  int i;
-
-  for (i = 0; i < (length - 1) / 2; i++)
-    {
-      word_t x = (i == 0 ? word : get_checksummed_word (f));
-      squoze_to_ascii (x , str);
-      printf ("    Symbol %s = ", str);
-      printf ("%llo   (", get_checksummed_word (f));
-
-      if (x & SYHKL)
-	printf (" halfkilled");
-      if (x & SYKIL)
-	printf (" killed");
-      if (x & SYLCL)
-	printf (" local");
-      if (x & SYGBL)
-	printf (" global");
-      printf (")\n");
-    }
-}
-
-static int
-new_symbol_table (word_t x)
-{
-  return
-    (x & 0770000000000LL) == 0770000000000LL
-    && ((x & 0777777LL) == 0
-	|| (x & 0777777LL) == 2
-	|| (x & 0777777LL) == 3);
+  if (word1 & SYHKL)
+    printf (" halfkilled");
+  if (word1 & SYKIL)
+    printf (" killed");
+  if (word1 & SYLCL)
+    printf (" local");
+  if (word1 & SYGBL)
+    printf (" global");
+  printf (")\n");
 }
 
 void
 sblk_info (FILE *f, word_t word0, int cpu_model)
 {
-  int block_length, block_count;
+  int block_length;
   word_t word;
   int i;
 
@@ -204,37 +165,28 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 	case STBDEF:
 	  {
 	    char str[7];
-	    int subblock_length;
-	    int global = 0;
 
 	    printf ("Symbol table:\n");
 
-	    block_count = 0;
-	    while (block_count < block_length && !global)
+	    for (i = 0; i < block_length; i += 2)
 	      {
-		word = get_checksummed_word (f);
-		if (word == -1) {
+		word_t word1, word2;
+
+		word1 = get_checksummed_word (f);
+		word2 = get_checksummed_word (f);
+		if (word1 == -1 || word2 == -1) {
 		  printf ("  [WARNING: early end of file]\n");
 		  goto end;
 		}
-		squoze_to_ascii (word, str);
-		printf ("  Header: %s\n", str);
-		global = (strcmp (str, "global") == 0);
 
-		word = get_checksummed_word (f);
-		subblock_length = -((int)word >> 18) - 2;
-		block_count += 2;
-
-		if (new_symbol_table (word))
+		if (word1 & SYFLG)
 		  {
-		    print_symbols (f, subblock_length);
-		    block_count += subblock_length;
+		    print_symbol (word1, word2);
 		  }
 		else
 		  {
-		    print_old_symbols (f, word, block_length);
-		    /* No more blocks. */
-		    goto checksum;
+		    squoze_to_ascii (word1, str);
+		    printf ("  Header: %s\n", str);
 		  }
 	      }
 	    goto checksum;
