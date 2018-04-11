@@ -25,6 +25,12 @@
 #define SYLCL       0100000000000
 #define SYGBL       0040000000000
 
+/* Information block types */
+#define STBDEF      0
+#define STBUND      1
+#define STBFIL      2
+#define STBINF      3
+
 word_t
 ascii_to_sixbit (char *ascii)
 {
@@ -195,7 +201,7 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
       block_length = -((word >> 18) | ((-1) & ~0777777));
       switch ((int)word & 0777777)
 	{
-	case 0:
+	case STBDEF:
 	  {
 	    char str[7];
 	    int subblock_length;
@@ -233,10 +239,10 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 	      }
 	    goto checksum;
 	  }
-	case 1:
+	case STBUND:
 	  printf ("Undefined symbol table:\n");
 	  break;
-	case 2:
+	case STBFIL:
 	  {
 	    char str[7];
 
@@ -258,7 +264,7 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 	    printf ("  File sname:  %s\n", str);
 	    goto checksum;
 	  }
-	case 3:
+	case STBINF:
 	  {
 	    int subblock_length;
 	    char str[7];
