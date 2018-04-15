@@ -1,0 +1,30 @@
+SBLK format
+
+Start instruction:
+         254000000100  jrst     100             ;"5@  ! "
+
+Assembly info:
+  User name:          ATS   
+  Creation time:      2018-04-20 20:49:54
+  Source file device: DB    
+  Source file name 1: VISIB1
+  Source file name 2: MID   
+  Source file sname:  ATS   
+
+Symbol table:
+  Header: global
+    Symbol a      = 1   ( local)
+    Symbol p      = 17   ( local)
+    Symbol beg    = 100   ( local)
+    Symbol const  = 100   ( halfkilled local)
+
+Duplicate start instruction:
+         254000000100  jrst     beg             ;"5@  ! "
+(extra word: 254000000100)
+
+Disassembly:
+
+beg:
+000100:  255000000000  nop                      ;"5H    " "+ \0\0\0"
+000101:  254000000100  jrst     beg             ;"5@  ! "
+000102:  254000000123  jrst     123             ;"5@  !3"

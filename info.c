@@ -18,6 +18,7 @@
 
 #include "dis.h"
 #include "memory.h"
+#include "symbols.h"
 
 #define SQUOZE_MASK 0037777777777
 #define SYHKL       0400000000000
@@ -129,20 +130,32 @@ static void
 print_symbol (word_t word1, word_t word2)
 {
   char str[7];
+  int flags = 0;
 
   squoze_to_ascii (word1, str);
   printf ("    Symbol %s = ", str);
   printf ("%llo   (", word2);
 
   if (word1 & SYHKL)
-    printf (" halfkilled");
+    {
+      printf (" halfkilled");
+      flags |= SYMBOL_HALFKILLED;
+    }
   if (word1 & SYKIL)
-    printf (" killed");
+    {
+      printf (" killed");
+      flags |= SYMBOL_KILLED;
+    }
   if (word1 & SYLCL)
     printf (" local");
   if (word1 & SYGBL)
-    printf (" global");
+    {
+      printf (" global");
+      flags |= SYMBOL_GLOBAL;
+    }
   printf (")\n");
+
+  add_symbol (str, word2, flags);
 }
 
 void

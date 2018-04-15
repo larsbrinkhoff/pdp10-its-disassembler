@@ -1,0 +1,27 @@
+SBLK format
+
+Start instruction:
+         254000000100  jrst     100             ;"5@  ! "
+
+Assembly info:
+  User name:          ATS   
+  Creation time:      2018-04-20 20:41:23
+  Source file device: DB    
+  Source file name 1: VISIB3
+  Source file name 2: MID   
+  Source file sname:  ATS   
+
+Symbol table:
+  Header: global
+    Symbol a      = 1   ( local)
+    Symbol hksym  = 42   ( halfkilled local)
+    Symbol beg    = 100   ( local)
+
+Duplicate start instruction:
+         254000000100  jrst     beg             ;"5@  ! "
+(extra word: 254000000100)
+
+Disassembly:
+
+beg:
+000100:  202040000042  movem    a, hksym        ;"00@  B"

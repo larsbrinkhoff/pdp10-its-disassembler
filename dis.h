@@ -32,6 +32,8 @@ typedef long long word_t;
 enum { FORMAT_BIN, FORMAT_ITS, FORMAT_X, FORMAT_DTA, FORMAT_AA, FORMAT_PT,
        FORMAT_CORE };
 
+enum { SYMBOLS_NONE, SYMBOLS_DDT, SYMBOLS_ALL };
+
 struct FILE;
 struct pdp10_file;
 struct pdp10_memory;
@@ -58,6 +60,7 @@ extern void	read_raw_at (FILE *f, struct pdp10_memory *memory,
 			     int address);
 extern void	sblk_info (FILE *f, word_t word0, int cpu_model);
 extern void     dmp_info (struct pdp10_memory *memory, int cpu_model);
+extern int      symbols_mode;
 extern void	dis (struct pdp10_memory *memory, int cpu_model);
 extern void	disassemble_word (struct pdp10_memory *memory, word_t word,
 				  int address, int cpu_model);
