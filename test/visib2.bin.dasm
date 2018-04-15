@@ -1,0 +1,52 @@
+SBLK format
+
+Start instruction:
+         254000000100  jrst     100             ;"5@  ! "
+
+Assembly info:
+  User name:          ATS   
+  Creation time:      2018-04-20 20:41:21
+  Source file device: DB    
+  Source file name 1: VISIB2
+  Source file name 2: MID   
+  Source file sname:  ATS   
+
+Symbol table:
+  Header: global
+    Symbol a      = 1   ( local)
+    Symbol p      = 17   ( local)
+    Symbol beg    = 100   ( local)
+    Symbol sym    = 101   ( local)
+    Symbol hksym  = 101   ( halfkilled local)
+
+Duplicate start instruction:
+         254000000100  jrst     beg             ;"5@  ! "
+(extra word: 254000000100)
+
+Disassembly:
+
+beg:
+000100:  255000000000  nop                      ;"5H    " "+ \0\0\0"
+sym:
+000101:  255000000000  nop                      ;"5H    " "+ \0\0\0"
+000102:  253040000101  aobjn    a, sym          ;"58@ !!"
+000103:  252040000101  aobjp    a, sym          ;"50@ !!"
+000104:  320000000101  jump     0, sym          ;":   !!"
+000105:  321040000101  jumpl    a, sym          ;":(@ !!"
+000106:  323040000101  jumple   a, sym          ;":8@ !!"
+000107:  322040000101  jumpe    a, sym          ;":0@ !!"
+000110:  326040000101  jumpn    a, sym          ;":P@ !!"
+000111:  325040000101  jumpge   a, sym          ;":H@ !!"
+000112:  327040000101  jumpg    a, sym          ;":X@ !!"
+000113:  324000000101  jumpa    0, sym          ;":@  !!"
+000114:  260740000101  pushj    p, sym          ;"6'@ !!"
+000115:  254000000101  jrst     sym             ;"5@  !!"
+000116:  254100000101  jrstf    sym             ;"5A  !!"
+000117:  254200000101  halt     sym             ;"5B  !!"
+000120:  264000000101  jsr      sym             ;"6@  !!"
+000121:  265040000101  jsp      a, sym          ;"6H@ !!"
+000122:  266000000101  jsa      0, sym          ;"6P  !!"
+000123:  200040000101  move     a, sym          ;"0 @ !!"
+000124:  202040000101  movem    a, sym          ;"00@ !!"
+000125:  250040000101  exch     a, sym          ;"5 @ !!"
+000126:  256000000101  xct      sym             ;"5P  !!"

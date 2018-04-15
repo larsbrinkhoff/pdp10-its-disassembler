@@ -25,13 +25,28 @@
 static void
 usage (char **argv)
 {
-  fprintf (stderr, "Usage: %s [-6] [-r] [-W<word format>] <file>\n", argv[0]);
+  fprintf (stderr, "Usage: %s [-6] [-r] [-S<symbol mode>] [-W<word format>] <file>\n", argv[0]);
   fprintf (stderr, "\nValid word formats are: ascii, bin, core, dta, its, pt.\n");
+  fprintf (stderr, "Valid symbol modes are: none, ddt, all.\n");
   exit (1);
 }
 
 static int
-word_format (char **argv, char *string)
+symbols_mode_opt (char **argv, char *string)
+{
+  if (strcmp (string, "none") == 0)
+    return SYMBOLS_NONE;
+  else if (strcmp (string, "ddt") == 0)
+    return SYMBOLS_DDT;
+  else if (strcmp (string, "all") == 0)
+    return SYMBOLS_ALL;
+
+  usage (argv);
+  return SYMBOLS_NONE; /* NOTREACHED */
+}
+
+static int
+word_format_opt (char **argv, char *string)
 {
   if (strcmp (string, "ascii") == 0)
     return FORMAT_AA;
@@ -45,8 +60,9 @@ word_format (char **argv, char *string)
     return FORMAT_ITS;
   else if (strcmp (string, "pt") == 0)
     return FORMAT_PT;
-  else
-    usage (argv);
+
+  usage (argv);
+  return FORMAT_AA; /* NOTREACHED */
 }
 
 int
@@ -59,7 +75,7 @@ main (int argc, char **argv)
   int opt;
   reader_t read_func = NULL;
 
-  while ((opt = getopt (argc, argv, "6rW:")) != -1)
+  while ((opt = getopt (argc, argv, "6rS:W:")) != -1)
     {
       switch (opt)
 	{
@@ -69,8 +85,11 @@ main (int argc, char **argv)
 	case 'r':
 	  read_func = read_raw;
 	  break;
+	case 'S':
+	  symbols_mode = symbols_mode_opt (argv, optarg);
+	  break;
 	case 'W':
-          file_36bit_format = word_format (argv, optarg);
+          file_36bit_format = word_format_opt (argv, optarg);
 	  break;
 	default:
 	  usage (argv);

@@ -1,0 +1,9 @@
+;Test all-symbols mode.
+
+A=1
+HKSYM==42
+
+LOC 100
+BEG:	MOVEM A,HKSYM
+
+END BEG

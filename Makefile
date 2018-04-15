@@ -3,9 +3,8 @@ CFLAGS = -g -W -Wall
 
 WORDS =  bin-word.o its-word.o x-word.o dta-word.o aa-word.o pt-word.o core-word.o
 
-OBJS =	pdp10-opc.o info.o word.o sblk.o pdump.o dis.o \
+OBJS =	pdp10-opc.o info.o word.o sblk.o pdump.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o $(WORDS)
-	#file.o
 
 UTILS =	bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
 	macdmp saildart
@@ -61,7 +60,7 @@ test/test_write: test/test_write.o $(OBJS)
 test/test_read: test/test_read.o $(OBJS)
 	$(CC) $^ -o $@
 
-check: ts.obs.dasm ts.ksfedr.dasm ts.name.dasm ts.srccom.dasm atsign.tcp.dasm arc.code.list macro.low.dasm pt.rim.dasm
+check: ts.obs.dasm ts.ksfedr.dasm ts.name.dasm ts.srccom.dasm atsign.tcp.dasm arc.code.list macro.low.dasm pt.rim.dasm visib1.bin.dasm visib2.bin.dasm visib3.bin.dasm
 
 samples/ts.obs = -Wits
 samples/ts.ksfedr = -Wits
@@ -70,6 +69,9 @@ samples/ts.srccom = -Wits
 samples/atsign.tcp = -Wits
 samples/macro.low = -r -Wascii
 samples/pt.rim = -r -Wpt
+samples/visib1.bin = -Wits -Sddt
+samples/visib2.bin = -Wits -Sddt
+samples/visib3.bin = -Wits -Sall
 
 %.dasm: samples/% dis10 test/%.dasm
 	./dis10 $($<) $< > $@

@@ -1,0 +1,13 @@
+;As CONST is half-killed, DDT would show LABEL.
+
+A=1
+P=17
+
+CONST==100
+
+LOC 100
+BEG:	JFCL
+	JRST CONST	;symbolise as BEG
+	JRST 123	;don't symbolise
+
+END BEG			;symbolise as BEG

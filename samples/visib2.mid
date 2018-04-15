@@ -1,0 +1,45 @@
+;Test instructions that should and shouldn't be symbolised.
+;HKSYM should never be shown.
+
+A=1
+P=17
+
+SYM=101
+HKSYM==101
+
+LOC 100
+BEG:	JFCL
+;Should show a label here
+	JFCL
+
+;Jump instructions
+
+	AOBJN A,SYM
+	AOBJP A,SYM
+
+	JUMP SYM
+	JUMPL A,SYM
+	JUMPLE A,SYM
+	JUMPE A,SYM
+	JUMPN A,SYM
+	JUMPGE A,SYM
+	JUMPG A,SYM
+	JUMPA SYM
+
+	PUSHJ P,SYM
+	JRST SYM
+	JRST 2,SYM
+	HALT SYM
+	JSR SYM
+	JSP A,SYM
+	JSA SYM
+	;not JRA SYM?
+
+;Some non-jump instructions
+
+	MOVE A,SYM
+	MOVEM A,SYM
+	EXCH A,SYM
+	XCT SYM
+
+END BEG
