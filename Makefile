@@ -8,13 +8,14 @@ OBJS =	pdp10-opc.o info.o word.o bin-word.o its-word.o x-word.o dta-word.o \
 UTILS =	bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
 	macdmp saildart
 
-all: dis10 $(UTILS)
+all: dis10 $(UTILS) check
 
 clean:
 	rm -f $(OBJS)
 	rm -f dis10 core
 	rm -f $(UTILS)
 	rm -f bin2ascii.o bin2x.o its2x.o its2bin.o
+	rm -f *.dasm *.list
 
 dis10: main.o $(OBJS) dmp.o raw.o
 	gcc $^ -o dis10
@@ -57,6 +58,16 @@ test/test_write: test/test_write.o $(OBJS)
 
 test/test_read: test/test_read.o $(OBJS)
 	$(CC) $^ -o $@
+
+check: ts.obs.dasm ts.ksfedr.dasm ts.name.dasm ts.srccom.dasm atsign.tcp.dasm arc.code.list
+
+%.dasm: samples/% dis10 test/%.dasm
+	./dis10 $< > $@
+	cmp $@ test/$@ || rm $@ /no-such-file
+
+%.list: samples/% itsarc test/%.list
+	./itsarc -t $< 2> $@
+	cmp $@ test/$@ || rm $@ /no-such-file
 
 #dependencies
 bin-word.o: bin-word.c dis.h
