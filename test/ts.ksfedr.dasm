@@ -1,0 +1,3203 @@
+SBLK format
+
+Start instruction:
+         254000002040  jrst     2040            ;"5@  0@"
+
+Assembly info:
+  User name:          ALAN  
+  Creation time:      1986-03-25 06:25:05
+  Source file device: AI    
+  Source file name 1: KSFEDR
+  Source file name 2: 143   
+  Source file sname:  KSHACK
+
+Symbol table:
+  Header: rfn   
+    Symbol $$mnam = 0   ( halfkilled local)
+    Symbol dev    = 0   ( halfkilled local)
+    Symbol $$swit = 0   ( halfkilled local)
+    Symbol $$pfnb = 0   ( halfkilled local)
+    Symbol $$ruc  = 0   ( halfkilled local)
+    Symbol $$rfn  = 1   ( halfkilled local)
+    Symbol $$pfn  = 1   ( halfkilled local)
+    Symbol fn1    = 1   ( halfkilled local)
+    Symbol fn2    = 2   ( halfkilled local)
+    Symbol snm    = 3   ( halfkilled local)
+    Symbol rfn    = 102   ( local)
+    Symbol rfn0   = 110   ( local)
+    Symbol rfn2   = 111   ( local)
+    Symbol rfn1   = 114   ( local)
+    Symbol rfnn   = 130   ( local)
+    Symbol rfnt   = 135   ( local)
+    Symbol rfns   = 143   ( local)
+    Symbol rfns1  = 164   ( local)
+    Symbol rfnc   = 165   ( local)
+    Symbol rfnf1  = 170   ( local)
+    Symbol rfnf2  = 173   ( local)
+    Symbol rfnx   = 176   ( local)
+    Symbol ruc    = 202   ( local)
+    Symbol rsix   = 206   ( local)
+    Symbol rsixg  = 211   ( local)
+    Symbol rsixg1 = 213   ( local)
+    Symbol rsix0  = 214   ( local)
+    Symbol rsix1  = 230   ( local)
+    Symbol rsix2  = 234   ( local)
+    Symbol rsix3  = 235   ( local)
+    Symbol pfn    = 242   ( local)
+    Symbol pfn1   = 245   ( local)
+    Symbol psixf  = 274   ( local)
+    Symbol psixf1 = 306   ( local)
+    Symbol psixf2 = 312   ( local)
+  Header: format
+    Symbol $$itab = 0   ( halfkilled local)
+    Symbol $$time = 0   ( halfkilled local)
+    Symbol $$utab = 0   ( halfkilled local)
+    Symbol $$ierr = 0   ( halfkilled local)
+    Symbol $$pcod = 1   ( halfkilled local)
+    Symbol $$errs = 1   ( halfkilled local)
+    Symbol $$engl = 1   ( halfkilled local)
+    Symbol $$its  = 1   ( halfkilled local)
+    Symbol $$pfn  = 1   ( halfkilled local)
+    Symbol erri   = 7   ( halfkilled local)
+    Symbol oradix = 10   ( halfkilled local)
+    Symbol ibfsiz = 12   ( halfkilled local)
+    Symbol pfn    = 242   ( local)
+    Symbol format = 315   ( local)
+    Symbol loop   = 354   ( local)
+    Symbol scan   = 355   ( local)
+    Symbol xloop  = 356   ( local)
+    Symbol done   = 364   ( local)
+    Symbol escape = 376   ( local)
+    Symbol escp1  = 401   ( local)
+    Symbol esctbl = 404   ( local)
+    Symbol opcolo = 604   ( local)
+    Symbol opatsi = 607   ( local)
+    Symbol op.v   = 612   ( local)
+    Symbol opdigi = 622   ( local)
+    Symbol optild = 634   ( local)
+    Symbol cloop  = 637   ( local)
+    Symbol op.r   = 640   ( local)
+    Symbol op.x   = 644   ( local)
+    Symbol op.b   = 646   ( local)
+    Symbol op.d   = 650   ( local)
+    Symbol op.o   = 651   ( local)
+    Symbol op.num = 652   ( local)
+    Symbol op.h   = 660   ( local)
+    Symbol englsh = 707   ( local)
+    Symbol eng1   = 722   ( local)
+    Symbol eng0   = 733   ( local)
+    Symbol ensetz = 737   ( local)
+    Symbol eng1e9 = 743   ( local)
+    Symbol eng1e8 = 744   ( local)
+    Symbol eng1e6 = 746   ( local)
+    Symbol eng1e3 = 751   ( local)
+    Symbol eng1e2 = 752   ( local)
+    Symbol eng1e0 = 754   ( local)
+    Symbol engil  = 756   ( local)
+    Symbol thpopj = 771   ( local)
+    Symbol sppopj = 773   ( local)
+    Symbol engc   = 1000   ( local)
+    Symbol engb   = 1001   ( local)
+    Symbol engx1  = 1020   ( local)
+    Symbol engx2  = 1026   ( local)
+    Symbol eng140 = 1030   ( local)
+    Symbol eng100 = 1034   ( local)
+    Symbol eng102 = 1045   ( local)
+    Symbol prinz  = 1050   ( local)
+    Symbol prinz1 = 1055   ( local)
+    Symbol prinz0 = 1060   ( local)
+    Symbol eng103 = 1063   ( local)
+    Symbol eng104 = 1072   ( local)
+    Symbol c$1    = 1074   ( local)
+    Symbol c$20   = 1117   ( local)
+    Symbol $minus = 1127   ( local)
+    Symbol $and   = 1131   ( local)
+    Symbol $0     = 1133   ( local)
+    Symbol $0th   = 1134   ( local)
+    Symbol $1     = 1136   ( local)
+    Symbol $1th   = 1137   ( local)
+    Symbol $2     = 1141   ( local)
+    Symbol $2th   = 1142   ( local)
+    Symbol $3     = 1144   ( local)
+    Symbol $3th   = 1146   ( local)
+    Symbol $4     = 1150   ( local)
+    Symbol $4th   = 1151   ( local)
+    Symbol $5     = 1153   ( local)
+    Symbol $5th   = 1154   ( local)
+    Symbol $6     = 1156   ( local)
+    Symbol $6th   = 1157   ( local)
+    Symbol $7     = 1161   ( local)
+    Symbol $7th   = 1163   ( local)
+    Symbol $8     = 1165   ( local)
+    Symbol $8th   = 1167   ( local)
+    Symbol $9     = 1171   ( local)
+    Symbol $9th   = 1172   ( local)
+    Symbol $10    = 1174   ( local)
+    Symbol $10th  = 1175   ( local)
+    Symbol $11    = 1177   ( local)
+    Symbol $11th  = 1201   ( local)
+    Symbol $12    = 1203   ( local)
+    Symbol $12th  = 1205   ( local)
+    Symbol $13    = 1207   ( local)
+    Symbol $13th  = 1211   ( local)
+    Symbol $14    = 1214   ( local)
+    Symbol $14th  = 1216   ( local)
+    Symbol $15    = 1221   ( local)
+    Symbol $15th  = 1223   ( local)
+    Symbol $16    = 1225   ( local)
+    Symbol $16th  = 1227   ( local)
+    Symbol $17    = 1231   ( local)
+    Symbol $17th  = 1233   ( local)
+    Symbol $18    = 1236   ( local)
+    Symbol $18th  = 1240   ( local)
+    Symbol $19    = 1243   ( local)
+    Symbol $19th  = 1245   ( local)
+    Symbol $20    = 1250   ( local)
+    Symbol $30    = 1252   ( local)
+    Symbol $40    = 1254   ( local)
+    Symbol $50    = 1255   ( local)
+    Symbol $60    = 1256   ( local)
+    Symbol $70    = 1257   ( local)
+    Symbol $80    = 1261   ( local)
+    Symbol $90    = 1263   ( local)
+    Symbol $hundr = 1265   ( local)
+    Symbol $thous = 1267   ( local)
+    Symbol $milli = 1271   ( local)
+    Symbol $billi = 1273   ( local)
+    Symbol op.a   = 1275   ( local)
+    Symbol op.a2  = 1306   ( local)
+    Symbol op.a1  = 1311   ( local)
+    Symbol op.s   = 1314   ( local)
+    Symbol op.c   = 1322   ( local)
+    Symbol op.c1  = 1332   ( local)
+    Symbol op.c2  = 1336   ( local)
+    Symbol op.p   = 1346   ( local)
+    Symbol op.p3  = 1353   ( local)
+    Symbol op.ps  = 1355   ( local)
+    Symbol op.p1  = 1362   ( local)
+    Symbol op.p2  = 1370   ( local)
+    Symbol op.p4  = 1403   ( local)
+    Symbol op.e   = 1410   ( local)
+    Symbol op.e1  = 1412   ( local)
+    Symbol op.e2  = 1417   ( local)
+    Symbol op.e3  = 1422   ( local)
+    Symbol op.e4  = 1432   ( local)
+    Symbol op.e9  = 1440   ( local)
+    Symbol op.ecl = 1442   ( local)
+    Symbol op.f   = 1450   ( local)
+    Symbol opcrlf = 1466   ( local)
+    Symbol skpws1 = 1475   ( local)
+    Symbol skipws = 1477   ( local)
+    Symbol nolf   = 1503   ( local)
+    Symbol opvbar = 1505   ( local)
+    Symbol op.%   = 1507   ( local)
+    Symbol op.%1  = 1511   ( local)
+    Symbol opampe = 1514   ( local)
+    Symbol opamp1 = 1515   ( local)
+    Symbol oples  = 1531   ( local)
+    Symbol oples3 = 1540   ( local)
+    Symbol opsemi = 1544   ( local)
+    Symbol opsmi1 = 1565   ( local)
+    Symbol opgrt  = 1567   ( local)
+    Symbol zzz    = 1567   ( halfkilled local)
+    Symbol opgrt9 = 1604   ( local)
+    Symbol opgrt7 = 1611   ( local)
+    Symbol grow   = 1613   ( local)
+    Symbol dump   = 1626   ( local)
+    Symbol dump1  = 1640   ( local)
+    Symbol dump3  = 1642   ( local)
+    Symbol crlf   = 1645   ( local)
+    Symbol ntype  = 1656   ( local)
+    Symbol ntype1 = 1663   ( local)
+    Symbol ntype2 = 1666   ( local)
+    Symbol ntype3 = 1676   ( local)
+    Symbol 6type  = 1702   ( local)
+    Symbol 6type1 = 1703   ( local)
+    Symbol 6type3 = 1707   ( local)
+    Symbol cpopj  = 1714   ( local)
+    Symbol 6type2 = 1715   ( local)
+    Symbol nstr   = 1722   ( local)
+    Symbol nxop   = 1740   ( local)
+    Symbol bdop   = 1751   ( local)
+    Symbol bdjust = 1762   ( local)
+    Symbol eof    = 1777   ( local)
+    Symbol %fmeng = 2000   ( halfkilled local)
+    Symbol nxarg  = 2012   ( local)
+    Symbol %fmcrl = 4000   ( halfkilled local)
+    Symbol %fmbuf = 10000   ( halfkilled local)
+    Symbol %fmjst = 20000   ( halfkilled local)
+    Symbol %fmv   = 40000   ( halfkilled local)
+    Symbol %fmnum = 100000   ( halfkilled local)
+    Symbol %fmats = 200000   ( halfkilled local)
+    Symbol %fmcol = 400000   ( halfkilled local)
+    Symbol hpos   = 400000   ( halfkilled local)
+    Symbol save.d = 400000   ( local)
+    Symbol save.p = 400001   ( local)
+    Symbol argptr = 400002   ( local)
+    Symbol save.e = 400003   ( local)
+    Symbol bp     = 400004   ( local)
+    Symbol numarg = 400005   ( local)
+    Symbol obp    = 400006   ( local)
+    Symbol bufct  = 400007   ( local)
+    Symbol just   = 400010   ( local)
+    Symbol bufsiz = 400011   ( local)
+    Symbol buffer = 400012   ( local)
+    Symbol jcall  = 254000000000   ( halfkilled local)
+    Symbol call   = 260740000000   ( halfkilled local)
+    Symbol return = 263740000000   ( halfkilled local)
+  Header: ksfedr
+    Symbol tutbp  = 440300000000   ( halfkilled local)
+    Symbol aprid  = 700000000000   ( halfkilled local)
+    Symbol wrapr  = 700200000000   ( halfkilled local)
+    Symbol rdapr  = 700240000000   ( halfkilled local)
+    Symbol wrpi   = 700600000000   ( halfkilled local)
+    Symbol rdpi   = 700640000000   ( halfkilled local)
+    Symbol clrcsh = 701000000000   ( local)
+    Symbol rdubr  = 701040000000   ( local)
+    Symbol clrpt  = 701100000000   ( local)
+    Symbol wrubr  = 701140000000   ( local)
+    Symbol wrebr  = 701200000000   ( local)
+    Symbol rdebr  = 701240000000   ( local)
+    Symbol sdbr1  = 702000000000   ( local)
+    Symbol sdbr2  = 702040000000   ( local)
+    Symbol sdbr3  = 702100000000   ( local)
+    Symbol sdbr4  = 702140000000   ( local)
+    Symbol rdtim  = 702200000000   ( local)
+    Symbol rdint  = 702240000000   ( local)
+    Symbol rdhsb  = 702300000000   ( local)
+    Symbol spm    = 702340000000   ( local)
+    Symbol ldbr1  = 702400000000   ( local)
+    Symbol ldbr2  = 702440000000   ( local)
+    Symbol ldbr3  = 702500000000   ( local)
+    Symbol ldbr4  = 702540000000   ( local)
+    Symbol wrtim  = 702600000000   ( local)
+    Symbol wrint  = 702640000000   ( local)
+    Symbol wrhsb  = 702700000000   ( local)
+    Symbol lpmr   = 702740000000   ( local)
+    Symbol umove  = 704000000000   ( local)
+    Symbol umovem = 705000000000   ( local)
+    Symbol iordi  = 710000000000   ( local)
+    Symbol iordq  = 711000000000   ( local)
+    Symbol iord   = 712000000000   ( local)
+    Symbol iowr   = 713000000000   ( local)
+    Symbol iowri  = 714000000000   ( local)
+    Symbol iowrq  = 715000000000   ( local)
+    Symbol iordbi = 720000000000   ( local)
+    Symbol iordbq = 721000000000   ( local)
+    Symbol iordb  = 722000000000   ( local)
+    Symbol iowrb  = 723000000000   ( local)
+    Symbol iowrbi = 724000000000   ( local)
+    Symbol iowrbq = 725000000000   ( local)
+    Symbol %88    = 777700177400   ( halfkilled local)
+    Symbol ..d024 = 0   ( halfkilled local)
+    Symbol nfifls = 0   ( halfkilled local)
+    Symbol unfn1  = 0   ( halfkilled local)
+    Symbol ..d020 = 0   ( halfkilled local)
+    Symbol udescp = 0   ( halfkilled local)
+    Symbol tutsrf = 0   ( halfkilled local)
+    Symbol qpknum = 0   ( halfkilled local)
+    Symbol mdnum  = 0   ( halfkilled local)
+    Symbol mnunam = 0   ( halfkilled local)
+    Symbol ..d010 = 0   ( halfkilled local)
+    Symbol ept    = 0   ( halfkilled local)
+    Symbol tutsec = 0   ( halfkilled local)
+    Symbol mfdcyl = 0   ( halfkilled local)
+    Symbol zzz    = 0   ( halfkilled local)
+    Symbol unfn2  = 1   ( halfkilled local)
+    Symbol $$temp = 1   ( halfkilled local)
+    Symbol mdnamp = 1   ( halfkilled local)
+    Symbol a      = 1   ( local)
+    Symbol xbr    = 1   ( halfkilled local)
+    Symbol unlink = 1   ( halfkilled local)
+    Symbol %88sec = 1   ( halfkilled local)
+    Symbol udnamp = 1   ( halfkilled local)
+    Symbol ramblk = 1   ( halfkilled local)
+    Symbol qpakid = 1   ( halfkilled local)
+    Symbol ttyich = 1   ( halfkilled local)
+    Symbol ubaq   = 1   ( halfkilled local)
+    Symbol ttyoch = 2   ( halfkilled local)
+    Symbol udname = 2   ( halfkilled local)
+    Symbol lmnblk = 2   ( halfkilled local)
+    Symbol mdyear = 2   ( halfkilled local)
+    Symbol b      = 2   ( local)
+    Symbol qtutp  = 2   ( halfkilled local)
+    Symbol unreap = 2   ( halfkilled local)
+    Symbol 88ram  = 2   ( halfkilled local)
+    Symbol unrndm = 2   ( halfkilled local)
+    Symbol nxlbyt = 2   ( halfkilled local)
+    Symbol tutbyt = 3   ( halfkilled local)
+    Symbol udblks = 3   ( halfkilled local)
+    Symbol undate = 3   ( halfkilled local)
+    Symbol mpdoff = 3   ( halfkilled local)
+    Symbol c      = 3   ( local)
+    Symbol echoch = 3   ( halfkilled local)
+    Symbol ubai   = 3   ( halfkilled local)
+    Symbol qswapa = 3   ( halfkilled local)
+    Symbol d      = 4   ( local)
+    Symbol udallo = 4   ( halfkilled local)
+    Symbol unwrit = 4   ( halfkilled local)
+    Symbol mpdwdk = 4   ( halfkilled local)
+    Symbol 88bt   = 4   ( halfkilled local)
+    Symbol dskich = 4   ( halfkilled local)
+    Symbol pi     = 4   ( halfkilled local)
+    Symbol xw     = 4   ( halfkilled local)
+    Symbol xr     = 4   ( halfkilled local)
+    Symbol unref  = 4   ( halfkilled local)
+    Symbol qfrstb = 4   ( halfkilled local)
+    Symbol xrw    = 4   ( halfkilled local)
+    Symbol xbw    = 4   ( halfkilled local)
+    Symbol nptrs  = 4   ( halfkilled local)
+    Symbol xbrw   = 5   ( halfkilled local)
+    Symbol mdchk  = 5   ( halfkilled local)
+    Symbol e      = 5   ( local)
+    Symbol lunblk = 5   ( halfkilled local)
+    Symbol dskoch = 5   ( halfkilled local)
+    Symbol nfiles = 5   ( halfkilled local)
+    Symbol qlastb = 5   ( halfkilled local)
+    Symbol 88bt1  = 6   ( halfkilled local)
+    Symbol ufdbyt = 6   ( halfkilled local)
+    Symbol ufdbpw = 6   ( halfkilled local)
+    Symbol ramlen = 6   ( halfkilled local)
+    Symbol t      = 6   ( local)
+    Symbol mdnuds = 6   ( halfkilled local)
+    Symbol qtrsrv = 6   ( halfkilled local)
+    Symbol tutmny = 6   ( halfkilled local)
+    Symbol errich = 7   ( halfkilled local)
+    Symbol %ubpil = 7   ( halfkilled local)
+    Symbol tutlk  = 7   ( halfkilled local)
+    Symbol lmiblk = 7   ( halfkilled local)
+    Symbol xbyte  = 7   ( halfkilled local)
+    Symbol tt     = 7   ( local)
+    Symbol ncmds  = 7   ( halfkilled local)
+    Symbol pag    = 10   ( halfkilled local)
+    Symbol tutmax = 10   ( halfkilled local)
+    Symbol xea    = 10   ( halfkilled local)
+    Symbol fsch   = 10   ( halfkilled local)
+    Symbol unmark = 10   ( halfkilled local)
+    Symbol fslen  = 11   ( halfkilled local)
+    Symbol fspage = 12   ( halfkilled local)
+    Symbol mfdsec = 12   ( halfkilled local)
+    Symbol 88b2   = 12   ( halfkilled local)
+    Symbol uddesc = 13   ( halfkilled local)
+    Symbol udtkmx = 14   ( halfkilled local)
+    Symbol tutepw = 14   ( halfkilled local)
+    Symbol p      = 17   ( local)
+    Symbol .rd.   = 20   ( halfkilled local)
+    Symbol ltiblk = 20   ( halfkilled local)
+    Symbol delbts = 20   ( halfkilled local)
+    Symbol uncdel = 20   ( halfkilled local)
+    Symbol %pfbyt = 20   ( halfkilled local)
+    Symbol udskmx = 22   ( halfkilled local)
+    Symbol 88fi0  = 22   ( halfkilled local)
+    Symbol .wr.   = 24   ( halfkilled local)
+    Symbol unigfl = 24   ( halfkilled local)
+    Symbol 8swit0 = 30   ( local)
+    Symbol 8kaliv = 31   ( local)
+    Symbol 8ctyin = 32   ( local)
+    Symbol 8ctyot = 33   ( local)
+    Symbol 8klkin = 34   ( local)
+    Symbol 8klkot = 35   ( local)
+    Symbol 8rhbas = 36   ( local)
+    Symbol lksrim = 36   ( halfkilled local)
+    Symbol udwph  = 37   ( halfkilled local)
+    Symbol 8qnum  = 37   ( local)
+    Symbol 8bootp = 40   ( local)
+    Symbol pi0loc = 40   ( local)
+    Symbol %kepwr = 40   ( halfkilled local)
+    Symbol pi1loc = 42   ( local)
+    Symbol pi2loc = 44   ( local)
+    Symbol pi3loc = 46   ( local)
+    Symbol pi4loc = 50   ( local)
+    Symbol pi5loc = 52   ( local)
+    Symbol pi6loc = 54   ( local)
+    Symbol pi7loc = 56   ( local)
+    Symbol %ubpih = 70   ( halfkilled local)
+    Symbol ubalen = 100   ( halfkilled local)
+    Symbol eptuit = 100   ( local)
+    Symbol %ubini = 100   ( halfkilled local)
+    Symbol popj1  = 100   ( local)
+    Symbol rsixtp = 101   ( halfkilled local)
+    Symbol cpopj  = 101   ( local)
+    Symbol psixtp = 101   ( halfkilled local)
+    Symbol lpdl   = 144   ( halfkilled local)
+    Symbol lblknu = 144   ( halfkilled local)
+    Symbol llinbu = 144   ( halfkilled local)
+    Symbol %ubdxf = 200   ( halfkilled local)
+    Symbol %pfio  = 200   ( halfkilled local)
+    Symbol %uppvl = 400   ( halfkilled local)
+    Symbol %88trk = 400   ( halfkilled local)
+    Symbol epttr1 = 421   ( local)
+    Symbol upttr1 = 421   ( halfkilled local)
+    Symbol epttr2 = 422   ( local)
+    Symbol upttr2 = 422   ( halfkilled local)
+    Symbol epttr3 = 423   ( local)
+    Symbol upttr3 = 423   ( halfkilled local)
+    Symbol uptuuo = 424   ( halfkilled local)
+    Symbol eptuuo = 424   ( local)
+    Symbol uptupc = 425   ( halfkilled local)
+    Symbol eptupc = 425   ( local)
+    Symbol uptucx = 426   ( halfkilled local)
+    Symbol eptucx = 426   ( local)
+    Symbol uptuen = 430   ( halfkilled local)
+    Symbol eptuen = 430   ( local)
+    Symbol uptuet = 431   ( halfkilled local)
+    Symbol eptuet = 431   ( local)
+    Symbol upt1po = 432   ( halfkilled local)
+    Symbol ept1po = 432   ( local)
+    Symbol ept1pn = 433   ( local)
+    Symbol upt1pn = 433   ( halfkilled local)
+    Symbol uptuun = 434   ( halfkilled local)
+    Symbol eptuun = 434   ( local)
+    Symbol uptuut = 435   ( halfkilled local)
+    Symbol eptuut = 435   ( local)
+    Symbol eptpfw = 440   ( local)
+    Symbol eptpfo = 441   ( local)
+    Symbol eptpfn = 442   ( local)
+    Symbol eptp1w = 443   ( local)
+    Symbol eptp1o = 444   ( local)
+    Symbol eptp1n = 445   ( local)
+    Symbol eptp2w = 446   ( local)
+    Symbol eptp2o = 447   ( local)
+    Symbol eptp2n = 450   ( local)
+    Symbol eptp3w = 451   ( local)
+    Symbol eptp3o = 452   ( local)
+    Symbol eptp3n = 453   ( local)
+    Symbol eptp4w = 454   ( local)
+    Symbol eptp4o = 455   ( local)
+    Symbol eptp4n = 456   ( local)
+    Symbol eptp5w = 457   ( local)
+    Symbol eptp5o = 460   ( local)
+    Symbol eptp5n = 461   ( local)
+    Symbol eptp6w = 462   ( local)
+    Symbol eptp6o = 463   ( local)
+    Symbol eptp6n = 464   ( local)
+    Symbol eptp7w = 465   ( local)
+    Symbol eptp7o = 466   ( local)
+    Symbol eptp7n = 467   ( local)
+    Symbol hsbmag = 500   ( local)
+    Symbol hsb    = 500   ( halfkilled local)
+    Symbol hsbpc  = 501   ( local)
+    Symbol hsbhr  = 502   ( local)
+    Symbol hsbar  = 503   ( local)
+    Symbol hsbarx = 504   ( local)
+    Symbol hsbbr  = 505   ( local)
+    Symbol hsbbrx = 506   ( local)
+    Symbol hsbone = 507   ( local)
+    Symbol hsbebr = 510   ( local)
+    Symbol hsbubr = 511   ( local)
+    Symbol hsbmas = 512   ( local)
+    Symbol hsbflg = 513   ( local)
+    Symbol hsbpi  = 514   ( local)
+    Symbol hsbxwd = 515   ( local)
+    Symbol hsbt0  = 516   ( local)
+    Symbol hsbt1  = 517   ( local)
+    Symbol hsbvma = 520   ( local)
+    Symbol %upval = 1000   ( halfkilled local)
+    Symbol %pfphy = 1000   ( halfkilled local)
+    Symbol %ubpwr = 1000   ( halfkilled local)
+    Symbol rimacl = 1004   ( halfkilled local)
+    Symbol rimblk = 1015   ( halfkilled local)
+    Symbol rimwrd = 1021   ( halfkilled local)
+    Symbol rimerr = 1031   ( halfkilled local)
+    Symbol rimblt = 1032   ( halfkilled local)
+    Symbol rimacs = 1034   ( halfkilled local)
+    Symbol sblks  = 1036   ( halfkilled local)
+    Symbol pmrcm  = 1777   ( halfkilled local)
+    Symbol %pf2.8 = 2000   ( halfkilled local)
+    Symbol %upfst = 2000   ( halfkilled local)
+    Symbol %ublow = 2000   ( halfkilled local)
+    Symbol outstr = 2023   ( local)
+    Symbol fmtin  = 2026   ( local)
+    Symbol fmtout = 2033   ( local)
+    Symbol go     = 2040   ( local)
+    Symbol abort  = 2104   ( local)
+    Symbol eh     = 2107   ( local)
+    Symbol cmdlp  = 2110   ( local)
+    Symbol cmds   = 2114   ( local)
+    Symbol cmdnam = 2123   ( local)
+    Symbol docmd  = 2132   ( local)
+    Symbol quit   = 2140   ( local)
+    Symbol help   = 2141   ( local)
+    Symbol helplp = 2143   ( local)
+    Symbol pack   = 2147   ( local)
+    Symbol create = 2157   ( local)
+    Symbol creat1 = 2164   ( local)
+    Symbol creat4 = 2167   ( local)
+    Symbol creat2 = 2172   ( local)
+    Symbol creat5 = 2205   ( local)
+    Symbol herald = 2215   ( local)
+    Symbol finish = 2225   ( local)
+    Symbol finsh2 = 2233   ( local)
+    Symbol finsh1 = 2235   ( local)
+    Symbol setpak = 2237   ( local)
+    Symbol mapin  = 2251   ( local)
+    Symbol nxtblk = 2315   ( local)
+    Symbol take1  = 2333   ( local)
+    Symbol taket  = 2336   ( local)
+    Symbol taket0 = 2340   ( local)
+    Symbol skipt  = 2345   ( local)
+    Symbol mapinx = 2351   ( local)
+    Symbol proper = 2355   ( local)
+    Symbol propr1 = 2357   ( local)
+    Symbol check  = 2400   ( local)
+    Symbol check5 = 2411   ( local)
+    Symbol ptrs   = 2422   ( local)
+    Symbol ptrtxt = 2426   ( local)
+    Symbol corect = 2432   ( local)
+    Symbol qaddr  = 2442   ( local)
+    Symbol qaddr1 = 2466   ( local)
+    Symbol files  = 2502   ( local)
+    Symbol listem = 2507   ( local)
+    Symbol filidx = 2513   ( local)
+    Symbol itstyp = 2523   ( local)
+    Symbol gfname = 2530   ( local)
+    Symbol hacker = 2541   ( local)
+    Symbol read   = 2546   ( local)
+    Symbol write  = 2553   ( local)
+    Symbol rdram  = 2563   ( local)
+    Symbol wrram  = 2565   ( local)
+    Symbol rdtxt  = 2567   ( local)
+    Symbol rdbt   = 2567   ( local)
+    Symbol rdimag = 2571   ( local)
+    Symbol oclose = 2576   ( local)
+    Symbol wrimag = 2602   ( local)
+    Symbol wrbt   = 2625   ( local)
+    Symbol wrbt1  = 2627   ( local)
+    Symbol wrbt2  = 2640   ( local)
+    Symbol wrbt3  = 2645   ( local)
+    Symbol wrbtov = 2656   ( local)
+    Symbol wrbtex = 2661   ( local)
+    Symbol bltblk = 2662   ( local)
+    Symbol ksrim  = 2670   ( local)
+    Symbol mfdsrf = 2722   ( halfkilled local)
+    Symbol mfdblk = 2724   ( halfkilled local)
+    Symbol rdfi   = 2726   ( local)
+    Symbol rdfilp = 2733   ( local)
+    Symbol rdfi0  = 2736   ( local)
+    Symbol wrfi   = 2746   ( local)
+    Symbol wrfilp = 2756   ( local)
+    Symbol wrfi0  = 2762   ( local)
+    Symbol wrfidp = 2776   ( local)
+    Symbol wrtxt  = 3005   ( local)
+    Symbol yesnop = 3021   ( local)
+    Symbol ysnop1 = 3022   ( local)
+    Symbol insist = 3030   ( local)
+    Symbol yes    = 3033   ( local)
+    Symbol no     = 3034   ( local)
+    Symbol readfn = 3036   ( local)
+    Symbol nump   = 3060   ( local)
+    Symbol nump1  = 3061   ( local)
+    Symbol devnum = 3071   ( local)
+    Symbol number = 3101   ( local)
+    Symbol numbr0 = 3104   ( local)
+    Symbol numbr1 = 3105   ( local)
+    Symbol numbr2 = 3113   ( local)
+    Symbol numbr9 = 3124   ( local)
+    Symbol numbrx = 3132   ( local)
+    Symbol token  = 3136   ( local)
+    Symbol token0 = 3142   ( local)
+    Symbol wscan  = 3145   ( local)
+    Symbol gotcha = 3153   ( local)
+    Symbol xscan  = 3165   ( local)
+    Symbol tokenx = 3173   ( local)
+    Symbol class  = 3200   ( local)
+    Symbol input  = 3223   ( local)
+    Symbol input1 = 3227   ( local)
+    Symbol readln = 3243   ( local)
+    Symbol readlp = 3250   ( local)
+    Symbol flush  = 3270   ( local)
+    Symbol replay = 3271   ( local)
+    Symbol rubout = 3302   ( local)
+    Symbol readex = 3313   ( local)
+    Symbol siot   = 3320   ( local)
+    Symbol pdl    = 3325   ( local)
+    Symbol fname  = 3471   ( local)
+    Symbol arg    = 3475   ( local)
+    Symbol fspak  = 3476   ( local)
+    Symbol ufd    = 3477   ( local)
+    Symbol %up16b = 4000   ( halfkilled local)
+    Symbol %ubhig = 4000   ( halfkilled local)
+    Symbol %pf2.9 = 4000   ( halfkilled local)
+    Symbol blknum = 5477   ( local)
+    Symbol trunam = 5643   ( local)
+    Symbol trupak = 5647   ( local)
+    Symbol trulen = 5650   ( local)
+    Symbol secblk = 5651   ( local)
+    Symbol wrdsec = 5652   ( local)
+    Symbol nblks  = 5653   ( local)
+    Symbol nblksc = 5654   ( local)
+    Symbol nsecs  = 5655   ( local)
+    Symbol iofile = 5656   ( local)
+    Symbol bigbuf = 5662   ( local)
+    Symbol pmcshm = 10000   ( halfkilled local)
+    Symbol %uprpw = 10000   ( halfkilled local)
+    Symbol %pfwrt = 10000   ( halfkilled local)
+    Symbol 80int  = 12000   ( halfkilled local)
+    Symbol %keecc = 17700   ( halfkilled local)
+    Symbol %uppar = 20000   ( halfkilled local)
+    Symbol %keena = 20000   ( halfkilled local)
+    Symbol pmagem = 20000   ( halfkilled local)
+    Symbol rfnprm = 21662   ( local)
+    Symbol rfnblk = 21663   ( local)
+    Symbol linbuf = 21664   ( local)
+    Symbol linbp  = 22030   ( local)
+    Symbol linct  = 22031   ( local)
+    Symbol prompt = 22032   ( local)
+    Symbol fsdev  = 22033   ( local)
+    Symbol fsblk  = 22033   ( halfkilled local)
+    Symbol fsfn1  = 22034   ( local)
+    Symbol fsfn2  = 22035   ( local)
+    Symbol fsdir  = 22036   ( local)
+    Symbol cnstnt = 22037   ( local)
+    Symbol fsbase = 24000   ( halfkilled local)
+    Symbol readme = 24000   ( local)
+    Symbol dir    = 25000   ( local)
+    Symbol ramptr = 25002   ( local)
+    Symbol btptr  = 25004   ( local)
+    Symbol bt1ptr = 25006   ( local)
+    Symbol b2ptr  = 25012   ( local)
+    Symbol ram    = 26000   ( local)
+    Symbol %kepar = 40000   ( halfkilled local)
+    Symbol %uqval = 40000   ( halfkilled local)
+    Symbol %pfpar = 40000   ( halfkilled local)
+    Symbol %ubnxd = 40000   ( halfkilled local)
+    Symbol bt     = 42000   ( local)
+    Symbol bt1    = 43000   ( local)
+    Symbol b2     = 44000   ( local)
+    Symbol fsmax  = 45000   ( local)
+    Symbol kseccs = 100000   ( halfkilled local)
+    Symbol %ubpar = 100000   ( halfkilled local)
+    Symbol %pfnxm = 100000   ( halfkilled local)
+    Symbol %keref = 100000   ( halfkilled local)
+    Symbol %uqfst = 100000   ( halfkilled local)
+    Symbol $pfpno = 121000   ( halfkilled local)
+    Symbol pmunsd = 146000   ( halfkilled local)
+    Symbol %keunc = 200000   ( halfkilled local)
+    Symbol %ubbad = 200000   ( halfkilled local)
+    Symbol %pfnxi = 200000   ( halfkilled local)
+    Symbol %uq16b = 200000   ( halfkilled local)
+    Symbol %pfusr = 400000   ( halfkilled local)
+    Symbol %uqrpw = 400000   ( halfkilled local)
+    Symbol %ubtim = 400000   ( halfkilled local)
+    Symbol %kehld = 400000   ( halfkilled local)
+    Symbol undump = 400000   ( halfkilled local)
+    Symbol %ub    = 525270   ( halfkilled local)
+    Symbol %uq    = 537777   ( halfkilled local)
+    Symbol ubapag = 763000   ( halfkilled local)
+    Symbol ubasta = 763100   ( halfkilled local)
+    Symbol ubamnt = 763101   ( halfkilled local)
+    Symbol %ke    = 1520040   ( halfkilled local)
+    Symbol %pf    = 1525252   ( halfkilled local)
+    Symbol %up    = 1525377   ( halfkilled local)
+    Symbol %88cyl = 100000000   ( halfkilled local)
+    Symbol $88sec = 1000000000   ( halfkilled local)
+    Symbol unbyte = 1100000000   ( halfkilled local)
+    Symbol $$tem1 = 1100000000   ( halfkilled local)
+    Symbol undscp = 1500000000   ( halfkilled local)
+    Symbol untim  = 2200000000   ( halfkilled local)
+    Symbol tyi    = 40040000000   ( local)
+    Symbol tyo    = 40100000000   ( local)
+    Symbol pause  = 45700100000   ( local)
+    Symbol $88trk = 101000000000   ( halfkilled local)
+    Symbol xctri  = 102000000000   ( local)
+    Symbol xctr   = 103000000000   ( local)
+    Symbol unauth = 111100000000   ( halfkilled local)
+    Symbol $uppag = 121200000000   ( halfkilled local)
+    Symbol unpkn  = 150500000000   ( halfkilled local)
+    Symbol unlnkb = 220100000000   ( halfkilled local)
+    Symbol unday  = 220500000000   ( halfkilled local)
+    Symbol unrefd = 222000000000   ( halfkilled local)
+    Symbol unymd  = 222000000000   ( halfkilled local)
+    Symbol call   = 260740000000   ( local)
+    Symbol save   = 261740000000   ( local)
+    Symbol rest   = 262740000000   ( local)
+    Symbol return = 263740000000   ( local)
+    Symbol unmon  = 270400000000   ( halfkilled local)
+    Symbol unwrdc = 301200000000   ( halfkilled local)
+    Symbol $88cyl = 301400000000   ( halfkilled local)
+  [WARNING: early end of file]
+
+Disassembly:
+
+000100:  350017000000  aos      0, (17)         ;"= /   "
+000101:  263740000000  popj     17,             ;"6?@   "
+000102:  261740000002  push     17, 2           ;"6/@  ""
+000103:  261740000003  push     17, 3           ;"6/@  #"
+000104:  200140000002  move     3, 2            ;"0!@  ""
+000105:  261743000001  push     17, 1(3)        ;"6/C  !"
+000106:  261743000002  push     17, 2(3)        ;"6/C  ""
+000107:  400240000000  setz     5,              ;"@"@   " "@\n\0\0\0"
+000110:  260740000202  pushj    17, 202         ;"6'@ """
+000111:  260740000211  pushj    17, 211         ;"6'@ ")"
+000112:  254000000114  jrst     114             ;"5@  !,"
+000113:  260740000130  pushj    17, 130         ;"6'@ !8"
+000114:  302040000072  caie     1, 72           ;"80@  Z"
+000115:  306040000073  cain     1, 73           ;"8P@  ["
+000116:  254000000110  jrst     110             ;"5@  !("
+000117:  306040000040  cain     1, 40           ;"8P@  @"
+000120:  254000000110  jrst     110             ;"5@  !("
+000121:  302040000030  caie     1, 30           ;"80@  8"
+000122:  306040000031  cain     1, 31           ;"8P@  9"
+000123:  254000000176  jrst     176             ;"5@  !^"
+000124:  274740022037  sub      17, 22037       ;"7G@"0?"
+000125:  262740000003  pop      17, 3           ;"67@  #"
+000126:  262740000002  pop      17, 2           ;"67@  ""
+000127:  263740000000  popj     17,             ;"6?@   "
+000130:  306040000072  cain     1, 72           ;"8P@  Z"
+000131:  254000000165  jrst     165             ;"5@  !U"
+000132:  306040000073  cain     1, 73           ;"8P@  ["
+000133:  254000000143  jrst     143             ;"5@  !C"
+000134:  344245000135  aoja     5, 135(5)       ;"<BE !="
+000135:  254000000170  jrst     170             ;"5@  !X"
+000136:  254000000173  jrst     173             ;"5@  !["
+000137:  254000000165  jrst     165             ;"5@  !U"
+000140:  254000000143  jrst     143             ;"5@  !C"
+000141:  370000000005  sos      0, 5            ;"?    %"
+000142:  263740000000  popj     17,             ;"6?@   "
+000143:  202103000003  movem    2, 3(3)         ;"01#  #"
+000144:  661240000010  tlo      5, 10           ;"V*@  ("
+000145:  204103000000  movs     2, (3)          ;"0A#   "
+000146:  603240000001  tlne     5, 1            ;"P:@  !"
+000147:  263740000000  popj     17,             ;"6?@   "
+000150:  242100777772  lsh      2, 777772       ;"41 __Z"
+000151:  302100004151  caie     2, 4151         ;"81  AI"
+000152:  306100005554  cain     2, 5554         ;"8Q  ML"
+000153:  263740000000  popj     17,             ;"6?@   "
+000154:  306100004455  cain     2, 4455         ;"8Q  DM"
+000155:  263740000000  popj     17,             ;"6?@   "
+000156:  302100006053  caie     2, 6053         ;"81  PK"
+000157:  306100006053  cain     2, 6053         ;"8Q  PK"
+000160:  263740000000  popj     17,             ;"6?@   "
+000161:  302100004354  caie     2, 4354         ;"81  CL"
+000162:  306100005257  cain     2, 5257         ;"8Q  JO"
+000163:  263740000000  popj     17,             ;"6?@   "
+000164:  205100446353  movsi    2, 446353       ;"0I DSK"
+000165:  202103000000  movem    2, (3)          ;"01#   "
+000166:  661240000001  tlo      5, 1            ;"V*@  !"
+000167:  263740000000  popj     17,             ;"6?@   "
+000170:  202103000001  movem    2, 1(3)         ;"01#  !"
+000171:  661240000002  tlo      5, 2            ;"V*@  ""
+000172:  263740000000  popj     17,             ;"6?@   "
+000173:  202103000002  movem    2, 2(3)         ;"01#  ""
+000174:  661240000004  tlo      5, 4            ;"V*@  $"
+000175:  263740000000  popj     17,             ;"6?@   "
+000176:  271057000000  addi     1, (17)         ;"7(O   " ".\"x\0\0"
+000177:  200101777747  move     2, 777747(1)    ;"0!!__G"
+000200:  260740000130  pushj    17, 130         ;"6'@ !8"
+000201:  254000000110  jrst     110             ;"5@  !("
+000202:  134040000004  ildb     1, 4            ;"+@@  $"
+000203:  301040000140  cail     1, 140          ;"8(@ !@"
+000204:  275040000040  subi     1, 40           ;"7H@  @"
+000205:  263740000000  popj     17,             ;"6?@   "
+000206:  261740000003  push     17, 3           ;"6/@  #"
+000207:  200140022040  move     3, 22040        ;"0!@"0@"
+000210:  254000000213  jrst     213             ;"5@  "+"
+000211:  261740000003  push     17, 3           ;"6/@  #"
+000212:  200140022041  move     3, 22041        ;"0!@"0A"
+000213:  400100000000  setz     2,              ;"@!    "
+000214:  306040000021  cain     1, 21           ;"8P@  1"
+000215:  254000000234  jrst     234             ;"5@  "<"
+000216:  302040000177  caie     1, 177          ;"80@ !_"
+000217:  307040000040  caig     1, 40           ;"8X@  @"
+000220:  254000000230  jrst     230             ;"5@  "8"
+000221:  603140000040  tlne     3, 40           ;"P9@  @"
+000222:  254000000235  jrst     235             ;"5@  "="
+000223:  302040000072  caie     1, 72           ;"80@  Z"
+000224:  306040000073  cain     1, 73           ;"8P@  ["
+000225:  254000000230  jrst     230             ;"5@  "8"
+000226:  260740000101  pushj    17, 101         ;"6'@ !!"
+000227:  254000000235  jrst     235             ;"5@  "="
+000230:  331000000003  skipl    0, 3            ;";(   #"
+000231:  350017777777  aos      0, 777777(17)   ;"= /___"
+000232:  262740000003  pop      17, 3           ;"67@  #"
+000233:  263740000000  popj     17,             ;"6?@   "
+000234:  260740000202  pushj    17, 202         ;"6'@ """
+000235:  275040000040  subi     1, 40           ;"7H@  @"
+000236:  603140770000  tlne     3, 770000       ;"P9@_  "
+000237:  136040000003  idpb     1, 3            ;"+P@  #"
+000240:  260740000202  pushj    17, 202         ;"6'@ """
+000241:  254000000214  jrst     214             ;"5@  ","
+000242:  261740000001  push     17, 1           ;"6/@  !"
+000243:  261740000003  push     17, 3           ;"6/@  #"
+000244:  200142000000  move     3, (2)          ;"0!B   "
+000245:  260740000274  pushj    17, 274         ;"6'@ "\"
+000246:  201040000072  movei    1, 72           ;"0(@  Z"
+000247:  136040000004  idpb     1, 4            ;"+P@  $"
+000250:  201040000040  movei    1, 40           ;"0(@  @"
+000251:  136040000004  idpb     1, 4            ;"+P@  $"
+000252:  200142000003  move     3, 3(2)         ;"0!B  #"
+000253:  260740000274  pushj    17, 274         ;"6'@ "\"
+000254:  201040000073  movei    1, 73           ;"0(@  ["
+000255:  136040000004  idpb     1, 4            ;"+P@  $"
+000256:  201040000040  movei    1, 40           ;"0(@  @"
+000257:  136040000004  idpb     1, 4            ;"+P@  $"
+000260:  200142000001  move     3, 1(2)         ;"0!B  !"
+000261:  260740000274  pushj    17, 274         ;"6'@ "\"
+000262:  201040000040  movei    1, 40           ;"0(@  @"
+000263:  136040000004  idpb     1, 4            ;"+P@  $"
+000264:  200142000002  move     3, 2(2)         ;"0!B  ""
+000265:  260740000274  pushj    17, 274         ;"6'@ "\"
+000266:  400040000000  setz     1,              ;"@ @   "
+000267:  200140000004  move     3, 4            ;"0!@  $"
+000270:  136040000003  idpb     1, 3            ;"+P@  #"
+000271:  262740000003  pop      17, 3           ;"67@  #"
+000272:  262740000001  pop      17, 1           ;"67@  !"
+000273:  263740000000  popj     17,             ;"6?@   "
+000274:  135040022042  ldb      1, 22042        ;"+H@"0B"
+000275:  242140000006  lsh      3, 6            ;"41@  &"
+000276:  271040000040  addi     1, 40           ;"7(@  @"
+000277:  302040000072  caie     1, 72           ;"80@  Z"
+000300:  306040000073  cain     1, 73           ;"8P@  ["
+000301:  254000000306  jrst     306             ;"5@  #&"
+000302:  306040000040  cain     1, 40           ;"8P@  @"
+000303:  254000000306  jrst     306             ;"5@  #&"
+000304:  260740000101  pushj    17, 101         ;"6'@ !!"
+000305:  254000000312  jrst     312             ;"5@  #*"
+000306:  261740000001  push     17, 1           ;"6/@  !"
+000307:  201040000021  movei    1, 21           ;"0(@  1"
+000310:  136040000004  idpb     1, 4            ;"+P@  $"
+000311:  262740000001  pop      17, 1           ;"67@  !"
+000312:  136040000004  idpb     1, 4            ;"+P@  $"
+000313:  326140000274  jumpn    3, 274          ;":Q@ "\"
+000314:  263740000000  popj     17,             ;"6?@   "
+000315:  261740000004  push     17, 4           ;"6/@  $"
+000316:  201217777777  movei    4, 777777(17)   ;"0*/___"
+000317:  270200000003  add      4, 3            ;"7"   #"
+000320:  261740000004  push     17, 4           ;"6/@  $"
+000321:  505203777777  hrli     4, 777777(3)    ;"HJ#___"
+000322:  261740000004  push     17, 4           ;"6/@  $"
+000323:  261740000005  push     17, 5           ;"6/@  %"
+000324:  551257377775  hrrzi    5, 377775(17)   ;"M*O?_]"
+000325:  554140000001  hlrz     3, 1            ;"MA@  !"
+000326:  302140777777  caie     3, 777777       ;"81@___"
+000327:  336000000003  skipn    0, 3            ;";P   #"
+000330:  505040440700  hrli     1, 440700       ;"HH@D' "
+000331:  261740000001  push     17, 1           ;"6/@  !"
+000332:  261740022043  push     17, 22043       ;"6/@"0C"
+000333:  201045400012  movei    1, 400012(5)    ;"0(E@ *"
+000334:  505040440700  hrli     1, 440700       ;"HH@D' "
+000335:  261740000001  push     17, 1           ;"6/@  !"
+000336:  261740022044  push     17, 22044       ;"6/@"0D"
+000337:  261740022043  push     17, 22043       ;"6/@"0C"
+000340:  261740022044  push     17, 22044       ;"6/@"0D"
+000341:  261740022045  push     17, 22045       ;"6/@"0E"
+000342:  261740022045  push     17, 22045       ;"6/@"0E"
+000343:  261740022045  push     17, 22045       ;"6/@"0E"
+000344:  261740022045  push     17, 22045       ;"6/@"0E"
+000345:  261740022045  push     17, 22045       ;"6/@"0E"
+000346:  261740022045  push     17, 22045       ;"6/@"0E"
+000347:  261740022045  push     17, 22045       ;"6/@"0E"
+000350:  261740022045  push     17, 22045       ;"6/@"0E"
+000351:  261740022045  push     17, 22045       ;"6/@"0E"
+000352:  261740022045  push     17, 22045       ;"6/@"0E"
+000353:  200200000002  move     4, 2            ;"0"   ""
+000354:  361200000364  sojl     4, 364          ;">*  #T"
+000355:  134145400004  ildb     3, 400004(5)    ;"+AE@ $"
+000356:  306140000176  cain     3, 176          ;"8Q@ !^"
+000357:  254000000376  jrst     376             ;"5@  #^"
+000360:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+000361:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+000362:  260740001626  pushj    17, 1626        ;"6'@ .6"
+000363:  365200000355  sojge    4, 355          ;">J  #M"
+000364:  260740001626  pushj    17, 1626        ;"6'@ .6"
+000365:  603240020000  tlne     5, 20000        ;"P:@"  "
+000366:  260740001777  pushj    17, 1777        ;"6'@ /_"
+000367:  550140000017  hrrz     3, 17           ;"M!@  /"
+000370:  274145400001  sub      3, 400001(5)    ;"7AE@ !"
+000371:  200205400000  move     4, 400000(5)    ;"0"%@  "
+000372:  200245400003  move     5, 400003(5)    ;"0"E@ #"
+000373:  504140000003  hrl      3, 3            ;"HA@  #"
+000374:  274740000003  sub      17, 3           ;"7G@  #"
+000375:  263740000000  popj     17,             ;"6?@   "
+000376:  201140000001  movei    3, 1            ;"0)@  !"
+000377:  202145400005  movem    3, 400005(5)    ;"01E@ %"
+000400:  621240742000  tlz      5, 742000       ;"R*@\0 "
+000401:  361200001777  sojl     4, 1777         ;">*  /_"
+000402:  134145400004  ildb     3, 400004(5)    ;"+AE@ $"
+000403:  254023000404  jrst     @404(3)         ;"5@3 $$"
+000404:  000000001740                           ;"    /@"
+000405:  000000001740                           ;"    /@"
+000406:  000000001740                           ;"    /@"
+000407:  000000001740                           ;"    /@"
+000410:  000000001740                           ;"    /@"
+000411:  000000001740                           ;"    /@"
+000412:  000000001740                           ;"    /@"
+000413:  000000001740                           ;"    /@"
+000414:  000000001740                           ;"    /@"
+000415:  000000001740                           ;"    /@"
+000416:  000000001740                           ;"    /@"
+000417:  000000001740                           ;"    /@"
+000420:  000000001740                           ;"    /@"
+000421:  000000001740                           ;"    /@"
+000422:  000000001740                           ;"    /@"
+000423:  000000001740                           ;"    /@"
+000424:  000000001740                           ;"    /@"
+000425:  000000001740                           ;"    /@"
+000426:  000000001740                           ;"    /@"
+000427:  000000001740                           ;"    /@"
+000430:  000000001740                           ;"    /@"
+000431:  000000001740                           ;"    /@"
+000432:  000000001740                           ;"    /@"
+000433:  000000001740                           ;"    /@"
+000434:  000000001740                           ;"    /@"
+000435:  000000001740                           ;"    /@"
+000436:  000000001740                           ;"    /@"
+000437:  000000001740                           ;"    /@"
+000440:  000000001740                           ;"    /@"
+000441:  000000001740                           ;"    /@"
+000442:  000000001740                           ;"    /@"
+000443:  000000001740                           ;"    /@"
+000444:  000000001740                           ;"    /@"
+000445:  000000001740                           ;"    /@"
+000446:  000000001740                           ;"    /@"
+000447:  000000001740                           ;"    /@"
+000450:  000000001740                           ;"    /@"
+000451:  000000001740                           ;"    /@"
+000452:  000000001740                           ;"    /@"
+000453:  000000001740                           ;"    /@"
+000454:  000000001740                           ;"    /@"
+000455:  000000001740                           ;"    /@"
+000456:  000000001740                           ;"    /@"
+000457:  000000001740                           ;"    /@"
+000460:  000000001740                           ;"    /@"
+000461:  000000001740                           ;"    /@"
+000462:  000000001740                           ;"    /@"
+000463:  000000001740                           ;"    /@"
+000464:  000000001740                           ;"    /@"
+000465:  000000001740                           ;"    /@"
+000466:  000000001740                           ;"    /@"
+000467:  000000001740                           ;"    /@"
+000470:  000000001740                           ;"    /@"
+000471:  000000001740                           ;"    /@"
+000472:  000000001740                           ;"    /@"
+000473:  000000001740                           ;"    /@"
+000474:  000000001740                           ;"    /@"
+000475:  000000001740                           ;"    /@"
+000476:  000000001740                           ;"    /@"
+000477:  000000001740                           ;"    /@"
+000500:  000000001740                           ;"    /@"
+000501:  000000001740                           ;"    /@"
+000502:  000000001740                           ;"    /@"
+000503:  000000001740                           ;"    /@"
+000504:  000000001740                           ;"    /@"
+000505:  000000001740                           ;"    /@"
+000506:  000000001740                           ;"    /@"
+000507:  000000001740                           ;"    /@"
+000510:  000000001740                           ;"    /@"
+000511:  000000001740                           ;"    /@"
+000512:  000000001740                           ;"    /@"
+000513:  000000001740                           ;"    /@"
+000514:  000000001740                           ;"    /@"
+000515:  000000001740                           ;"    /@"
+000516:  000000001740                           ;"    /@"
+000517:  000000001740                           ;"    /@"
+000520:  000000001740                           ;"    /@"
+000521:  000000001740                           ;"    /@"
+000522:  000000001740                           ;"    /@"
+000523:  000000001740                           ;"    /@"
+000524:  000000001740                           ;"    /@"
+000525:  000000001740                           ;"    /@"
+000526:  000000001740                           ;"    /@"
+000527:  000000001740                           ;"    /@"
+000530:  000000001740                           ;"    /@"
+000531:  000000001740                           ;"    /@"
+000532:  000000001740                           ;"    /@"
+000533:  000000001740                           ;"    /@"
+000534:  000000001740                           ;"    /@"
+000535:  000000001740                           ;"    /@"
+000536:  000000001740                           ;"    /@"
+000537:  000000001740                           ;"    /@"
+000540:  000000001740                           ;"    /@"
+000541:  000000001740                           ;"    /@"
+000542:  000000001740                           ;"    /@"
+000543:  000000001740                           ;"    /@"
+000544:  000000001740                           ;"    /@"
+000545:  000000001740                           ;"    /@"
+000546:  000000001740                           ;"    /@"
+000547:  000000001740                           ;"    /@"
+000550:  000000001740                           ;"    /@"
+000551:  000000001740                           ;"    /@"
+000552:  000000001740                           ;"    /@"
+000553:  000000001740                           ;"    /@"
+000554:  000000001740                           ;"    /@"
+000555:  000000001740                           ;"    /@"
+000556:  000000001740                           ;"    /@"
+000557:  000000001740                           ;"    /@"
+000560:  000000001740                           ;"    /@"
+000561:  000000001740                           ;"    /@"
+000562:  000000001740                           ;"    /@"
+000563:  000000001740                           ;"    /@"
+000564:  000000001740                           ;"    /@"
+000565:  000000001740                           ;"    /@"
+000566:  000000001740                           ;"    /@"
+000567:  000000001740                           ;"    /@"
+000570:  000000001740                           ;"    /@"
+000571:  000000001740                           ;"    /@"
+000572:  000000001740                           ;"    /@"
+000573:  000000001740                           ;"    /@"
+000574:  000000001740                           ;"    /@"
+000575:  000000001740                           ;"    /@"
+000576:  000000001740                           ;"    /@"
+000577:  000000001740                           ;"    /@"
+000600:  000000001740                           ;"    /@"
+000601:  000000001740                           ;"    /@"
+000602:  000000001740                           ;"    /@"
+000603:  000000001740                           ;"    /@"
+000604:  663240400000  tloe     5, 400000       ;"V:@@  "
+000605:  260740001751  pushj    17, 1751        ;"6'@ /I"
+000606:  254000000401  jrst     401             ;"5@  $!"
+000607:  663240200000  tloe     5, 200000       ;"V:@0  "
+000610:  260740001751  pushj    17, 1751        ;"6'@ /I"
+000611:  254000000401  jrst     401             ;"5@  $!"
+000612:  663240140000  tloe     5, 140000       ;"V:@,  "
+000613:  260740001751  pushj    17, 1751        ;"6'@ /I"
+000614:  200145400002  move     3, 400002(5)    ;"0!E@ ""
+000615:  252140002012  aobjp    3, 2012         ;"51@ 0*"
+000616:  202145400002  movem    3, 400002(5)    ;"01E@ ""
+000617:  200143000000  move     3, (3)          ;"0!C   "
+000620:  202145400005  movem    3, 400005(5)    ;"01E@ %"
+000621:  254000000401  jrst     401             ;"5@  $!"
+000622:  603240040000  tlne     5, 40000        ;"P:@$  "
+000623:  260740001751  pushj    17, 1751        ;"6'@ /I"
+000624:  200045400005  move     1, 400005(5)    ;"0 E@ %"
+000625:  667240100000  tlon     5, 100000       ;"VZ@(  "
+000626:  401040000000  setzi    1,              ;"@(@   " "@\"\0\0\0"
+000627:  221040000012  imuli    1, 12           ;"2(@  *"
+000630:  275140000060  subi     3, 60           ;"7I@  P"
+000631:  270040000003  add      1, 3            ;"7 @  #"
+000632:  202045400005  movem    1, 400005(5)    ;"00E@ %"
+000633:  254000000401  jrst     401             ;"5@  $!"
+000634:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+000635:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+000636:  260740001626  pushj    17, 1626        ;"6'@ .6"
+000637:  254000000354  jrst     354             ;"5@  #L"
+000640:  607240100000  tlnn     5, 100000       ;"PZ@(  "
+000641:  254000000707  jrst     707             ;"5@  ''"
+000642:  200045400005  move     1, 400005(5)    ;"0 E@ %"
+000643:  254000000652  jrst     652             ;"5@  &J"
+000644:  201040000020  movei    1, 20           ;"0(@  0"
+000645:  254000000652  jrst     652             ;"5@  &J"
+000646:  201040000002  movei    1, 2            ;"0(@  ""
+000647:  254000000652  jrst     652             ;"5@  &J"
+000650:  334040022046  skipa    1, 22046        ;";@@"0F"
+000651:  201040000010  movei    1, 10           ;"0(@  ("
+000652:  200105400002  move     2, 400002(5)    ;"0!%@ ""
+000653:  252100002012  aobjp    2, 2012         ;"51  0*"
+000654:  202105400002  movem    2, 400002(5)    ;"01%@ ""
+000655:  200102000000  move     2, (2)          ;"0!"   "
+000656:  260740001656  pushj    17, 1656        ;"6'@ .N"
+000657:  254000000354  jrst     354             ;"5@  #L"
+000660:  200105400002  move     2, 400002(5)    ;"0!%@ ""
+000661:  252100002012  aobjp    2, 2012         ;"51  0*"
+000662:  202105400002  movem    2, 400002(5)    ;"01%@ ""
+000663:  554102000000  hlrz     2, (2)          ;"MA"   "
+000664:  301100774000  cail     2, 774000       ;"8) _@ "
+000665:  570100000002  hrre     2, 2            ;"O!   ""
+000666:  201040000010  movei    1, 10           ;"0(@  ("
+000667:  260740001656  pushj    17, 1656        ;"6'@ .N"
+000670:  201140000054  movei    3, 54           ;"0)@  L"
+000671:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+000672:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+000673:  260740001626  pushj    17, 1626        ;"6'@ .6"
+000674:  201140000054  movei    3, 54           ;"0)@  L"
+000675:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+000676:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+000677:  260740001626  pushj    17, 1626        ;"6'@ .6"
+000700:  200105400002  move     2, 400002(5)    ;"0!%@ ""
+000701:  550102000000  hrrz     2, (2)          ;"M!"   "
+000702:  301100774000  cail     2, 774000       ;"8) _@ "
+000703:  570100000002  hrre     2, 2            ;"O!   ""
+000704:  201040000010  movei    1, 10           ;"0(@  ("
+000705:  260740001656  pushj    17, 1656        ;"6'@ .N"
+000706:  254000000354  jrst     354             ;"5@  #L"
+000707:  200105400002  move     2, 400002(5)    ;"0!%@ ""
+000710:  252100002012  aobjp    2, 2012         ;"51  0*"
+000711:  202105400002  movem    2, 400002(5)    ;"01%@ ""
+000712:  200102000000  move     2, (2)          ;"0!"   "
+000713:  261740000637  push     17, 637         ;"6/@ &?"
+000714:  322100000733  jumpe    2, 733          ;":1  ';"
+000715:  327100000722  jumpg    2, 722          ;":Y  '2"
+000716:  201040001127  movei    1, 1127         ;"0(@ )7"
+000717:  260740001050  pushj    17, 1050        ;"6'@ (H"
+000720:  210100000002  movn     2, 2            ;"1!   ""
+000721:  321100000737  jumpl    2, 737          ;":)  '?"
+000722:  301100023420  cail     2, 23420        ;"8) "<0"
+000723:  254000000743  jrst     743             ;"5@  'C"
+000724:  200040000002  move     1, 2            ;"0 @  ""
+000725:  231100000144  idivi    2, 144          ;"3)  !D"
+000726:  231100000012  idivi    2, 12           ;"3)   *"
+000727:  200100000001  move     2, 1            ;"0!   !"
+000730:  322140000751  jumpe    3, 751          ;":1@ 'I"
+000731:  661240002000  tlo      5, 2000         ;"V*@ 0 "
+000732:  254000001001  jrst     1001            ;"5@  (!"
+000733:  201040001133  movei    1, 1133         ;"0(@ );"
+000734:  603240400000  tlne     5, 400000       ;"P:@@  "
+000735:  201040001134  movei    1, 1134         ;"0(@ )<"
+000736:  254000001050  jrst     1050            ;"5@  (H"
+000737:  230100022047  idiv     2, 22047        ;"3! "0G"
+000740:  210100000002  movn     2, 2            ;"1!   ""
+000741:  210140000003  movn     3, 3            ;"1!@  #"
+000742:  254000000744  jrst     744             ;"5@  'D"
+000743:  230100022047  idiv     2, 22047        ;"3! "0G"
+000744:  200040022050  move     1, 22050        ;"0 @"0H"
+000745:  254000000756  jrst     756             ;"5@  'N"
+000746:  230100022051  idiv     2, 22051        ;"3! "0I"
+000747:  200040022052  move     1, 22052        ;"0 @"0J"
+000750:  254000000756  jrst     756             ;"5@  'N"
+000751:  231100001750  idivi    2, 1750         ;"3)  /H"
+000752:  200040022053  move     1, 22053        ;"0 @"0K"
+000753:  254000000756  jrst     756             ;"5@  'N"
+000754:  661240002000  tlo      5, 2000         ;"V*@ 0 "
+000755:  254000001001  jrst     1001            ;"5@  (!"
+000756:  250100000003  exch     2, 3            ;"5!   #"
+000757:  322141000000  jumpe    3, (1)          ;":1A   "
+000760:  261740000001  push     17, 1           ;"6/@  !"
+000761:  261740000002  push     17, 2           ;"6/@  ""
+000762:  260740001000  pushj    17, 1000        ;"6'@ ( "
+000763:  262740000002  pop      17, 2           ;"67@  ""
+000764:  544057000000  hlr      1, (17)         ;"L@O   "
+000765:  260740001050  pushj    17, 1050        ;"6'@ (H"
+000766:  326100000773  jumpn    2, 773          ;":Q  '["
+000767:  262757000000  pop      17, (17)        ;"67O   " ",^x\0\0"
+000770:  325240001714  jumpge   5, 1714         ;":J@ /,"
+000771:  201040022054  movei    1, 22054        ;"0(@"0L"
+000772:  254000001050  jrst     1050            ;"5@  (H"
+000773:  201140000040  movei    3, 40           ;"0)@  @"
+000774:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+000775:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+000776:  260740001626  pushj    17, 1626        ;"6'@ .6"
+000777:  263740000000  popj     17,             ;"6?@   "
+001000:  200100000003  move     2, 3            ;"0!   #"
+001001:  231100000144  idivi    2, 144          ;"3)  !D"
+001002:  322100001026  jumpe    2, 1026         ;":1  (6"
+001003:  261740000003  push     17, 3           ;"6/@  #"
+001004:  623240002000  tlze     5, 2000         ;"R:@ 0 "
+001005:  607240400000  tlnn     5, 400000       ;"PZ@@  "
+001006:  254000001020  jrst     1020            ;"5@  (0"
+001007:  260740001034  pushj    17, 1034        ;"6'@ (<"
+001010:  201040001265  movei    1, 1265         ;"0(@ *U"
+001011:  260740001050  pushj    17, 1050        ;"6'@ (H"
+001012:  262740000002  pop      17, 2           ;"67@  ""
+001013:  322100000771  jumpe    2, 771          ;":1  'Y"
+001014:  201040001131  movei    1, 1131         ;"0(@ )9"
+001015:  260740001050  pushj    17, 1050        ;"6'@ (H"
+001016:  661240002000  tlo      5, 2000         ;"V*@ 0 "
+001017:  254000001034  jrst     1034            ;"5@  (<"
+001020:  260740001034  pushj    17, 1034        ;"6'@ (<"
+001021:  201040001265  movei    1, 1265         ;"0(@ *U"
+001022:  260740001050  pushj    17, 1050        ;"6'@ (H"
+001023:  262740000002  pop      17, 2           ;"67@  ""
+001024:  326100001030  jumpn    2, 1030         ;":Q  (8"
+001025:  263740000000  popj     17,             ;"6?@   "
+001026:  200100000003  move     2, 3            ;"0!   #"
+001027:  254000001034  jrst     1034            ;"5@  (<"
+001030:  201140000040  movei    3, 40           ;"0)@  @"
+001031:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+001032:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+001033:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001034:  305100000024  caige    2, 24           ;"8I   4"
+001035:  254000001045  jrst     1045            ;"5@  (E"
+001036:  231100000012  idivi    2, 12           ;"3)   *"
+001037:  200042001115  move     1, 1115(2)      ;"0 B )-"
+001040:  200100000003  move     2, 3            ;"0!   #"
+001041:  260740001050  pushj    17, 1050        ;"6'@ (H"
+001042:  322100001063  jumpe    2, 1063         ;":1  (S"
+001043:  201040022055  movei    1, 22055        ;"0(@"0M"
+001044:  260740001050  pushj    17, 1050        ;"6'@ (H"
+001045:  200042001073  move     1, 1073(2)      ;"0 B (["
+001046:  603240002000  tlne     5, 2000         ;"P:@ 0 "
+001047:  544040000001  hlr      1, 1            ;"L@@  !"
+001050:  505040440700  hrli     1, 440700       ;"HH@D' "
+001051:  627240200000  tlzn     5, 200000       ;"RZ@0  "
+001052:  254000001060  jrst     1060            ;"5@  (P"
+001053:  134140000001  ildb     3, 1            ;"+A@  !"
+001054:  275140000040  subi     3, 40           ;"7I@  @"
+001055:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+001056:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+001057:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001060:  134140000001  ildb     3, 1            ;"+A@  !"
+001061:  326140001055  jumpn    3, 1055         ;":Q@ (M"
+001062:  263740000000  popj     17,             ;"6?@   "
+001063:  603240002000  tlne     5, 2000         ;"P:@ 0 "
+001064:  254000001072  jrst     1072            ;"5@  (Z"
+001065:  201140000171  movei    3, 171          ;"0)@ !Y"
+001066:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+001067:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+001070:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001071:  263740000000  popj     17,             ;"6?@   "
+001072:  201040022056  movei    1, 22056        ;"0(@"0N"
+001073:  254000001050  jrst     1050            ;"5@  (H"
+001074:  001137001136                           ;" )? )>"
+001075:  001142001141                           ;" )B )A"
+001076:  001146001144                           ;" )F )D"
+001077:  001151001150                           ;" )I )H"
+001100:  001154001153                           ;" )L )K"
+001101:  001157001156                           ;" )O )N"
+001102:  001163001161                           ;" )S )Q"
+001103:  001167001165                           ;" )W )U"
+001104:  001172001171                           ;" )Z )Y"
+001105:  001175001174                           ;" )] )\"
+001106:  001201001177                           ;" *! )_"
+001107:  001205001203                           ;" *% *#"
+001110:  001211001207                           ;" *) *'"
+001111:  001216001214                           ;" *. *,"
+001112:  001223001221                           ;" *3 *1"
+001113:  001227001225                           ;" *7 *5"
+001114:  001233001231                           ;" *; *9"
+001115:  001240001236                           ;" *@ *>"
+001116:  001245001243                           ;" *E *C"
+001117:  000000001250                           ;"    *H"
+001120:  000000001252                           ;"    *J"
+001121:  000000001254                           ;"    *L"
+001122:  000000001255                           ;"    *M"
+001123:  000000001256                           ;"    *N"
+001124:  000000001257                           ;"    *O"
+001125:  000000001261                           ;"    *Q"
+001126:  000000001263                           ;"    *S"
+001127:  667235672746  tlon     4, @672746(15)  ;"VZ=W7F" "minus"
+001130:  200000000000  move     0, 0            ;"0     " " \0\0\0\0"
+001131:  203035662100  moves    0, @662100(15)  ;"08=V1 " " and "
+001132:  000000000000                           ;"      "
+001133:  753136267400  blko     530, @267400(16);"]9>6\ " "zero\0"
+001134:  753136267750  blko     530, @267750(16);"]9>6_H" "zerot"
+001135:  640000000000  trc      0, 0            ;"T     " "h\0\0\0\0"
+001136:  677354500000  tson     7, 500000(14)   ;"W[LH  " "one\0\0"
+001137:  633236271750  tsze     4, @271750(16)  ;"S:>7/H" "first"
+001140:  000000000000                           ;"      "
+001141:  723575700000  iowrb    13, @700000(15) ;"Z=]X  " "two\0\0"
+001142:  717134367734  bltub    2, @367734(14)  ;"YY<>_<" "secon"
+001143:  620000000000  trz      0, 0            ;"R     " "d\0\0\0\0"
+001144:  723216262712  iowrb    4, 262712(16)   ;"Z:.67*" "three"
+001145:  000000000000                           ;"      "
+001146:  723215171310  iowrb    4, 171310(15)   ;"Z:-/+(" "third"
+001147:  000000000000                           ;"      "
+001150:  633376571000  tsze     7, @571000(16)  ;"S;^O( " "four\0"
+001151:  633376571350  tsze     7, @571350(16)  ;"S;^O+H" "fourt"
+001152:  640000000000  trc      0, 0            ;"T     " "h\0\0\0\0"
+001153:  633236662400  tsze     4, @662400(16)  ;"S:>V4 " "five\0"
+001154:  633234672320  tsze     4, @672320(14)  ;"S:<W30" "fifth"
+001155:  000000000000                           ;"      "
+001156:  717237000000  bltub    4, @(17)        ;"YZ?   " "six\0\0"
+001157:  717237072320  bltub    4, @72320(17)   ;"YZ?'30" "sixth"
+001160:  000000000000                           ;"      "
+001161:  717136662734  bltub    2, @662734(16)  ;"YY>V7<" "seven"
+001162:  000000000000                           ;"      "
+001163:  717136662734  bltub    2, @662734(16)  ;"YY>V7<" "seven"
+001164:  723200000000  iowrb    4, 0            ;"Z:    " "th\0\0\0"
+001165:  627234764350  tlzn     4, @764350(14)  ;"RZ<^CH" "eight"
+001166:  000000000000                           ;"      "
+001167:  627234764350  tlzn     4, @764350(14)  ;"RZ<^CH" "eight"
+001170:  640000000000  trc      0, 0            ;"T     " "h\0\0\0\0"
+001171:  673235662400  tsoe     4, @662400(15)  ;"W:=V4 " "nine\0"
+001172:  673235672320  tsoe     4, @672320(15)  ;"W:=W30" "ninth"
+001173:  000000000000                           ;"      "
+001174:  723135600000  iowrb    2, @600000(15)  ;"Z9=P  " "ten\0\0"
+001175:  723135672320  iowrb    2, @672320(15)  ;"Z9=W30" "tenth"
+001176:  000000000000                           ;"      "
+001177:  627314573312  tlzn     6, 573312(14)   ;"R[,O;*" "eleve"
+001200:  670000000000  tdo      0, 0            ;"W     " "n\0\0\0\0"
+001201:  627314573312  tlzn     6, 573312(14)   ;"R[,O;*" "eleve"
+001202:  673515000000  tsoe     12, (15)        ;"W=-   " "nth\0\0"
+001203:  723574566354  iowrb    13, @566354(14) ;"Z=\NSL" "twelv"
+001204:  624000000000  trza     0, 0            ;"R@    " "e\0\0\0\0"
+001205:  723574566314  iowrb    13, @566314(14) ;"Z=\NS," "twelf"
+001206:  723200000000  iowrb    4, 0            ;"Z:    " "th\0\0\0"
+001207:  723215171350  iowrb    4, 171350(15)   ;"Z:-/+H" "thirt"
+001210:  627135600000  tlzn     2, @600000(15)  ;"RY=P  " "een\0\0"
+001211:  723215171350  iowrb    4, 171350(15)   ;"Z:-/+H" "thirt"
+001212:  627135672320  tlzn     2, @672320(15)  ;"RY=W30" "eenth"
+001213:  000000000000                           ;"      "
+001214:  633376571350  tsze     7, @571350(16)  ;"S;^O+H" "fourt"
+001215:  627135600000  tlzn     2, @600000(15)  ;"RY=P  " "een\0\0"
+001216:  633376571350  tsze     7, @571350(16)  ;"S;^O+H" "fourt"
+001217:  627135672320  tlzn     2, @672320(15)  ;"RY=W30" "eenth"
+001220:  000000000000                           ;"      "
+001221:  633234672312  tsze     4, @672312(14)  ;"S:<W3*" "fifte"
+001222:  627340000000  tlzn     7, 0            ;"R[@   " "en\0\0\0"
+001223:  633234672312  tsze     4, @672312(14)  ;"S:<W3*" "fifte"
+001224:  627356464000  tlzn     7, 464000(16)   ;"R[NF@ " "enth\0"
+001225:  717237072312  bltub    4, @72312(17)   ;"YZ?'3*" "sixte"
+001226:  627340000000  tlzn     7, 0            ;"R[@   " "en\0\0\0"
+001227:  717237072312  bltub    4, @72312(17)   ;"YZ?'3*" "sixte"
+001230:  627356464000  tlzn     7, 464000(16)   ;"R[NF@ " "enth\0"
+001231:  717136662734  bltub    2, @662734(16)  ;"YY>V7<" "seven"
+001232:  723134567000  iowrb    2, @567000(14)  ;"Z9<NX " "teen\0"
+001233:  717136662734  bltub    2, @662734(16)  ;"YY>V7<" "seven"
+001234:  723134567350  iowrb    2, @567350(14)  ;"Z9<N[H" "teent"
+001235:  640000000000  trc      0, 0            ;"T     " "h\0\0\0\0"
+001236:  627234764350  tlzn     4, @764350(14)  ;"RZ<^CH" "eight"
+001237:  627135600000  tlzn     2, @600000(15)  ;"RY=P  " "een\0\0"
+001240:  627234764350  tlzn     4, @764350(14)  ;"RZ<^CH" "eight"
+001241:  627135672320  tlzn     2, @672320(15)  ;"RY=W30" "eenth"
+001242:  000000000000                           ;"      "
+001243:  673235662750  tsoe     4, @662750(15)  ;"W:=V7H" "ninet"
+001244:  627135600000  tlzn     2, @600000(15)  ;"RY=P  " "een\0\0"
+001245:  673235662750  tsoe     4, @662750(15)  ;"W:=V7H" "ninet"
+001246:  627135672320  tlzn     2, @672320(15)  ;"RY=W30" "eenth"
+001247:  000000000000                           ;"      "
+001250:  723574567350  iowrb    13, @567350(14) ;"Z=\N[H" "twent"
+001251:  000000000000                           ;"      "
+001252:  723215171350  iowrb    4, 171350(15)   ;"Z:-/+H" "thirt"
+001253:  000000000000                           ;"      "
+001254:  633376272000  tsze     7, @272000(16)  ;"S;^70 " "fort\0"
+001255:  633234672000  tsze     4, @672000(14)  ;"S:<W0 " "fift\0"
+001256:  717237072000  bltub    4, @72000(17)   ;"YZ?'0 " "sixt\0"
+001257:  717136662734  bltub    2, @662734(16)  ;"YY>V7<" "seven"
+001260:  720000000000  iordbi   0, 0            ;"Z     " "t\0\0\0\0"
+001261:  627234764350  tlzn     4, @764350(14)  ;"RZ<^CH" "eight"
+001262:  000000000000                           ;"      "
+001263:  673235662750  tsoe     4, @662750(15)  ;"W:=V7H" "ninet"
+001264:  000000000000                           ;"      "
+001265:  203216567310  moves    4, 567310(16)   ;"0:.N[(" " hund"
+001266:  713134400000  iowr     2, @400000(14)  ;"Y9<@  " "red\0\0"
+001267:  203515067752  moves    12, 67752(15)   ;"0=-&_J" " thou"
+001270:  717035662000  bltub    0, @662000(15)  ;"YX=V0 " "sand\0"
+001271:  203335166330  moves    6, @166330(15)  ;"0;=.S8" " mill"
+001272:  647375600000  tlcn     7, @600000(15)  ;"T[]P  " "ion\0\0"
+001273:  203055166330  moves    1, 166330(15)   ;"08M.S8" " bill"
+001274:  647375600000  tlcn     7, @600000(15)  ;"T[]P  " "ion\0\0"
+001275:  200045400002  move     1, 400002(5)    ;"0 E@ ""
+001276:  252040002012  aobjp    1, 2012         ;"50@ 0*"
+001277:  202045400002  movem    1, 400002(5)    ;"00E@ ""
+001300:  200041000000  move     1, (1)          ;"0 A   "
+001301:  554140000001  hlrz     3, 1            ;"MA@  !"
+001302:  302140777777  caie     3, 777777       ;"81@___"
+001303:  336000000003  skipn    0, 3            ;";P   #"
+001304:  505040440700  hrli     1, 440700       ;"HH@D' "
+001305:  254000001311  jrst     1311            ;"5@  +)"
+001306:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+001307:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+001310:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001311:  134140000001  ildb     3, 1            ;"+A@  !"
+001312:  326140001306  jumpn    3, 1306         ;":Q@ +&"
+001313:  254000000354  jrst     354             ;"5@  #L"
+001314:  200045400002  move     1, 400002(5)    ;"0 E@ ""
+001315:  252040002012  aobjp    1, 2012         ;"50@ 0*"
+001316:  202045400002  movem    1, 400002(5)    ;"00E@ ""
+001317:  200041000000  move     1, (1)          ;"0 A   "
+001320:  260740001702  pushj    17, 1702        ;"6'@ /""
+001321:  254000000354  jrst     354             ;"5@  #L"
+001322:  200045400002  move     1, 400002(5)    ;"0 E@ ""
+001323:  252040002012  aobjp    1, 2012         ;"50@ 0*"
+001324:  202045400002  movem    1, 400002(5)    ;"00E@ ""
+001325:  200041000000  move     1, (1)          ;"0 A   "
+001326:  321240001332  jumpl    5, 1332         ;":*@ +:"
+001327:  301040000040  cail     1, 40           ;"8(@  @"
+001330:  301040000177  cail     1, 177          ;"8(@ !_"
+001331:  254000001336  jrst     1336            ;"5@  +>"
+001332:  136045400006  idpb     1, 400006(5)    ;"+PE@ &"
+001333:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+001334:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001335:  254000000354  jrst     354             ;"5@  #L"
+001336:  306040000033  cain     1, 33           ;"8P@  ;"
+001337:  254000001332  jrst     1332            ;"5@  +:"
+001340:  201140000136  movei    3, 136          ;"0)@ !>"
+001341:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+001342:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+001343:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001344:  640040000100  trc      1, 100          ;"T @ ! "
+001345:  254000001332  jrst     1332            ;"5@  +:"
+001346:  321240001362  jumpl    5, 1362         ;":*@ +R"
+001347:  200145400002  move     3, 400002(5)    ;"0!E@ ""
+001350:  200143000000  move     3, (3)          ;"0!C   "
+001351:  603240200000  tlne     5, 200000       ;"P:@0  "
+001352:  254000001370  jrst     1370            ;"5@  +X"
+001353:  306140000001  cain     3, 1            ;"8Q@  !"
+001354:  254000000354  jrst     354             ;"5@  #L"
+001355:  201140000163  movei    3, 163          ;"0)@ !S"
+001356:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+001357:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+001360:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001361:  254000000354  jrst     354             ;"5@  #L"
+001362:  200145400002  move     3, 400002(5)    ;"0!E@ ""
+001363:  252140002012  aobjp    3, 2012         ;"51@ 0*"
+001364:  202145400002  movem    3, 400002(5)    ;"01E@ ""
+001365:  200143000000  move     3, (3)          ;"0!C   "
+001366:  607240200000  tlnn     5, 200000       ;"PZ@0  "
+001367:  254000001353  jrst     1353            ;"5@  +K"
+001370:  306140000001  cain     3, 1            ;"8Q@  !"
+001371:  254000001403  jrst     1403            ;"5@  ,#"
+001372:  201140000151  movei    3, 151          ;"0)@ !I"
+001373:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+001374:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+001375:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001376:  201140000145  movei    3, 145          ;"0)@ !E"
+001377:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+001400:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+001401:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001402:  254000001355  jrst     1355            ;"5@  +M"
+001403:  201140000171  movei    3, 171          ;"0)@ !Y"
+001404:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+001405:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+001406:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001407:  254000000354  jrst     354             ;"5@  #L"
+001410:  321240001432  jumpl    5, 1432         ;":*@ ,:"
+001411:  201040000001  movei    1, 1            ;"0(@  !"
+001412:  043000001442  .call    [setz
+                                 SIXBIT/OPEN  /
+                                 000000022057
+                                 000000022060
+                                 200000000001
+                                 400000000002]
+                                                ;"$8  ,B"
+001413:  043100001000  .lose    1000            ;"$9  ( "
+001414:  607240200000  tlnn     5, 200000       ;"PZ@0  "
+001415:  254000001422  jrst     1422            ;"5@  ,2"
+001416:  040340000003  .iot     7, 3            ;"$#@  #"
+001417:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+001420:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+001421:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001422:  040340000003  .iot     7, 3            ;"$#@  #"
+001423:  305140000040  caige    3, 40           ;"8I@  @"
+001424:  254000001440  jrst     1440            ;"5@  ,@"
+001425:  271140000040  addi     3, 40           ;"7)@  @"
+001426:  301140000141  cail     3, 141          ;"8)@ !A"
+001427:  303140000172  caile    3, 172          ;"89@ !Z"
+001430:  275140000040  subi     3, 40           ;"7I@  @"
+001431:  254000001417  jrst     1417            ;"5@  ,/"
+001432:  200105400002  move     2, 400002(5)    ;"0!%@ ""
+001433:  252100002012  aobjp    2, 2012         ;"51  0*"
+001434:  202105400002  movem    2, 400002(5)    ;"01%@ ""
+001435:  200102000000  move     2, (2)          ;"0!"   "
+001436:  201040000004  movei    1, 4            ;"0(@  $"
+001437:  254000001412  jrst     1412            ;"5@  ,*"
+001440:  042340000007  .close   7,              ;"$3@  '"
+001441:  254000000354  jrst     354             ;"5@  #L"
+001442:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+001443:  576045560000  hlrem    1, 560000(5)    ;"OPEN  " "_B-`\0"
+001444:  000000022057                           ;"   "0O"
+001445:  000000022060                           ;"   "0P"
+001446:  200000000001  move     0, 1            ;"0    !"
+001447:  400000000002  setz     0, 2            ;"@    ""
+001450:  201100000066  movei    2, 66           ;"0)   V"
+001451:  265040001613  jsp      1, 1613         ;"6H@ .+"
+001452:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001453:  261740000004  push     17, 4           ;"6/@  $"
+001454:  200205400006  move     4, 400006(5)    ;"0"%@ &"
+001455:  200105400002  move     2, 400002(5)    ;"0!%@ ""
+001456:  252100002012  aobjp    2, 2012         ;"51  0*"
+001457:  202105400002  movem    2, 400002(5)    ;"01%@ ""
+001460:  200102000000  move     2, (2)          ;"0!"   "
+001461:  260740000242  pushj    17, 242         ;"6'@ "B"
+001462:  200040000004  move     1, 4            ;"0 @  $"
+001463:  262740000004  pop      17, 4           ;"67@  $"
+001464:  260740001722  pushj    17, 1722        ;"6'@ /2"
+001465:  254000000354  jrst     354             ;"5@  #L"
+001466:  603240200000  tlne     5, 200000       ;"P:@0  "
+001467:  260740001645  pushj    17, 1645        ;"6'@ .E"
+001470:  361200000364  sojl     4, 364          ;">*  #T"
+001471:  134145400004  ildb     3, 400004(5)    ;"+AE@ $"
+001472:  302140000012  caie     3, 12           ;"81@  *"
+001473:  254000001503  jrst     1503            ;"5@  -#"
+001474:  321240000354  jumpl    5, 354          ;":*@ #L"
+001475:  361200000364  sojl     4, 364          ;">*  #T"
+001476:  134145400004  ildb     3, 400004(5)    ;"+AE@ $"
+001477:  302140000040  caie     3, 40           ;"81@  @"
+001500:  306140000011  cain     3, 11           ;"8Q@  )"
+001501:  254000001475  jrst     1475            ;"5@  ,]"
+001502:  254000000356  jrst     356             ;"5@  #N"
+001503:  325240001477  jumpge   5, 1477         ;":J@ ,_"
+001504:  254000000356  jrst     356             ;"5@  #N"
+001505:  201040000103  movei    1, 103          ;"0(@ !#"
+001506:  254000001515  jrst     1515            ;"5@  --"
+001507:  337045400005  skipg    1, 400005(5)    ;";XE@ %"
+001510:  254000000354  jrst     354             ;"5@  #L"
+001511:  260740001645  pushj    17, 1645        ;"6'@ .E"
+001512:  367040001511  sojg     1, 1511         ;">X@ -)"
+001513:  254000000354  jrst     354             ;"5@  #L"
+001514:  201040000101  movei    1, 101          ;"0(@ !!"
+001515:  603240020000  tlne     5, 20000        ;"P:@"  "
+001516:  260740001762  pushj    17, 1762        ;"6'@ /R"
+001517:  201140000020  movei    3, 20           ;"0)@  0"
+001520:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+001521:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+001522:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001523:  136045400006  idpb     1, 400006(5)    ;"+PE@ &"
+001524:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+001525:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001526:  377045400005  sosg     1, 400005(5)    ;"?XE@ %"
+001527:  254000000354  jrst     354             ;"5@  #L"
+001530:  254000001511  jrst     1511            ;"5@  -)"
+001531:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001532:  663240030000  tloe     5, 30000        ;"V:@#  "
+001533:  260740001762  pushj    17, 1762        ;"6'@ /R"
+001534:  607240100000  tlnn     5, 100000       ;"PZ@(  "
+001535:  260740001751  pushj    17, 1751        ;"6'@ /I"
+001536:  200105400005  move     2, 400005(5)    ;"0!%@ %"
+001537:  265040001613  jsp      1, 1613         ;"6H@ .+"
+001540:  201140000040  movei    3, 40           ;"0)@  @"
+001541:  504145400005  hrl      3, 400005(5)    ;"HAE@ %"
+001542:  202145400010  movem    3, 400010(5)    ;"01E@ ("
+001543:  254000000354  jrst     354             ;"5@  #L"
+001544:  607240020000  tlnn     5, 20000        ;"PZ@"  "
+001545:  260740001751  pushj    17, 1751        ;"6'@ /I"
+001546:  361200001777  sojl     4, 1777         ;">*  /_"
+001547:  134045400004  ildb     1, 400004(5)    ;"+@E@ $"
+001550:  607240010000  tlnn     5, 10000        ;"PZ@!  "
+001551:  254000000354  jrst     354             ;"5@  #L"
+001552:  200145400011  move     3, 400011(5)    ;"0!E@ )"
+001553:  274145400007  sub      3, 400007(5)    ;"7AE@ '"
+001554:  322140001565  jumpe    3, 1565         ;":1@ -U"
+001555:  554105400010  hlrz     2, 400010(5)    ;"MA%@ ("
+001556:  274100000003  sub      2, 3            ;"7A   #"
+001557:  323100000354  jumple   2, 354          ;":9  #L"
+001560:  504040000002  hrl      1, 2            ;"H@@  ""
+001561:  202045400010  movem    1, 400010(5)    ;"00E@ ("
+001562:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001563:  661240010000  tlo      5, 10000        ;"V*@!  "
+001564:  254000000354  jrst     354             ;"5@  #L"
+001565:  542045400010  hrrm     1, 400010(5)    ;"L0E@ ("
+001566:  254000000354  jrst     354             ;"5@  #L"
+001567:  627240020000  tlzn     5, 20000        ;"RZ@"  "
+001570:  260740001751  pushj    17, 1751        ;"6'@ /I"
+001571:  607240010000  tlnn     5, 10000        ;"PZ@!  "
+001572:  254000000354  jrst     354             ;"5@  #L"
+001573:  200145400011  move     3, 400011(5)    ;"0!E@ )"
+001574:  274145400007  sub      3, 400007(5)    ;"7AE@ '"
+001575:  554105400010  hlrz     2, 400010(5)    ;"MA%@ ("
+001576:  274100000003  sub      2, 3            ;"7A   #"
+001577:  323100001611  jumple   2, 1611         ;":9  .)"
+001600:  200045400006  move     1, 400006(5)    ;"0 E@ &"
+001601:  261740000001  push     17, 1           ;"6/@  !"
+001602:  261740000002  push     17, 2           ;"6/@  ""
+001603:  550145400010  hrrz     3, 400010(5)    ;"M!E@ ("
+001604:  136140000001  idpb     3, 1            ;"+Q@  !"
+001605:  367100001604  sojg     2, 1604         ;">Y  .$"
+001606:  262740000002  pop      17, 2           ;"67@  ""
+001607:  262740000001  pop      17, 1           ;"67@  !"
+001610:  260740002023  pushj    17, 2023        ;"6'@ 03"
+001611:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001612:  254000000354  jrst     354             ;"5@  #L"
+001613:  274105400007  sub      2, 400007(5)    ;"7A%@ '"
+001614:  323101000000  jumple   2, (1)          ;":9!   "
+001615:  271100000004  addi     2, 4            ;"7)   $"
+001616:  231100000005  idivi    2, 5            ;"3)   %"
+001617:  201140000005  movei    3, 5            ;"0)@  %"
+001620:  220140000002  imul     3, 2            ;"2!@  ""
+001621:  272145400011  addm     3, 400011(5)    ;"71E@ )"
+001622:  272145400007  addm     3, 400007(5)    ;"71E@ '"
+001623:  261740022045  push     17, 22045       ;"6/@"0E"
+001624:  367100001623  sojg     2, 1623         ;">Y  .3"
+001625:  254001000000  jrst     (1)             ;"5@!   "
+001626:  261740000002  push     17, 2           ;"6/@  ""
+001627:  200105400011  move     2, 400011(5)    ;"0!%@ )"
+001630:  200140000002  move     3, 2            ;"0!@  ""
+001631:  250145400007  exch     3, 400007(5)    ;"5!E@ '"
+001632:  274100000003  sub      2, 3            ;"7A   #"
+001633:  322100001642  jumpe    2, 1642         ;":1  .B"
+001634:  261740000001  push     17, 1           ;"6/@  !"
+001635:  201045400012  movei    1, 400012(5)    ;"0(E@ *"
+001636:  505040440700  hrli     1, 440700       ;"HH@D' "
+001637:  202045400006  movem    1, 400006(5)    ;"00E@ &"
+001640:  260740002023  pushj    17, 2023        ;"6'@ 03"
+001641:  262740000001  pop      17, 1           ;"67@  !"
+001642:  621240010000  tlz      5, 10000        ;"R*@!  "
+001643:  262740000002  pop      17, 2           ;"67@  ""
+001644:  263740000000  popj     17,             ;"6?@   "
+001645:  201140000015  movei    3, 15           ;"0)@  -"
+001646:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+001647:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+001650:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001651:  201140000012  movei    3, 12           ;"0)@  *"
+001652:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+001653:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+001654:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001655:  263740000000  popj     17,             ;"6?@   "
+001656:  325100001663  jumpge   2, 1663         ;":I  .S"
+001657:  201140000055  movei    3, 55           ;"0)@  M"
+001660:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+001661:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+001662:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001663:  230100000001  idiv     2, 1            ;"3!   !"
+001664:  214100000002  movm     2, 2            ;"1A   ""
+001665:  214140000003  movm     3, 3            ;"1A@  #"
+001666:  271140000060  addi     3, 60           ;"7)@  P"
+001667:  303140000071  caile    3, 71           ;"89@  Y"
+001670:  271140000007  addi     3, 7            ;"7)@  '"
+001671:  322100001676  jumpe    2, 1676         ;":1  .^"
+001672:  506157000000  hrlm     3, (17)         ;"HQO   " "QFx\0\0"
+001673:  230100000001  idiv     2, 1            ;"3!   !"
+001674:  260740001666  pushj    17, 1666        ;"6'@ .V"
+001675:  554157000000  hlrz     3, (17)         ;"MAO   "
+001676:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+001677:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+001700:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001701:  263740000000  popj     17,             ;"6?@   "
+001702:  322040001714  jumpe    1, 1714         ;":0@ /,"
+001703:  135140022061  ldb      3, 22061        ;"+I@"0Q"
+001704:  271140000040  addi     3, 40           ;"7)@  @"
+001705:  603240400000  tlne     5, 400000       ;"P:@@  "
+001706:  254000001715  jrst     1715            ;"5@  /-"
+001707:  136145400006  idpb     3, 400006(5)    ;"+QE@ &"
+001710:  377005400007  sosg     0, 400007(5)    ;"?X%@ '"
+001711:  260740001626  pushj    17, 1626        ;"6'@ .6"
+001712:  242040000006  lsh      1, 6            ;"40@  &"
+001713:  326040001703  jumpn    1, 1703         ;":P@ /#"
+001714:  263740000000  popj     17,             ;"6?@   "
+001715:  301140000101  cail     3, 101          ;"8)@ !!"
+001716:  303140000132  caile    3, 132          ;"89@ !:"
+001717:  254000001707  jrst     1707            ;"5@  /'"
+001720:  271140000040  addi     3, 40           ;"7)@  @"
+001721:  254000001707  jrst     1707            ;"5@  /'"
+001722:  200140000001  move     3, 1            ;"0!@  !"
+001723:  250045400006  exch     1, 400006(5)    ;"5 E@ &"
+001724:  335000000001  skipge   0, 1            ;";H   !"
+001725:  274040022062  sub      1, 22062        ;"7@@"0R"
+001726:  274140000001  sub      3, 1            ;"7A@  !"
+001727:  322140001714  jumpe    3, 1714         ;":1@ /,"
+001730:  135100022042  ldb      2, 22042        ;"+I "0B"
+001731:  221140000005  imuli    3, 5            ;"2)@  %"
+001732:  221100000067  imuli    2, 67           ;"2)   W"
+001733:  242100000036  lsh      2, 36           ;"41   >"
+001734:  240100777742  ash      2, 777742       ;"4! __B"
+001735:  275103000000  subi     2, (3)          ;"7I#   "
+001736:  272105400007  addm     2, 400007(5)    ;"71%@ '"
+001737:  263740000000  popj     17,             ;"6?@   "
+001740:  043200001742  .value   1742            ;"$:  /B"
+001741:  254000001740  jrst     1740            ;"5@  /@"
+001742:  350672567310  aos      15, @567310(12) ;"=&ZN[(" ":\033Und"
+001743:  627155167312  tlzn     3, 167312(15)   ;"RYM.[*" "efine"
+001744:  621014667744  tlz      0, 667744(14)   ;"R(,V_D" "d for"
+001745:  667036420336  tlon     0, @420336(16)  ;"VX>B#>" "mat o"
+001746:  703136260750  blko     30, @260750(16) ;"X9>6'H" "perat"
+001747:  677445615432  tson     11, 615432(5)   ;"W\EQL:" "or.\033\r"
+001750:  050000000000                           ;"%     " "\n\0\0\0\0"
+001751:  043200001753  .value   1753            ;"$:  /K"
+001752:  254000001751  jrst     1751            ;"5@  /I"
+001753:  350670260710  aos      15, @260710(10) ;"=&X6'(" ":\033Bad"
+001754:  203074166330  moves    1, @166330(14)  ;"08\.S8" " call"
+001755:  203515720314  moves    12, 720314(15)  ;"0=-Z#," " to f"
+001756:  677455560750  tson     11, 560750(15)  ;"W\MN'H" "ormat"
+001757:  203376062744  moves    7, @62744(16)   ;"0;^&7D" " oper"
+001760:  607515771134  tlnn     12, 771134(15)  ;"P]-_)<" "ator."
+001761:  154321200000  fsbr     6, @200000(1)   ;"-C10  " "\033\r\n\0\0"
+001762:  043200001764  .value   1764            ;"$:  /T"
+001763:  254000001762  jrst     1762            ;"5@  /R"
+001764:  350671166330  aos      15, @166330(11) ;"=&Y.S8" ":\033Ill"
+001765:  627174166100  tlzn     3, @166100(14)  ;"RY\.Q " "egal "
+001766:  633376266702  tsze     7, @266702(16)  ;"S;^6W"" "forma"
+001767:  721015770312  iordbq   0, 770312(15)   ;"Z(-_#*" "t ope"
+001770:  713036464736  iowr     0, @464736(16)  ;"Y8>FG>" "ratio"
+001771:  671014472744  tso      0, 472744(14)   ;"W(,G7D" "n dur"
+001772:  647354720324  tlcn     7, 720324(14)   ;"T[LZ#4" "ing j"
+001773:  727476464714  datai    274, @464714(16);"Z\^FG," "ustif"
+001774:  647074172322  tlcn     1, @172322(14)  ;"TX\/32" "icati"
+001775:  677345615432  tson     7, 615432(5)    ;"W[EQL:" "on.\033\r"
+001776:  050000000000                           ;"%     " "\n\0\0\0\0"
+001777:  043200002001  .value   2001            ;"$:  0!"
+002000:  254000001777  jrst     1777            ;"5@  /_"
+002001:  350670667744  aos      15, @667744(10) ;"=&XV_D" ":\033For"
+002002:  667036420346  tlon     0, @420346(16)  ;"VX>B#F" "mat s"
+002003:  723455167316  iowrb    11, 167316(15)  ;"Z<M.[." "tring"
+002004:  203514571332  moves    12, 571332(14)  ;"0=,O+:" " term"
+002005:  647354172312  tlcn     7, 172312(14)   ;"T[L/3*" "inate"
+002006:  621016567312  tlz      0, 567312(16)   ;"R(.N[*" "d une"
+002007:  743414561750  blki     434, 561750(14) ;"\<,N/H" "xpect"
+002010:  627115474534  tlzn     2, 474534(15)   ;"RY-GE<" "edly."
+002011:  154321200000  fsbr     6, @200000(1)   ;"-C10  " "\033\r\n\0\0"
+002012:  043200002014  .value   2014            ;"$:  0,"
+002013:  254000002012  jrst     2012            ;"5@  0*"
+002014:  350670667744  aos      15, @667744(10) ;"=&XV_D" ":\033For"
+002015:  667036420344  tlon     0, @420344(16)  ;"VX>B#D" "mat r"
+002016:  607344067752  tlnn     7, 67752(4)     ;"P[D&_J" "an ou"
+002017:  721015763100  iordbq   0, 763100(15)   ;"Z(-^9 " "t of "
+002020:  607454772732  tlnn     11, 772732(14)  ;"P\L_7:" "argum"
+002021:  627356471534  tlzn     7, 471534(16)   ;"R[NG-<" "ents."
+002022:  154321200000  fsbr     6, @200000(1)   ;"-C10  " "\033\r\n\0\0"
+002023:  043000022063  .call    [setz
+                                 SIXBIT/SIOT  /
+                                 201000000002
+                                 000000000001
+                                 400000000002]
+                                                ;"$8 "0S"
+002024:  043100001000  .lose    1000            ;"$9  ( "
+002025:  263740000000  popj     17,             ;"6?@   "
+002026:  261740000001  push     17, 1           ;"6/@  !"
+002027:  261740000002  push     17, 2           ;"6/@  ""
+002030:  261740000003  push     17, 3           ;"6/@  #"
+002031:  261740022070  push     17, 22070       ;"6/@"0X"
+002032:  254037777774  jrst     @777774(17)     ;"5@?__\"
+002033:  262740000003  pop      17, 3           ;"67@  #"
+002034:  262740000002  pop      17, 2           ;"67@  ""
+002035:  262740000001  pop      17, 1           ;"67@  !"
+002036:  262757000000  pop      17, (17)        ;"67O   " ",^x\0\0"
+002037:  263740000000  popj     17,             ;"6?@   "
+002040:  043300000012  .core    12              ;"$;   *"
+002041:  043100000000  .lose    0               ;"$9    "
+002042:  200740022071  move     17, 22071       ;"0'@"0Y"
+002043:  041040022072  .open    1, 22072        ;"$(@"0Z"
+002044:  043100000000  .lose    0               ;"$9    "
+002045:  041100022075  .open    2, 22075        ;"$) "0]"
+002046:  043100000000  .lose    0               ;"$9    "
+002047:  041140022100  .open    3, 22100        ;"$)@"1 "
+002050:  043100000000  .lose    0               ;"$9    "
+002051:  200340022103  move     7, 22103        ;"0#@"1#"
+002052:  042340000073  .eval    7,              ;"$3@  ["
+002053:  043100000000  .lose    0               ;"$9    "
+002054:  202340005651  movem    7, 5651         ;"03@ NI"
+002055:  200340022104  move     7, 22104        ;"0#@"1$"
+002056:  042340000073  .eval    7,              ;"$3@  ["
+002057:  043100000000  .lose    0               ;"$9    "
+002060:  202340005653  movem    7, 5653         ;"03@ NK"
+002061:  200340022105  move     7, 22105        ;"0#@"1%"
+002062:  042340000073  .eval    7,              ;"$3@  ["
+002063:  043100000000  .lose    0               ;"$9    "
+002064:  202340005654  movem    7, 5654         ;"03@ NL"
+002065:  200340022106  move     7, 22106        ;"0#@"1&"
+002066:  042340000073  .eval    7,              ;"$3@  ["
+002067:  043100000000  .lose    0               ;"$9    "
+002070:  202340005655  movem    7, 5655         ;"03@ NM"
+002071:  201340002000  movei    7, 2000         ;"0+@ 0 "
+002072:  230340005651  idiv     7, 5651         ;"3#@ NI"
+002073:  202340005652  movem    7, 5652         ;"03@ NJ"
+002074:  200340022107  move     7, 22107        ;"0#@"1'"
+002075:  042340000073  .eval    7,              ;"$3@  ["
+002076:  043100000000  .lose    0               ;"$9    "
+002077:  515347000000  hrlzi    7, (7)          ;"IKG   " "S.8\0\0"
+002100:  541340003476  hrri     7, 3476         ;"L+@ <^"
+002101:  042340000025  .getloc  7,              ;"$3@  5"
+002102:  260740002237  pushj    17, 2237        ;"6'@ 2?"
+002103:  254000002400  jrst     2400            ;"5@  4 "
+002104:  200740022071  move     17, 22071       ;"0'@"0Y"
+002105:  260740022112  pushj    17, 22112       ;"6'@"1*"
+002106:  254000002110  jrst     2110            ;"5@  1("
+002107:  260740022120  pushj    17, 22120       ;"6'@"10"
+002110:  201040022130  movei    1, 22130        ;"0(@"18"
+002111:  260740003136  pushj    17, 3136        ;"6'@ 9>"
+002112:  254000002107  jrst     2107            ;"5@  1'"
+002113:  254000002132  jrst     2132            ;"5@  1:"
+002114:  002400022134                           ;" 4 "1<"
+002115:  002157022143                           ;" 1O"1C"
+002116:  002141022153                           ;" 1A"1K"
+002117:  002147022156                           ;" 1G"1N"
+002120:  002140022161                           ;" 1@"1Q"
+002121:  002546022165                           ;" 5F"1U"
+002122:  002553022174                           ;" 5K"1\"
+002123:  435045435300  ori      1, 435300(5)    ;"CHECK " "G\",:`"
+002124:  436245416445  orm      5, 416445(5)    ;"CREATE"
+002125:  504554600000  hrl      13, 600000(14)  ;"HELP  "
+002126:  604143530000  trna     3, 530000(3)    ;"PACK  "
+002127:  616551640000  tdnn     13, 640000(11)  ;"QUIT  " "cVN@\0"
+002130:  624541440000  trza     13, 440000(1)   ;"READ  "
+002131:  676251644500  tdon     5, 644500(11)   ;"WRITE " "oJNI "
+002132:  205100777771  movsi    2, 777771       ;"0I __Y"
+002133:  312042002123  came     1, 2123(2)      ;"90B 13"
+002134:  253100002133  aobjn    2, 2133         ;"59  1;"
+002135:  325100002107  jumpge   2, 2107         ;":I  1'"
+002136:  554302002114  hlrz     6, 2114(2)      ;"MC" 1,"
+002137:  254006000000  jrst     (6)             ;"5@&   "
+002140:  042040000033  .logout  1,              ;"$0@  ;"
+002141:  260740022210  pushj    17, 22210       ;"6'@"2("
+002142:  205040777771  movsi    1, 777771       ;"0H@__Y"
+002143:  560301002114  hrro     6, 2114(1)      ;"N#! 1,"
+002144:  260740022217  pushj    17, 22217       ;"6'@"2/"
+002145:  253040002143  aobjn    1, 2143         ;"58@ 1C"
+002146:  254000002110  jrst     2110            ;"5@  1("
+002147:  200040022240  move     1, 22240        ;"0 @"2@"
+002150:  260740003101  pushj    17, 3101        ;"6'@ 9!"
+002151:  254000002147  jrst     2147            ;"5@  1G"
+002152:  301040010000  cail     1, 10000        ;"8(@!  "
+002153:  254000002147  jrst     2147            ;"5@  1G"
+002154:  202040003476  movem    1, 3476         ;"00@ <^"
+002155:  260740002237  pushj    17, 2237        ;"6'@ 2?"
+002156:  254000002400  jrst     2400            ;"5@  4 "
+002157:  260740002251  pushj    17, 2251        ;"6'@ 2I"
+002160:  254000022245  jrst     22245           ;"5@ "2E"
+002161:  042400000007  .close   10,             ;"$4   '"
+002162:  260740022257  pushj    17, 22257       ;"6'@"2O"
+002163:  254000002110  jrst     2110            ;"5@  1("
+002164:  402000005662  setzm    5662            ;"@0  NR"
+002165:  200340022264  move     7, 22264        ;"0#@"2T"
+002166:  251340007661  blt      7, 7661         ;"5+@ ^Q"
+002167:  043000022266  .call    [setz
+                                 SIXBIT/OPEN  /
+                                 000000022265
+                                 000000022033
+                                 000000022034
+                                 000000022035
+                                 400000022036]
+                                                ;"$8 "2V"
+002170:  043100001400  .lose    1400            ;"$9  , "
+002171:  201300000011  movei    6, 11           ;"0+   )"
+002172:  200340022275  move     7, 22275        ;"0#@"2]"
+002173:  040400000007  .iot     10, 7           ;"$$   '"
+002174:  367300002172  sojg     6, 2172         ;">[  1Z"
+002175:  043000022276  .call    [setz
+                                 SIXBIT/FINISH/
+                                 601000000010]
+                                                ;"$8 "2^"
+002176:  043100001000  .lose    1000            ;"$9  ( "
+002177:  260740002251  pushj    17, 2251        ;"6'@ 2I"
+002200:  043105001000  .lose    1000(5)         ;"$9% ( "
+002201:  260740002355  pushj    17, 2355        ;"6'@ 3M"
+002202:  254000022304  jrst     22304           ;"5@ "3$"
+002203:  260740002215  pushj    17, 2215        ;"6'@ 2-"
+002204:  205240777774  movsi    5, 777774       ;"0J@__\"
+002205:  550045002422  hrrz     1, 2422(5)      ;"M E 42"
+002206:  275040024000  subi     1, 24000        ;"7H@"@ "
+002207:  260740002442  pushj    17, 2442        ;"6'@ 4B"
+002210:  554105002422  hlrz     2, 2422(5)      ;"MA% 42"
+002211:  202042000000  movem    1, (2)          ;"00B   "
+002212:  253240002205  aobjn    5, 2205         ;"5:@ 2%"
+002213:  260740002225  pushj    17, 2225        ;"6'@ 25"
+002214:  254000002110  jrst     2110            ;"5@  1("
+002215:  261740000001  push     17, 1           ;"6/@  !"
+002216:  201340005643  movei    7, 5643         ;"0+@ NC"
+002217:  260740022316  pushj    17, 22316       ;"6'@"3."
+002220:  201040001000  movei    1, 1000         ;"0(@ ( "
+002221:  260740002442  pushj    17, 2442        ;"6'@ 4B"
+002222:  260740022332  pushj    17, 22332       ;"6'@"3:"
+002223:  262740000001  pop      17, 1           ;"67@  !"
+002224:  263740000000  popj     17,             ;"6?@   "
+002225:  043000022340  .call    [setz
+                                 SIXBIT/DSKUPD/
+                                 601000000010]
+                                                ;"$8 "3@"
+002226:  043100001000  .lose    1000            ;"$9  ( "
+002227:  043000022343  .call    [setz
+                                 SIXBIT/SREAPB/
+                                 201000000010
+                                 601000000001]
+                                                ;"$8 "3C"
+002230:  043100001000  .lose    1000            ;"$9  ( "
+002231:  200300005650  move     6, 5650         ;"0#  NH"
+002232:  254000002235  jrst     2235            ;"5@  2="
+002233:  043000022347  .call    [setz
+                                 SIXBIT/PGWRIT/
+                                 601006000012]
+                                                ;"$8 "3G"
+002234:  043100001000  .lose    1000            ;"$9  ( "
+002235:  365300002233  sojge    6, 2233         ;">K  2;"
+002236:  263740000000  popj     17,             ;"6?@   "
+002237:  261740000001  push     17, 1           ;"6/@  !"
+002240:  261740000002  push     17, 2           ;"6/@  ""
+002241:  200040003476  move     1, 3476         ;"0 @ <^"
+002242:  200100022352  move     2, 22352        ;"0! "3J"
+002243:  260740003071  pushj    17, 3071        ;"6'@ 8Y"
+002244:  202100022033  movem    2, 22033        ;"01 "0;"
+002245:  202100022035  movem    2, 22035        ;"01 "0="
+002246:  262740000002  pop      17, 2           ;"67@  ""
+002247:  262740000001  pop      17, 1           ;"67@  !"
+002250:  263740000000  popj     17,             ;"6?@   "
+002251:  043000022354  .call    [setz
+                                 SIXBIT/OPEN  /
+                                 000000022353
+                                 203000000005
+                                 000000022033
+                                 000000022034
+                                 000000022035
+                                 400000022036]
+                                                ;"$8 "3L"
+002252:  263740000000  popj     17,             ;"6?@   "
+002253:  043000022367  .call    [setz
+                                 SIXBIT/OPEN  /
+                                 000000022364
+                                 000000022033
+                                 000000022365
+                                 000000022366
+                                 400000022036]
+                                                ;"$8 "3W"
+002254:  043100001400  .lose    1400            ;"$9  , "
+002255:  200300022376  move     6, 22376        ;"0# "3^"
+002256:  040200000006  .iot     4, 6            ;"$"   &"
+002257:  042200000007  .close   4,              ;"$2   '"
+002260:  043000022377  .call    [setz
+                                 SIXBIT/FILLEN/
+                                 201000000010
+                                 602000000006]
+                                                ;"$8 "3_"
+002261:  043100001000  .lose    1000            ;"$9  ( "
+002262:  271300001777  addi     6, 1777         ;"7+  /_"
+002263:  242300777766  lsh      6, 777766       ;"43 __V"
+002264:  301300000011  cail     6, 11           ;"8+   )"
+002265:  303300000144  caile    6, 144          ;"8;  !D"
+002266:  254000022403  jrst     22403           ;"5@ "4#"
+002267:  202300005650  movem    6, 5650         ;"03  NH"
+002270:  210300000006  movn     6, 6            ;"1#   &"
+002271:  514300000006  hrlz     6, 6            ;"IC   &"
+002272:  541300000012  hrri     6, 12           ;"L+   *"
+002273:  043000022405  .call    [setz
+                                 SIXBIT/CORBLK/
+                                 201000110000
+                                 201000777777
+                                 000000000006
+                                 601000000010]
+                                                ;"$8 "4%"
+002274:  043100001000  .lose    1000            ;"$9  ( "
+002275:  201340005643  movei    7, 5643         ;"0+@ NC"
+002276:  043000022413  .call    [setz
+                                 SIXBIT/RFNAME/
+                                 201000000010
+                                 202007000000
+                                 202007000001
+                                 202007000002
+                                 602007000003]
+                                                ;"$8 "4+"
+002277:  043100001000  .lose    1000            ;"$9  ( "
+002300:  043000022422  .call    [setz
+                                 SIXBIT/FILBLK/
+                                 201000000010
+                                 202000000006
+                                 202000000006
+                                 602000000006]
+                                                ;"$8 "42"
+002301:  043100001000  .lose    1000            ;"$9  ( "
+002302:  135340022430  ldb      7, 22430        ;"+K@"48"
+002303:  202340005647  movem    7, 5647         ;"03@ NG"
+002304:  350017000000  aos      0, (17)         ;"= /   "
+002305:  261740000002  push     17, 2           ;"6/@  ""
+002306:  261740000003  push     17, 3           ;"6/@  #"
+002307:  261740000004  push     17, 4           ;"6/@  $"
+002310:  135100022431  ldb      2, 22431        ;"+I "49"
+002311:  231100000006  idivi    2, 6            ;"3)   &"
+002312:  270103022432  add      2, 22432(3)     ;"7!#"4:"
+002313:  475140000000  setoi    3,              ;"GI@   " "O&\0\0\0"
+002314:  401200000000  setzi    4,              ;"@*    " "@(\0\0\0"
+002315:  134300000002  ildb     6, 2            ;"+C   ""
+002316:  322300002351  jumpe    6, 2351         ;":3  3I"
+002317:  307300000014  caig     6, 14           ;"8[   ,"
+002320:  254000002336  jrst     2336            ;"5@  3>"
+002321:  305300000037  caige    6, 37           ;"8K   ?"
+002322:  254000002345  jrst     2345            ;"5@  3E"
+002323:  307300000037  caig     6, 37           ;"8[   ?"
+002324:  254000002315  jrst     2315            ;"5@  3-"
+002325:  401140000000  setzi    3,              ;"@)@   " "@&\0\0\0"
+002326:  137300022440  dpb      6, 22440        ;"+[ "4@"
+002327:  134300000002  ildb     6, 2            ;"+C   ""
+002330:  137300022441  dpb      6, 22441        ;"+[ "4A"
+002331:  134300000002  ildb     6, 2            ;"+C   ""
+002332:  137300022442  dpb      6, 22442        ;"+[ "4B"
+002333:  202144005477  movem    3, 5477(4)      ;"01D L_"
+002334:  350000000003  aos      0, 3            ;"=    #"
+002335:  344200002315  aoja     4, 2315         ;"<B  3-"
+002336:  335000000003  skipge   0, 3            ;";H   #"
+002337:  043100000000  .lose    0               ;"$9    "
+002340:  202144005477  movem    3, 5477(4)      ;"01D L_"
+002341:  350000000003  aos      0, 3            ;"=    #"
+002342:  350000000004  aos      0, 4            ;"=    $"
+002343:  367300002340  sojg     6, 2340         ;">[  3@"
+002344:  254000002315  jrst     2315            ;"5@  3-"
+002345:  335000000003  skipge   0, 3            ;";H   #"
+002346:  043100000000  .lose    0               ;"$9    "
+002347:  271146777764  addi     3, 777764(6)    ;"7)F__T"
+002350:  254000002333  jrst     2333            ;"5@  3;"
+002351:  262740000004  pop      17, 4           ;"67@  $"
+002352:  262740000003  pop      17, 3           ;"67@  #"
+002353:  262740000002  pop      17, 2           ;"67@  ""
+002354:  263740000000  popj     17,             ;"6?@   "
+002355:  200300005500  move     6, 5500         ;"0#  M "
+002356:  200340022443  move     7, 22443        ;"0#@"4C"
+002357:  350000000006  aos      0, 6            ;"=    &"
+002360:  316307005477  camn     6, 5477(7)      ;"9S' L_"
+002361:  253340002357  aobjn    7, 2357         ;"5;@ 3O"
+002362:  321340000101  jumpl    7, 101          ;":+@ !!"
+002363:  261740000001  push     17, 1           ;"6/@  !"
+002364:  261740000002  push     17, 2           ;"6/@  ""
+002365:  200040005500  move     1, 5500         ;"0 @ M "
+002366:  260740002466  pushj    17, 2466        ;"6'@ 4V"
+002367:  135100022444  ldb      2, 22444        ;"+I "4D"
+002370:  200040005505  move     1, 5505         ;"0 @ M%"
+002371:  260740002466  pushj    17, 2466        ;"6'@ 4V"
+002372:  135040022444  ldb      1, 22444        ;"+H@"4D"
+002373:  316040000002  camn     1, 2            ;"9P@  ""
+002374:  350017777776  aos      0, 777776(17)   ;"= /__^"
+002375:  262740000002  pop      17, 2           ;"67@  ""
+002376:  262740000001  pop      17, 1           ;"67@  !"
+002377:  263740000000  popj     17,             ;"6?@   "
+002400:  260740002251  pushj    17, 2251        ;"6'@ 2I"
+002401:  254000022460  jrst     22460           ;"5@ "4P"
+002402:  260740002215  pushj    17, 2215        ;"6'@ 2-"
+002403:  200340003476  move     7, 3476         ;"0#@ <^"
+002404:  312340005647  came     7, 5647         ;"93@ NG"
+002405:  260740022502  pushj    17, 22502       ;"6'@"5""
+002406:  260740002355  pushj    17, 2355        ;"6'@ 3M"
+002407:  260740022525  pushj    17, 22525       ;"6'@"55"
+002410:  205240777774  movsi    5, 777774       ;"0J@__\"
+002411:  550045002422  hrrz     1, 2422(5)      ;"M E 42"
+002412:  275040024000  subi     1, 24000        ;"7H@"@ "
+002413:  260740002442  pushj    17, 2442        ;"6'@ 4B"
+002414:  200140000001  move     3, 1            ;"0!@  !"
+002415:  554105002422  hlrz     2, 2422(5)      ;"MA% 42"
+002416:  560045002426  hrro     1, 2426(5)      ;"N E 46"
+002417:  260740002432  pushj    17, 2432        ;"6'@ 4:"
+002420:  253240002411  aobjn    5, 2411         ;"5:@ 4)"
+002421:  254000002110  jrst     2110            ;"5@  1("
+002422:  025002026000                           ;""H""P "
+002423:  025004042000                           ;""H$$0 "
+002424:  025006043000                           ;""H&$8 "
+002425:  025012044000                           ;""H*$@ "
+002426:  000000022532                           ;"   "5:"
+002427:  000000022537                           ;"   "5?"
+002430:  000000022545                           ;"   "5E"
+002431:  000000022553                           ;"   "5K"
+002432:  316142000000  camn     3, (2)          ;"9QB   "
+002433:  263740000000  popj     17,             ;"6?@   "
+002434:  260740022564  pushj    17, 22564       ;"6'@"5T"
+002435:  200040022603  move     1, 22603        ;"0 @"6#"
+002436:  260740003021  pushj    17, 3021        ;"6'@ 81"
+002437:  263740000000  popj     17,             ;"6?@   "
+002440:  202142000000  movem    3, (2)          ;"01B   "
+002441:  254000002225  jrst     2225            ;"5@  25"
+002442:  261740000002  push     17, 2           ;"6/@  ""
+002443:  261740000003  push     17, 3           ;"6/@  #"
+002444:  231040002000  idivi    1, 2000         ;"3(@ 0 "
+002445:  230100005652  idiv     2, 5652         ;"3!  NJ"
+002446:  332000000003  skipe    0, 3            ;";0   #"
+002447:  043100000000  .lose    0               ;"$9    "
+002450:  200301005477  move     6, 5477(1)      ;"0#! L_"
+002451:  311300005653  caml     6, 5653         ;"9+  NK"
+002452:  043100000000  .lose    0               ;"$9    "
+002453:  401040000000  setzi    1,              ;"@(@   " "@\"\0\0\0"
+002454:  230300005654  idiv     6, 5654         ;"3#  NL"
+002455:  137300022444  dpb      6, 22444        ;"+[ "4D"
+002456:  220340005651  imul     7, 5651         ;"2#@ NI"
+002457:  270100000007  add      2, 7            ;"7!   '"
+002460:  230100005655  idiv     2, 5655         ;"3!  NM"
+002461:  137100022604  dpb      2, 22604        ;"+Y "6$"
+002462:  137140022605  dpb      3, 22605        ;"+Y@"6%"
+002463:  262740000003  pop      17, 3           ;"67@  #"
+002464:  262740000002  pop      17, 2           ;"67@  ""
+002465:  263740000000  popj     17,             ;"6?@   "
+002466:  200300000001  move     6, 1            ;"0#   !"
+002467:  311300005653  caml     6, 5653         ;"9+  NK"
+002470:  043100000000  .lose    0               ;"$9    "
+002471:  401040000000  setzi    1,              ;"@(@   " "@\"\0\0\0"
+002472:  230300005654  idiv     6, 5654         ;"3#  NL"
+002473:  137300022444  dpb      6, 22444        ;"+[ "4D"
+002474:  200300000007  move     6, 7            ;"0#   '"
+002475:  220300005651  imul     6, 5651         ;"2#  NI"
+002476:  230300005655  idiv     6, 5655         ;"3#  NM"
+002477:  137300022604  dpb      6, 22604        ;"+[ "6$"
+002500:  137340022605  dpb      7, 22605        ;"+[@"6%"
+002501:  263740000000  popj     17,             ;"6?@   "
+002502:  624541445545  trza     13, 445545(1)   ;"README"
+002503:  624155000000  trza     3, (15)         ;"RAM   "
+002504:  426400000000  setam    10, 0           ;"BT    " "EP\0\0\0"
+002505:  426421000000  setam    10, @(1)        ;"BT1   "
+002506:  422200000000  andcmm   4, 0            ;"B2    " "DH\0\0\0"
+002507:  260740022613  pushj    17, 22613       ;"6'@"6+"
+002510:  205240777773  movsi    5, 777773       ;"0J@__["
+002511:  260740022621  pushj    17, 22621       ;"6'@"61"
+002512:  253240002511  aobjn    5, 2511         ;"5:@ 5)"
+002513:  200040022637  move     1, 22637        ;"0 @"6?"
+002514:  260740003136  pushj    17, 3136        ;"6'@ 9>"
+002515:  254000002507  jrst     2507            ;"5@  5'"
+002516:  205240777773  movsi    5, 777773       ;"0J@__["
+002517:  312045002502  came     1, 2502(5)      ;"90E 5""
+002520:  253240002517  aobjn    5, 2517         ;"5:@ 5/"
+002521:  325240002507  jumpge   5, 2507         ;":J@ 5'"
+002522:  263740000000  popj     17,             ;"6?@   "
+002523:  360000000000  soj      0, 0            ;">     " "<\0\0\0\0"
+002524:  624155000000  trza     3, (15)         ;"RAM   "
+002525:  425156000000  setai    3, (16)         ;"BIN   " "E&p\0\0"
+002526:  425156000000  setai    3, (16)         ;"BIN   " "E&p\0\0"
+002527:  425156000000  setai    3, (16)         ;"BIN   " "E&p\0\0"
+002530:  205340446353  movsi    7, 446353       ;"0K@DSK"
+002531:  202340005656  movem    7, 5656         ;"03@ NN"
+002532:  202040005657  movem    1, 5657         ;"00@ NO"
+002533:  200345002523  move     7, 2523(5)      ;"0#E 53"
+002534:  202340005660  movem    7, 5660         ;"03@ NP"
+002535:  043540022640  .suset   22640           ;"$=@"6@"
+002536:  200040000002  move     1, 2            ;"0 @  ""
+002537:  201100005656  movei    2, 5656         ;"0)  NN"
+002540:  254000003036  jrst     3036            ;"5@  8>"
+002541:  022641022643                           ;""6A"6C"
+002542:  022645022647                           ;""6E"6G"
+002543:  022651022653                           ;""6I"6K"
+002544:  022655022657                           ;""6M"6O"
+002545:  022661022663                           ;""6Q"6S"
+002546:  260740002513  pushj    17, 2513        ;"6'@ 5+"
+002547:  200100022675  move     2, 22675        ;"0! "6]"
+002550:  260740002530  pushj    17, 2530        ;"6'@ 58"
+002551:  554305002541  hlrz     6, 2541(5)      ;"MC% 5A"
+002552:  254006000000  jrst     (6)             ;"5@&   "
+002553:  200040022717  move     1, 22717        ;"0 @"7/"
+002554:  260740003021  pushj    17, 3021        ;"6'@ 81"
+002555:  254000002110  jrst     2110            ;"5@  1("
+002556:  260740002513  pushj    17, 2513        ;"6'@ 5+"
+002557:  200100022730  move     2, 22730        ;"0! "78"
+002560:  260740002530  pushj    17, 2530        ;"6'@ 58"
+002561:  550305002541  hrrz     6, 2541(5)      ;"M#% 5A"
+002562:  254006000000  jrst     (6)             ;"5@&   "
+002563:  201140014000  movei    3, 14000        ;"0)@!@ "
+002564:  254000002571  jrst     2571            ;"5@  5Y"
+002565:  201140014000  movei    3, 14000        ;"0)@!@ "
+002566:  254000002602  jrst     2602            ;"5@  6""
+002567:  201140001000  movei    3, 1000         ;"0)@ ( "
+002570:  254000002571  jrst     2571            ;"5@  5Y"
+002571:  043000022734  .call    [setz
+                                 SIXBIT/OPEN  /
+                                 000000022731
+                                 000002000000
+                                 000000022732
+                                 000000022733
+                                 400002000003]
+                                                ;"$8 "7<"
+002572:  043100001400  .lose    1400            ;"$9  , "
+002573:  210300000003  movn     6, 3            ;"1#   #"
+002574:  504200000006  hrl      4, 6            ;"HB   &"
+002575:  040240000004  .iot     5, 4            ;"$"@  $"
+002576:  043000022743  .call    [setz
+                                 SIXBIT/RENMWO/
+                                 201000000005
+                                 000002000001
+                                 400002000002]
+                                                ;"$8 "7C"
+002577:  043100001000  .lose    1000            ;"$9  ( "
+002600:  042240000007  .close   5,              ;"$2@  '"
+002601:  254000002110  jrst     2110            ;"5@  1("
+002602:  043000022750  .call    [setz
+                                 SIXBIT/OPEN  /
+                                 000000022364
+                                 000002000000
+                                 000002000001
+                                 000002000002
+                                 400002000003]
+                                                ;"$8 "7H"
+002603:  043100001400  .lose    1400            ;"$9  , "
+002604:  303140014000  caile    3, 14000        ;"89@!@ "
+002605:  043100000000  .lose    0               ;"$9    "
+002606:  210300000003  movn     6, 3            ;"1#   #"
+002607:  514300000006  hrlz     6, 6            ;"IC   &"
+002610:  541300005662  hrri     6, 5662         ;"L+  NR"
+002611:  040200000006  .iot     4, 6            ;"$"   &"
+002612:  321300022776  jumpl    6, 22776        ;":+ "7^"
+002613:  200300023001  move     6, 23001        ;"0# "8!"
+002614:  040200000006  .iot     4, 6            ;"$"   &"
+002615:  325300023021  jumpge   6, 23021        ;":K "81"
+002616:  515300005662  hrlzi    6, 5662         ;"IK  NR"
+002617:  541304000000  hrri     6, (4)          ;"L+$   " "X, \0\0"
+002620:  271203777777  addi     4, 777777(3)    ;"7*#___"
+002621:  251304000000  blt      6, (4)          ;"5+$   " "*, \0\0"
+002622:  042200000007  .close   4,              ;"$2   '"
+002623:  260740002225  pushj    17, 2225        ;"6'@ 25"
+002624:  254000002110  jrst     2110            ;"5@  1("
+002625:  043000023025  .call    [setz
+                                 SIXBIT/OPEN  /
+                                 000000023024
+                                 000002000000
+                                 000002000001
+                                 000002000002
+                                 400002000003]
+                                                ;"$8 "85"
+002626:  043100001400  .lose    1400            ;"$9  , "
+002627:  040200000001  .iot     4, 1            ;"$"   !"
+002630:  312040023034  came     1, 23034        ;"90@"8<"
+002631:  254000002627  jrst     2627            ;"5@  67"
+002632:  402000005662  setzm    5662            ;"@0  NR"
+002633:  200340022264  move     7, 22264        ;"0#@"2T"
+002634:  251340006661  blt      7, 6661         ;"5+@ VQ"
+002635:  200040023035  move     1, 23035        ;"0 @"8="
+002636:  251040005717  blt      1, 5717         ;"5(@ O/"
+002637:  505040777036  hrli     1, 777036       ;"HH@_X>"
+002640:  040201000000  .iot     4, (1)          ;"$"!   "
+002641:  252040002656  aobjp    1, 2656         ;"50@ 6N"
+002642:  331101777777  skipl    2, 777777(1)    ;";)!___"
+002643:  254000002661  jrst     2661            ;"5@  6Q"
+002644:  200140000002  move     3, 2            ;"0!@  ""
+002645:  040201000000  .iot     4, (1)          ;"$"!   "
+002646:  241140000001  rot      3, 1            ;"4)@  !"
+002647:  270141000000  add      3, (1)          ;"7!A   "
+002650:  252040002656  aobjp    1, 2656         ;"50@ 6N"
+002651:  253100002645  aobjn    2, 2645         ;"59  6E"
+002652:  040201000000  .iot     4, (1)          ;"$"!   "
+002653:  312141000000  came     3, (1)          ;"91A   "
+002654:  254000023055  jrst     23055           ;"5@ "8M"
+002655:  253040002640  aobjn    1, 2640         ;"58@ 6@"
+002656:  260740023073  pushj    17, 23073       ;"6'@"8["
+002657:  042200000007  .close   4,              ;"$2   '"
+002660:  254000002110  jrst     2110            ;"5@  1("
+002661:  202101000000  movem    2, (1)          ;"01!   "
+002662:  505200005662  hrli     4, 5662         ;"HJ  NR"
+002663:  201344000777  movei    7, 777(4)       ;"0+D '_"
+002664:  251207000000  blt      4, (7)          ;"5*'   " "*(8\0\0"
+002665:  042200000007  .close   4,              ;"$2   '"
+002666:  260740002225  pushj    17, 2225        ;"6'@ 25"
+002667:  254000002110  jrst     2110            ;"5@  1("
+002670:  403740002000  setzb    17, 2000        ;"@?@ 0 "
+002671:  120040001032                           ;"* @ (:"
+002672:  251040000777  blt      1, 777          ;"5(@ '_"
+002673:  251100777677  blt      2, 777677       ;"5) _^_"
+002674:  701140001034  wrubr    1034            ;"X)@ (<"
+002675:  205700776700  movsi    16, 776700      ;"0O _W "
+002676:  272700001034  addm     16, 1034        ;"77  (<"
+002677:  401000000000  setzi    0,              ;"@(    " "@ \0\0\0"
+002700:  201740000001  movei    17, 1           ;"0/@  !"
+002701:  251740000017  blt      17, 17          ;"5/@  /"
+002702:  335000001034  skipge   0, 1034         ;";H  (<"
+002703:  254000001004  jrst     1004            ;"5@  ($"
+002704:  205040777036  movsi    1, 777036       ;"0H@_X>"
+002705:  331101001036  skipl    2, 1036(1)      ;";)! (>"
+002706:  254002000000  jrst     (2)             ;"5@"   "
+002707:  252040001031  aobjp    1, 1031         ;"50@ (9"
+002710:  200140000002  move     3, 2            ;"0!@  ""
+002711:  200201001036  move     4, 1036(1)      ;"0"! (>"
+002712:  252040001031  aobjp    1, 1031         ;"50@ (9"
+002713:  202202000000  movem    4, (2)          ;"02"   "
+002714:  241140000001  rot      3, 1            ;"4)@  !"
+002715:  270140000004  add      3, 4            ;"7!@  $"
+002716:  253100001021  aobjn    2, 1021         ;"59  (1"
+002717:  316141001036  camn     3, 1036(1)      ;"9QA (>"
+002720:  253040001015  aobjn    1, 1015         ;"58@ (-"
+002721:  254200001031  halt     1031            ;"5B  (9"
+002722:  000017000020                           ;"  /  0"
+002723:  002000002001                           ;" 0  0!"
+002724:  407700000000  andb     16, 0           ;"@_    " "A|\0\0\0"
+002725:  254000000001  jrst     1               ;"5@   !"
+002726:  043000023101  .call    [setz
+                                 SIXBIT/OPEN  /
+                                 000000023100
+                                 000002000000
+                                 000000022732
+                                 000000022733
+                                 400002000003]
+                                                ;"$8 "9!"
+002727:  043100001400  .lose    1400            ;"$9  , "
+002730:  505200777000  hrli     4, 777000       ;"HJ _X "
+002731:  201140000003  movei    3, 3            ;"0)@  #"
+002732:  254000002736  jrst     2736            ;"5@  7>"
+002733:  040240000001  .iot     5, 1            ;"$"@  !"
+002734:  306040000015  cain     1, 15           ;"8P@  -"
+002735:  040240022046  .iot     5, 22046        ;"$"@"0F"
+002736:  135043023110  ldb      1, 23110(3)     ;"+HC"9("
+002737:  322040002576  jumpe    1, 2576         ;":0@ 5^"
+002740:  365140002733  sojge    3, 2733         ;">I@ 7;"
+002741:  201140000003  movei    3, 3            ;"0)@  #"
+002742:  253200002733  aobjn    4, 2733         ;"5:  7;"
+002743:  260740023135  pushj    17, 23135       ;"6'@"9="
+002744:  042240000007  .close   5,              ;"$2@  '"
+002745:  254000002110  jrst     2110            ;"5@  1("
+002746:  043000023143  .call    [setz
+                                 SIXBIT/OPEN  /
+                                 000000023142
+                                 000002000000
+                                 000002000001
+                                 000002000002
+                                 400002000003]
+                                                ;"$8 "9C"
+002747:  043100001400  .lose    1400            ;"$9  , "
+002750:  402000005662  setzm    5662            ;"@0  NR"
+002751:  200340022264  move     7, 22264        ;"0#@"2T"
+002752:  251340006661  blt      7, 6661         ;"5+@ VQ"
+002753:  200240023152  move     5, 23152        ;"0"@"9J"
+002754:  201140000003  movei    3, 3            ;"0)@  #"
+002755:  254000002762  jrst     2762            ;"5@  7R"
+002756:  306040000177  cain     1, 177          ;"8P@ !_"
+002757:  201040000377  movei    1, 377          ;"0(@ #_"
+002760:  302040000012  caie     1, 12           ;"80@  *"
+002761:  265300002776  jsp      6, 2776         ;"6K  7^"
+002762:  040200000001  .iot     4, 1            ;"$"   !"
+002763:  550040000001  hrrz     1, 1            ;"M @  !"
+002764:  302040000003  caie     1, 3            ;"80@  #"
+002765:  254000002756  jrst     2756            ;"5@  7N"
+002766:  201040000000  movei    1, 0            ;"0(@   " " \"\0\0\0"
+002767:  265300002776  jsp      6, 2776         ;"6K  7^"
+002770:  515300005662  hrlzi    6, 5662         ;"IK  NR"
+002771:  541304000000  hrri     6, (4)          ;"L+$   " "X, \0\0"
+002772:  251304000777  blt      6, 777(4)       ;"5+$ '_"
+002773:  042200000007  .close   4,              ;"$2   '"
+002774:  260740002225  pushj    17, 2225        ;"6'@ 25"
+002775:  254000002110  jrst     2110            ;"5@  1("
+002776:  137043023153  dpb      1, 23153(3)     ;"+XC"9K"
+002777:  365146000000  sojge    3, (6)          ;">IF   " "=&0\0\0"
+003000:  201140000003  movei    3, 3            ;"0)@  #"
+003001:  253246000000  aobjn    5, (6)          ;"5:F   " "*j0\0\0"
+003002:  260740023173  pushj    17, 23173       ;"6'@"9["
+003003:  042200000007  .close   4,              ;"$2   '"
+003004:  254000002110  jrst     2110            ;"5@  1("
+003005:  200340023200  move     7, 23200        ;"0#@": "
+003006:  202340005662  movem    7, 5662         ;"03@ NR"
+003007:  200340022264  move     7, 22264        ;"0#@"2T"
+003010:  251340006661  blt      7, 6661         ;"5+@ VQ"
+003011:  043000023202  .call    [setz
+                                 SIXBIT/OPEN  /
+                                 000000023201
+                                 000002000000
+                                 000002000001
+                                 000002000002
+                                 400002000003]
+                                                ;"$8 ":""
+003012:  043100001400  .lose    1400            ;"$9  , "
+003013:  200340023211  move     7, 23211        ;"0#@":)"
+003014:  040200000007  .iot     4, 7            ;"$"   '"
+003015:  042200000007  .close   4,              ;"$2   '"
+003016:  321340002662  jumpl    7, 2662         ;":+@ 6R"
+003017:  260740023224  pushj    17, 23224       ;"6'@":4"
+003020:  254000002110  jrst     2110            ;"5@  1("
+003021:  261740000001  push     17, 1           ;"6/@  !"
+003022:  260740003136  pushj    17, 3136        ;"6'@ 9>"
+003023:  254000003030  jrst     3030            ;"5@  88"
+003024:  316040023231  camn     1, 23231        ;"9P@":9"
+003025:  254000003033  jrst     3033            ;"5@  8;"
+003026:  316040023232  camn     1, 23232        ;"9P@"::"
+003027:  254000003034  jrst     3034            ;"5@  8<"
+003030:  260740023236  pushj    17, 23236       ;"6'@":>"
+003031:  200057000000  move     1, (17)         ;"0 O   "
+003032:  254000003022  jrst     3022            ;"5@  82"
+003033:  350017777777  aos      0, 777777(17)   ;"= /___"
+003034:  262740000001  pop      17, 1           ;"67@  !"
+003035:  263740000000  popj     17,             ;"6?@   "
+003036:  261740000003  push     17, 3           ;"6/@  #"
+003037:  261740000004  push     17, 4           ;"6/@  $"
+003040:  261740000005  push     17, 5           ;"6/@  %"
+003041:  261740000002  push     17, 2           ;"6/@  ""
+003042:  202040021662  movem    1, 21662        ;"00@".R"
+003043:  202100021663  movem    2, 21663        ;"01 ".S"
+003044:  200040023243  move     1, 23243        ;"0 @":C"
+003045:  201100000764  movei    2, 764          ;"0)  'T"
+003046:  201140023255  movei    3, 23255        ;"0)@":M"
+003047:  260743000000  pushj    17, (3)         ;"6'C   "
+003050:  260740003243  pushj    17, 3243        ;"6'@ :C"
+003051:  262740000002  pop      17, 2           ;"67@  ""
+003052:  200200023243  move     4, 23243        ;"0" ":C"
+003053:  260740000102  pushj    17, 102         ;"6'@ !""
+003054:  262740000005  pop      17, 5           ;"67@  %"
+003055:  262740000004  pop      17, 4           ;"67@  $"
+003056:  262740000003  pop      17, 3           ;"67@  #"
+003057:  263740000000  popj     17,             ;"6?@   "
+003060:  200340000001  move     7, 1            ;"0#@  !"
+003061:  401300000000  setzi    6,              ;"@+    " "@,\0\0\0"
+003062:  246300000006  lshc     6, 6            ;"4S   &"
+003063:  301300000020  cail     6, 20           ;"8+   0"
+003064:  303300000031  caile    6, 31           ;"8;   9"
+003065:  263740000000  popj     17,             ;"6?@   "
+003066:  326340003061  jumpn    7, 3061         ;":S@ 8Q"
+003067:  350017000000  aos      0, (17)         ;"= /   "
+003070:  263740000000  popj     17,             ;"6?@   "
+003071:  200300000002  move     6, 2            ;"0#   ""
+003072:  231040000010  idivi    1, 10           ;"3(@  ("
+003073:  270100000006  add      2, 6            ;"7!   &"
+003074:  322040000101  jumpe    1, 101          ;":0@ !!"
+003075:  241100777772  rot      2, 777772       ;"4) __Z"
+003076:  260740003071  pushj    17, 3071        ;"6'@ 8Y"
+003077:  241100000006  rot      2, 6            ;"4)   &"
+003100:  263740000000  popj     17,             ;"6?@   "
+003101:  261740000002  push     17, 2           ;"6/@  ""
+003102:  261740000003  push     17, 3           ;"6/@  #"
+003103:  202040022032  movem    1, 22032        ;"00@"0:"
+003104:  403140022031  setzb    3, 22031        ;"@9@"09"
+003105:  265100003200  jsp      2, 3200         ;"6I  : "
+003106:  254000003105  jrst     3105            ;"5@  9%"
+003107:  254000003132  jrst     3132            ;"5@  9:"
+003110:  254000003113  jrst     3113            ;"5@  9+"
+003111:  254000003132  jrst     3132            ;"5@  9:"
+003112:  254000003104  jrst     3104            ;"5@  9$"
+003113:  221140000012  imuli    3, 12           ;"2)@  *"
+003114:  271141777720  addi     3, 777720(1)    ;"7)A__0"
+003115:  265100003200  jsp      2, 3200         ;"6I  : "
+003116:  254000003124  jrst     3124            ;"5@  94"
+003117:  254000003132  jrst     3132            ;"5@  9:"
+003120:  254000003113  jrst     3113            ;"5@  9+"
+003121:  254000003132  jrst     3132            ;"5@  9:"
+003122:  350017777776  aos      0, 777776(17)   ;"= /__^"
+003123:  254000003132  jrst     3132            ;"5@  9:"
+003124:  265100003200  jsp      2, 3200         ;"6I  : "
+003125:  254000003124  jrst     3124            ;"5@  94"
+003126:  254000003132  jrst     3132            ;"5@  9:"
+003127:  254000003132  jrst     3132            ;"5@  9:"
+003130:  254000003132  jrst     3132            ;"5@  9:"
+003131:  350017777776  aos      0, 777776(17)   ;"= /__^"
+003132:  200040000003  move     1, 3            ;"0 @  #"
+003133:  262740000003  pop      17, 3           ;"67@  #"
+003134:  262740000002  pop      17, 2           ;"67@  ""
+003135:  263740000000  popj     17,             ;"6?@   "
+003136:  261740000002  push     17, 2           ;"6/@  ""
+003137:  261740000003  push     17, 3           ;"6/@  #"
+003140:  261740000004  push     17, 4           ;"6/@  $"
+003141:  202040022032  movem    1, 22032        ;"00@"0:"
+003142:  402000022031  setzm    22031           ;"@0 "09"
+003143:  200140023260  move     3, 23260        ;"0!@":P"
+003144:  401200000000  setzi    4,              ;"@*    " "@(\0\0\0"
+003145:  265100003200  jsp      2, 3200         ;"6I  : "
+003146:  254000003145  jrst     3145            ;"5@  9E"
+003147:  254000003153  jrst     3153            ;"5@  9K"
+003150:  254000003153  jrst     3153            ;"5@  9K"
+003151:  254000003173  jrst     3173            ;"5@  9["
+003152:  254000003142  jrst     3142            ;"5@  9B"
+003153:  275040000040  subi     1, 40           ;"7H@  @"
+003154:  603140770000  tlne     3, 770000       ;"P9@_  "
+003155:  136040000003  idpb     1, 3            ;"+P@  #"
+003156:  265100003200  jsp      2, 3200         ;"6I  : "
+003157:  254000003165  jrst     3165            ;"5@  9U"
+003160:  254000003153  jrst     3153            ;"5@  9K"
+003161:  254000003153  jrst     3153            ;"5@  9K"
+003162:  254000003173  jrst     3173            ;"5@  9["
+003163:  350017777775  aos      0, 777775(17)   ;"= /__]"
+003164:  254000003173  jrst     3173            ;"5@  9["
+003165:  265100003200  jsp      2, 3200         ;"6I  : "
+003166:  254000003165  jrst     3165            ;"5@  9U"
+003167:  254000003173  jrst     3173            ;"5@  9["
+003170:  254000003173  jrst     3173            ;"5@  9["
+003171:  254000003173  jrst     3173            ;"5@  9["
+003172:  350017777775  aos      0, 777775(17)   ;"= /__]"
+003173:  200040000004  move     1, 4            ;"0 @  $"
+003174:  262740000004  pop      17, 4           ;"67@  $"
+003175:  262740000003  pop      17, 3           ;"67@  #"
+003176:  262740000002  pop      17, 2           ;"67@  ""
+003177:  263740000000  popj     17,             ;"6?@   "
+003200:  260740003223  pushj    17, 3223        ;"6'@ :3"
+003201:  302040000040  caie     1, 40           ;"80@  @"
+003202:  306040000011  cain     1, 11           ;"8P@  )"
+003203:  254002000000  jrst     (2)             ;"5@"   "
+003204:  306040000015  cain     1, 15           ;"8P@  -"
+003205:  254002000004  jrst     4(2)            ;"5@"  $"
+003206:  301040000101  cail     1, 101          ;"8(@ !!"
+003207:  303040000132  caile    1, 132          ;"88@ !:"
+003210:  334000000000  skipa    0, 0            ;";@    " "7\0\0\0\0"
+003211:  254002000001  jrst     1(2)            ;"5@"  !"
+003212:  301040000060  cail     1, 60           ;"8(@  P"
+003213:  303040000071  caile    1, 71           ;"88@  Y"
+003214:  334000000000  skipa    0, 0            ;";@    " "7\0\0\0\0"
+003215:  254002000002  jrst     2(2)            ;"5@"  ""
+003216:  301040000141  cail     1, 141          ;"8(@ !A"
+003217:  303040000172  caile    1, 172          ;"88@ !Z"
+003220:  254002000003  jrst     3(2)            ;"5@"  #"
+003221:  275040000040  subi     1, 40           ;"7H@  @"
+003222:  254002000001  jrst     1(2)            ;"5@"  !"
+003223:  375000022031  sosge    0, 22031        ;"?H "09"
+003224:  254000003227  jrst     3227            ;"5@  :7"
+003225:  134040022030  ildb     1, 22030        ;"+@@"08"
+003226:  263740000000  popj     17,             ;"6?@   "
+003227:  261740000002  push     17, 2           ;"6/@  ""
+003230:  261740000003  push     17, 3           ;"6/@  #"
+003231:  200040023243  move     1, 23243        ;"0 @":C"
+003232:  201100000764  movei    2, 764          ;"0)  'T"
+003233:  200140022032  move     3, 22032        ;"0!@"0:"
+003234:  260743000000  pushj    17, (3)         ;"6'C   "
+003235:  260740003243  pushj    17, 3243        ;"6'@ :C"
+003236:  202040022030  movem    1, 22030        ;"00@"08"
+003237:  202100022031  movem    2, 22031        ;"01 "09"
+003240:  262740000003  pop      17, 3           ;"67@  #"
+003241:  262740000002  pop      17, 2           ;"67@  ""
+003242:  254000003223  jrst     3223            ;"5@  :3"
+003243:  261740000004  push     17, 4           ;"6/@  $"
+003244:  261740000005  push     17, 5           ;"6/@  %"
+003245:  551143000000  hrrzi    3, (3)          ;"M)C   "
+003246:  200200000001  move     4, 1            ;"0"   !"
+003247:  200240000002  move     5, 2            ;"0"@  ""
+003250:  040040000006  .iot     1, 6            ;"$ @  &"
+003251:  306300000177  cain     6, 177          ;"8S  !_"
+003252:  254000003302  jrst     3302            ;"5@  ;""
+003253:  306300000025  cain     6, 25           ;"8S   5"
+003254:  254000003270  jrst     3270            ;"5@  :X"
+003255:  306300000007  cain     6, 7            ;"8S   '"
+003256:  254000002104  jrst     2104            ;"5@  1$"
+003257:  302300000014  caie     6, 14           ;"83   ,"
+003260:  306300000022  cain     6, 22           ;"8S   2"
+003261:  254000003271  jrst     3271            ;"5@  :Y"
+003262:  306300000015  cain     6, 15           ;"8S   -"
+003263:  254000003313  jrst     3313            ;"5@  ;+"
+003264:  377000000005  sosg     0, 5            ;"?X   %"
+003265:  043100000000  .lose    0               ;"$9    "
+003266:  136300000004  idpb     6, 4            ;"+S   $"
+003267:  254000003250  jrst     3250            ;"5@  :H"
+003270:  200240000002  move     5, 2            ;"0"@  ""
+003271:  040100022125  .iot     2, 22125        ;"$! "15"
+003272:  040100022126  .iot     2, 22126        ;"$! "16"
+003273:  260743000000  pushj    17, (3)         ;"6'C   "
+003274:  200200000001  move     4, 1            ;"0"   !"
+003275:  200340000002  move     7, 2            ;"0#@  ""
+003276:  274340000005  sub      7, 5            ;"7C@  %"
+003277:  043000023261  .call    [setz
+                                 SIXBIT/SIOT  /
+                                 201000000003
+                                 000000000004
+                                 400000000007]
+                                                ;"$8 ":Q"
+003300:  043100001000  .lose    1000            ;"$9  ( "
+003301:  254000003250  jrst     3250            ;"5@  :H"
+003302:  350000000005  aos      0, 5            ;"=    %"
+003303:  313240000002  camle    5, 2            ;"9:@  ""
+003304:  254000002104  jrst     2104            ;"5@  1$"
+003305:  270200023266  add      4, 23266        ;"7" ":V"
+003306:  335000000004  skipge   0, 4            ;";H   $"
+003307:  274200022062  sub      4, 22062        ;"7B "0R"
+003310:  040100022125  .iot     2, 22125        ;"$! "15"
+003311:  040100023267  .iot     2, 23267        ;"$! ":W"
+003312:  254000003250  jrst     3250            ;"5@  :H"
+003313:  136300000004  idpb     6, 4            ;"+S   $"
+003314:  275105777777  subi     2, 777777(5)    ;"7I%___"
+003315:  262740000005  pop      17, 5           ;"67@  %"
+003316:  262740000004  pop      17, 4           ;"67@  $"
+003317:  263740000000  popj     17,             ;"6?@   "
+003320:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+003321:  635157640000  tsza     3, 640000(17)   ;"SIOT  " "g&~@\0"
+003322:  201000000002  movei    0, 2            ;"0(   ""
+003323:  200000000006  move     0, 6            ;"0    &"
+003324:  400000000007  setz     0, 7            ;"@    '"
+022033:  777777777777  conso    774, @777777(17);"______"
+022034:  164645466316  fmpr     15, 466316(5)   ;".FEFS."
+022035:  777777777777  conso    774, @777777(17);"______"
+022036:  160000000000  fmp      0, 0            ;".     "
+022037:  000002000002                           ;"  "  ""
+022040:  440640000002  andcb    15, 2           ;"D&@  ""
+022041:  440600000002  andcb    14, 2           ;"D&   ""
+022042:  360600000003  soj      14, 3           ;">&   #"
+022043:  000000000000                           ;"      "
+022044:  000000000062                           ;"     R"
+022045:  576773757676  hlrem    17, @757676(13) ;"OW[]^^" "_____"
+022046:  000000000012                           ;"     *"
+022047:  007346545000                           ;" [FLH "
+022050:  001273000746                           ;" *[ 'F"
+022051:  000003641100                           ;"  #T) "
+022052:  001271000751                           ;" *Y 'I"
+022053:  001267000754                           ;" *W 'L"
+022054:  723200000000  iowrb    4, 0            ;"Z:    " "th\0\0\0"
+022055:  745320000000  consz    450, @0         ;"\K0   " "y-\0\0\0"
+022056:  647136464000  tlcn     2, @464000(16)  ;"TY>F@ " "ieth\0"
+022057:  000000000007                           ;"     '"
+022060:  456262000000  orcam    5, @(2)         ;"ERR   "
+022061:  360600000001  soj      14, 1           ;">&   !"
+022062:  430000000001  xor      0, 1            ;"C    !"
+022063:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022064:  635157640000  tsza     3, 640000(17)   ;"SIOT  " "g&~@\0"
+022065:  201000000002  movei    0, 2            ;"0(   ""
+022066:  000000000001                           ;"     !"
+022067:  400000000002  setz     0, 2            ;"@    ""
+022070:  000000002033                           ;"    0;"
+022071:  777634003324  cono     774, @3324(14)  ;"_^< ;4"
+022072:  000000646471                           ;"   TTY"
+022073:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022074:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022075:  004001646471                           ;" @!TTY"
+022076:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022077:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022100:  000001646471                           ;"  !TTY"
+022101:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022102:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022103:  026325670205                           ;""S5W"%"
+022104:  022431541710                           ;""49L/("
+022105:  022431541725                           ;""49L/5"
+022106:  022675745710                           ;""6]\O("
+022107:  025066015360                           ;""HV!KP"
+022110:  771145040704  datao    710, 40704(5)   ;"_)E$'$" "~&(Ab"
+022111:  677456424400  tson     11, 424400(16)  ;"W\NBD " "ort)\0"
+022112:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022113:  561040022110  hrroi    1, 22110        ;"N(@"1("
+022114:  201100000011  movei    2, 11           ;"0)   )"
+022115:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+022116:  254000000315  jrst     315             ;"5@  #-"
+022117:  771147742720  datao    710, 742720(7)  ;"_)G\70" "~&?Eh"
+022120:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022121:  561040022117  hrroi    1, 22117        ;"N(@"1/"
+022122:  201100000005  movei    2, 5            ;"0)   %"
+022123:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+022124:  254000000315  jrst     315             ;"5@  #-"
+022125:  000000000020                           ;"     0"
+022126:  000000000101                           ;"    !!"
+022127:  000000000041                           ;"     A"
+022130:  040100022125  .iot     2, 22125        ;"$! "15"
+022131:  040100022126  .iot     2, 22126        ;"$! "16"
+022132:  040100022127  .iot     2, 22127        ;"$! "17"
+022133:  263740000000  popj     17,             ;"6?@   "
+022134:  417214561726  setmb    4, 561726(14)   ;"AZ,N/6" "Check"
+022135:  203075771344  moves    1, @771344(15)  ;"08]_+D" " corr"
+022136:  627076467312  tlzn     1, @467312(16)  ;"RX^F[*" "ectne"
+022137:  717464067714  bltub    11, @67714(4)   ;"Y\T&_," "ss of"
+022140:  202150520314  movem    3, 520314(10)   ;"01HJ#," " FE f"
+022141:  647314571762  tlcn     6, 571762(14)   ;"T[,O/R" "ilesy"
+022142:  717514566400  bltub    12, 566400(14)  ;"Y],NT " "stem\0"
+022143:  417454560750  setmb    11, 560750(14)  ;"A\LN'H" "Creat"
+022144:  625014120334  tlza     0, 120334(14)   ;"RH,*#<" "e a n"
+022145:  627564043212  tlzn     13, @43212(4)   ;"R]T$:*" "ew FE"
+022146:  203155166312  moves    3, 166312(15)   ;"09M.S*" " file"
+022147:  717636372312  bltub    14, @372312(16) ;"Y^>?3*" "syste"
+022150:  665014671336  tloa     0, 671336(14)   ;"VH,W+>" "m fro"
+022151:  665016361744  tloa     0, 361744(16)   ;"VH.>/D" "m scr"
+022152:  607514364000  tlnn     12, 364000(14)  ;"P],>@ " "atch\0"
+022153:  463236372100  setcmb   4, @372100(16)  ;"F:>?1 " "List "
+022154:  617375566702  tsnn     7, @566702(15)  ;"Q[]NW"" "comma"
+022155:  673116300000  tsoe     2, 300000(16)   ;"W9.8  " "nds\0\0"
+022156:  517135462706  hrlzs    2, @462706(15)  ;"IY=F7&" "Selec"
+022157:  721016060706  iordbq   0, 60706(16)    ;"Z(.&'&" "t pac"
+022160:  654000000000  tdca     0, 0            ;"U@    " "k\0\0\0\0"
+022161:  513136472744  hllzs    2, @472744(16)  ;"I9>G7D" "Retur"
+022162:  671016467500  tso      0, 467500(16)   ;"W(.F] " "n to "
+022163:  717536062744  bltub    12, @62744(16)  ;"Y]>&7D" "super"
+022164:  647376200000  tlcn     7, @200000(16)  ;"T[^0  " "ior\0\0"
+022165:  513134162100  hllzs    2, @162100(14)  ;"I9<.1 " "Read "
+022166:  605014664730  tlna     0, 664730(14)   ;"PH,VG8" "a fil"
+022167:  625014671336  tlza     0, 671336(14)   ;"RH,W+>" "e fro"
+022170:  665010642500  tloa     0, 642500(10)   ;"VH(T5 " "m FE "
+022171:  633235462746  tsze     4, @462746(15)  ;"S:=F7F" "files"
+022172:  747476462732  datai    474, @462732(16);"\\^F7:" "ystem"
+022173:  000000000000                           ;"      "
+022174:  537455172312  hrles    11, 172312(15)  ;"K\M/3*" "Write"
+022175:  203024063322  moves    0, @63322(4)    ;"084&;2" " a fi"
+022176:  663124064734  tloe     2, @64734(4)    ;"V94&G<" "le in"
+022177:  723364072320  iowrb    7, @72320(4)    ;"Z;T'30" "to th"
+022200:  625010642500  tlza     0, 642500(10)   ;"RH(T5 " "e FE "
+022201:  633235462746  tsze     4, @462746(15)  ;"S:=F7F" "files"
+022202:  747476462732  datai    474, @462732(16);"\\^F7:" "ystem"
+022203:  000000000000                           ;"      "
+022204:  771151351614  datao    710, 351614(11) ;"_)I=.," "~&KSF"
+022205:  426112220306  setam    2, 220306(12)   ;"BQ*2#&" "EDR c"
+022206:  677335560734  tson     6, @560734(15)  ;"W[=N'<" "omman"
+022207:  623467200000  tlze     11, @200000(7)  ;"R<W0  " "ds:\0\0"
+022210:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022211:  561040022204  hrroi    1, 22204        ;"N(@"2$"
+022212:  201100000022  movei    2, 22           ;"0)   2"
+022213:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+022214:  254000000315  jrst     315             ;"5@  #-"
+022215:  771144077246  datao    710, 77246(4)   ;"_)D'ZF" "~& ~S"
+022216:  047750100000  .access  17, 100000(10)  ;"$_H(  " "\t~A\0\0"
+022217:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022220:  261741002123  push     17, 2123(1)     ;"6/A 13"
+022221:  261740000006  push     17, 6           ;"6/@  &"
+022222:  561040022215  hrroi    1, 22215        ;"N(@"2-"
+022223:  201100000010  movei    2, 10           ;"0)   ("
+022224:  211140000002  movni    3, 2            ;"1)@  ""
+022225:  254000000315  jrst     315             ;"5@  #-"
+022226:  771152362730  datao    710, 362730(12) ;"_)J>78" "~&Sel"
+022227:  627076420356  tlzn     1, @420356(16)  ;"RX^B#N" "ect w"
+022230:  643234364100  tlce     4, @364100(14)  ;"T:<>A " "hich "
+022231:  703034365576  blki     30, @365576(14) ;"X8<>M^" "pack?"
+022232:  200000000000  move     0, 0            ;"0     " " \0\0\0\0"
+022233:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022234:  561040022226  hrroi    1, 22226        ;"N(@"26"
+022235:  201100000025  movei    2, 25           ;"0)   5"
+022236:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+022237:  254000000315  jrst     315             ;"5@  #-"
+022240:  260740022233  pushj    17, 22233       ;"6'@"2;"
+022241:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022242:  545763450000  hlri     17, @450000(3)  ;"LOSE  "
+022243:  201005001000  movei    0, 1000(5)      ;"0(% ( "
+022244:  601000002157  tln      0, 2157         ;"P(  1O"
+022245:  306240000004  cain     5, 4            ;"8R@  $"
+022246:  254000002164  jrst     2164            ;"5@  1T"
+022247:  043000022241  .call    [setz
+                                 SIXBIT/LOSE  /
+                                 201005001000
+                                 601000002157]
+                                                ;"$8 "2A"
+022250:  043100001000  .lose    1000            ;"$9  ( "
+022251:  771150551244  datao    710, 551244(10) ;"_)HM*D" "~&ERR"
+022252:  476447220100  setom    11, 220100(7)   ;"GTG2! " "OR:  "
+022253:  433235462500  xorb     4, @462500(15)  ;"C:=F5 " "File "
+022254:  607316262702  tlnn     6, 262702(16)   ;"P[.67"" "alrea"
+022255:  623624062760  tlze     14, @62760(4)   ;"R>4&7P" "dy ex"
+022256:  647476471534  tlcn     11, @471534(16) ;"T\^G-<" "ists."
+022257:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022260:  561040022251  hrroi    1, 22251        ;"N(@"2I"
+022261:  201100000036  movei    2, 36           ;"0)   >"
+022262:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+022263:  254000000315  jrst     315             ;"5@  #-"
+022264:  005662005663                           ;" NR NS"
+022265:  000007000010                           ;"  '  ("
+022266:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022267:  576045560000  hlrem    1, 560000(5)    ;"OPEN  " "_B-`\0"
+022270:  000000022265                           ;"   "2U"
+022271:  000000022033                           ;"   "0;"
+022272:  000000022034                           ;"   "0<"
+022273:  000000022035                           ;"   "0="
+022274:  400000022036  setz     0, 22036        ;"@  "0>"
+022275:  776000005662  blki     760, 5662       ;"_P  NR"
+022276:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022277:  465156516350  orcmi    3, 516350(16)   ;"FINISH"
+022300:  601000000010  tln      0, 10           ;"P(   ("
+022301:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022302:  444554456757  eqv      13, 456757(14)  ;"DELEWO"
+022303:  601000000010  tln      0, 10           ;"P(   ("
+022304:  043000022301  .call    [setz
+                                 SIXBIT/DELEWO/
+                                 601000000010]
+                                                ;"$8 "3!"
+022305:  043100001000  .lose    1000            ;"$9  ( "
+022306:  254000002167  jrst     2167            ;"5@  1W"
+022307:  771150642500  datao    710, 642500(10) ;"_)HT5 " "~&FE "
+022310:  633235462746  tsze     4, @462746(15)  ;"S:=F7F" "files"
+022311:  747476462732  datai    474, @462732(16);"\\^F7:" "ystem"
+022312:  203750620336  moves    17, 620336(10)  ;"0?HR#>" " ~F o"
+022313:  671016060706  tso      0, 60706(16)    ;"W(.&'&" "n pac"
+022314:  655004377210  tsca     0, 377210(4)    ;"UH$?Z(" "k #~D"
+022315:  270000000000  add      0, 0            ;"7     " ".\0\0\0\0"
+022316:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022317:  261740000007  push     17, 7           ;"6/@  '"
+022320:  261740005647  push     17, 5647        ;"6/@ NG"
+022321:  561040022307  hrroi    1, 22307        ;"N(@"3'"
+022322:  201100000037  movei    2, 37           ;"0)   ?"
+022323:  211140000002  movni    3, 2            ;"1)@  ""
+022324:  254000000315  jrst     315             ;"5@  #-"
+022325:  771150464744  datao    710, 464744(10) ;"_)HFGD" "~&Dir"
+022326:  627076467744  tlzn     1, @467744(16)  ;"RX^F_D" "ector"
+022327:  745014162310  blki     450, 162310(14) ;"\H,.3(" "y add"
+022330:  713136371564  iowr     2, @371564(16)  ;"Y9>?-T" "ress:"
+022331:  203751700000  moves    17, 700000(11)  ;"0?IX  " " ~O\0\0"
+022332:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022333:  261740000001  push     17, 1           ;"6/@  !"
+022334:  561040022325  hrroi    1, 22325        ;"N(@"35"
+022335:  201100000027  movei    2, 27           ;"0)   7"
+022336:  211140000001  movni    3, 1            ;"1)@  !"
+022337:  254000000315  jrst     315             ;"5@  #-"
+022340:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022341:  446353656044  eqvm     7, 656044(13)   ;"DSKUPD"
+022342:  601000000010  tln      0, 10           ;"P(   ("
+022343:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022344:  636245416042  tdzn     5, 416042(5)    ;"SREAPB"
+022345:  201000000010  movei    0, 10           ;"0(   ("
+022346:  601000000001  tln      0, 1            ;"P(   !"
+022347:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022350:  604767625164  trna     17, @625164(7)  ;"PGWRIT"
+022351:  601006000012  tln      0, 12(6)        ;"P(&  *"
+022352:  605320202020  tlna     6, @202020      ;"PK0000"
+022353:  000006000010                           ;"  &  ("
+022354:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022355:  576045560000  hlrem    1, 560000(5)    ;"OPEN  " "_B-`\0"
+022356:  000000022353                           ;"   "3K"
+022357:  203000000005  moves    0, 5            ;"08   %"
+022360:  000000022033                           ;"   "0;"
+022361:  000000022034                           ;"   "0<"
+022362:  000000022035                           ;"   "0="
+022363:  400000022036  setz     0, 22036        ;"@  "0>"
+022364:  000006000004                           ;"  &  $"
+022365:  164651544516  fmpr     15, 544516(11)  ;".FILE."
+022366:  104451621100                           ;"(DIR) "
+022367:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022370:  576045560000  hlrem    1, 560000(5)    ;"OPEN  " "_B-`\0"
+022371:  000000022364                           ;"   "3T"
+022372:  000000022033                           ;"   "0;"
+022373:  000000022365                           ;"   "3U"
+022374:  000000022366                           ;"   "3V"
+022375:  400000022036  setz     0, 22036        ;"@  "0>"
+022376:  776000003477  blki     760, 3477       ;"_P  <_"
+022377:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022400:  465154544556  orcmi    3, 544556(14)   ;"FILLEN" "M&eI7"
+022401:  201000000010  movei    0, 10           ;"0(   ("
+022402:  602000000006  trne     0, 6            ;"P0   &"
+022403:  201240000046  movei    5, 46           ;"0*@  F"
+022404:  263740000000  popj     17,             ;"6?@   "
+022405:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022406:  435762425453  ori      17, @425453(2)  ;"CORBLK"
+022407:  201000110000  movei    0, 110000       ;"0( )  "
+022410:  201000777777  movei    0, 777777       ;"0( ___"
+022411:  000000000006                           ;"     &"
+022412:  601000000010  tln      0, 10           ;"P(   ("
+022413:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022414:  624656415545  trza     15, 415545(16)  ;"RFNAME"
+022415:  201000000010  movei    0, 10           ;"0(   ("
+022416:  202007000000  movem    0, (7)          ;"00'   " " @8\0\0"
+022417:  202007000001  movem    0, 1(7)         ;"00'  !"
+022420:  202007000002  movem    0, 2(7)         ;"00'  ""
+022421:  602007000003  trne     0, 3(7)         ;"P0'  #"
+022422:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022423:  465154425453  orcmi    3, 425453(14)   ;"FILBLK"
+022424:  201000000010  movei    0, 10           ;"0(   ("
+022425:  202000000006  movem    0, 6            ;"00   &"
+022426:  202000000006  movem    0, 6            ;"00   &"
+022427:  602000000006  trne     0, 6            ;"P0   &"
+022430:  150500000006  fsb      12, 6           ;"-%   &"
+022431:  001500000006                           ;" -   &"
+022432:  440600003512  andcb    14, 3512        ;"D&  =*"
+022433:  360600003512  soj      14, 3512        ;">&  =*"
+022434:  300600003512  cai      14, 3512        ;"8&  =*"
+022435:  220600003512  imul     14, 3512        ;"2&  =*"
+022436:  140600003512  fad      14, 3512        ;",&  =*"
+022437:  060600003512                           ;"&&  =*"
+022440:  140400000003  fad      10, 3           ;",$   #"
+022441:  060600000003                           ;"&&   #"
+022442:  000600000003                           ;" &   #"
+022443:  777773000002  conso    774, @2(13)     ;"__[  ""
+022444:  301400000001  cail     10, 1           ;"8,   !"
+022445:  771150551244  datao    710, 551244(10) ;"_)HM*D" "~&ERR"
+022446:  476447220100  setom    11, 220100(7)   ;"GTG2! " "OR:  "
+022447:  771650042564  coni     714, 42564(10)  ;"_.H$5T" "~:@E:"
+022450:  201017643000  movei    0, 643000(17)   ;"0(/T8 " "  ~F\0"
+022451:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022452:  261740000005  push     17, 5           ;"6/@  %"
+022453:  261740000007  push     17, 7           ;"6/@  '"
+022454:  561040022445  hrroi    1, 22445        ;"N(@"4E"
+022455:  201100000023  movei    2, 23           ;"0)   3"
+022456:  211140000002  movni    3, 2            ;"1)@  ""
+022457:  254000000315  jrst     315             ;"5@  #-"
+022460:  201340022033  movei    7, 22033        ;"0+@"0;"
+022461:  260740022451  pushj    17, 22451       ;"6'@"4I"
+022462:  254000002110  jrst     2110            ;"5@  1("
+022463:  771152740644  datao    710, 740644(12) ;"_)J\&D" "~&WAR"
+022464:  472231643564  orcbm    4, @643564(11)  ;"G29T=T" "NING:"
+022465:  201012464322  movei    0, 464322(12)   ;"0(*FC2" "  Thi"
+022466:  715014664730  iowrq    0, 664730(14)   ;"YH,VG8" "s fil"
+022467:  627477171750  tlzn     11, @171750(17) ;"R\_//H" "esyst"
+022470:  627324066322  tlzn     6, @66322(4)    ;"R[4&S2" "em li"
+022471:  733136320336  blko     330, @320336(16);"[9>:#>" "ves o"
+022472:  671016060706  tso      0, 60706(16)    ;"W(.&'&" "n pac"
+022473:  655004377210  tsca     0, 377210(4)    ;"UH$?Z(" "k #~D"
+022474:  261015667750  push     0, 667750(15)   ;"6(-V_H" ", not"
+022475:  203414161726  moves    10, 161726(14)  ;"0<,./6" " pack"
+022476:  201077642100  movei    1, @642100(17)  ;"0(_T1 " " #~D "
+022477:  607464062760  tlnn     11, @62760(4)   ;"P\T&7P" "as ex"
+022500:  703134372312  blko     30, @372312(14) ;"X9<?3*" "pecte"
+022501:  621340000000  tlz      7, 0            ;"R+@   " "d.\0\0\0"
+022502:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022503:  261740005647  push     17, 5647        ;"6/@ NG"
+022504:  261740003476  push     17, 3476        ;"6/@ <^"
+022505:  561040022463  hrroi    1, 22463        ;"N(@"4S"
+022506:  201100000110  movei    2, 110          ;"0)  !("
+022507:  211140000002  movni    3, 2            ;"1)@  ""
+022510:  254000000315  jrst     315             ;"5@  #-"
+022511:  771152740644  datao    710, 740644(12) ;"_)J\&D" "~&WAR"
+022512:  472231643564  orcbm    4, @643564(11)  ;"G29T=T" "NING:"
+022513:  201011564706  movei    0, 564706(11)   ;"0()NG&" "  Mic"
+022514:  713374367710  iowr     7, @367710(14)  ;"Y;\>_(" "rocod"
+022515:  625014266336  tlza     0, 266336(14)   ;"RH,6S>" "e blo"
+022516:  617276320302  tsnn     5, @320302(16)  ;"QZ^:#"" "cks a"
+022517:  713124067336  iowr     2, @67336(4)    ;"Y94&[>" "re no"
+022520:  721016071336  iordbq   0, 71336(16)    ;"Z(.'+>" "t pro"
+022521:  703136266362  blko     30, @266362(16) ;"X9>6SR" "perly"
+022522:  203415771722  moves    10, 771722(15)  ;"0<-_/2" " posi"
+022523:  723235767312  iowrb    4, @767312(15)  ;"Z:=^[*" "tione"
+022524:  621340000000  tlz      7, 0            ;"R+@   " "d.\0\0\0"
+022525:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022526:  561040022511  hrroi    1, 22511        ;"N(@"5)"
+022527:  201100000071  movei    2, 71           ;"0)   Y"
+022530:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+022531:  254000000315  jrst     315             ;"5@  #-"
+022532:  413034420332  andcab   0, @420332(14)  ;"A8<B#:" "Bad m"
+022533:  647076267706  tlcn     1, @267706(16)  ;"TX^6_&" "icroc"
+022534:  677114520340  tson     2, 520340(14)   ;"WY,J#@" "ode p"
+022535:  677235672312  tson     4, @672312(15)  ;"WZ=W3*" "ointe"
+022536:  710000000000  iordi    0, 0            ;"Y     " "r\0\0\0\0"
+022537:  413034420304  andcab   0, @420304(14)  ;"A8<B#$" "Bad b"
+022540:  677376471750  tson     7, @471750(16)  ;"W[^G/H" "ootst"
+022541:  713036020120  iowr     0, @20120(16)   ;"Y8>"!0" "rap ("
+022542:  412505120340  andcam   12, 120340(5)   ;"A5%*#@" "BT) p"
+022543:  677235672312  tson     4, @672312(15)  ;"WZ=W3*" "ointe"
+022544:  710000000000  iordi    0, 0            ;"Y     " "r\0\0\0\0"
+022545:  413034420304  andcab   0, @420304(14)  ;"A8<B#$" "Bad b"
+022546:  677376471750  tson     7, @471750(16)  ;"W[^G/H" "ootst"
+022547:  713036020120  iowr     0, @20120(16)   ;"Y8>"!0" "rap ("
+022550:  412506124500  andcam   12, 124500(6)   ;"A5&*E " "BT1) "
+022551:  703375167350  conso    30, @167350(15) ;"X;].[H" "point"
+022552:  627440000000  tlzn     11, 0           ;"R\@   " "er\0\0\0"
+022553:  413034420304  andcab   0, @420304(14)  ;"A8<B#$" "Bad b"
+022554:  677376471750  tson     7, @471750(16)  ;"W[^G/H" "ootst"
+022555:  713036020120  iowr     0, @20120(16)   ;"Y8>"!0" "rap ("
+022556:  411445120340  andcai   11, 120340(5)   ;"A,E*#@" "B2) p"
+022557:  677235672312  tson     4, @672312(15)  ;"WZ=W3*" "ointe"
+022560:  710000000000  iordi    0, 0            ;"Y     " "r\0\0\0\0"
+022561:  771152740644  datao    710, 740644(12) ;"_)J\&D" "~&WAR"
+022562:  472231643564  orcbm    4, @643564(11)  ;"G29T=T" "NING:"
+022563:  201017640534  movei    0, 640534(17)   ;"0(/T%<" "  ~A."
+022564:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022565:  261740000001  push     17, 1           ;"6/@  !"
+022566:  561040022561  hrroi    1, 22561        ;"N(@"5Q"
+022567:  201100000017  movei    2, 17           ;"0)   /"
+022570:  211140000001  movni    3, 1            ;"1)@  !"
+022571:  254000000315  jrst     315             ;"5@  #-"
+022572:  771144020206  datao    710, 20206(4)   ;"_)D""&" "~&  C"
+022573:  663374261312  tloe     7, @261312(14)  ;"V;\6+*" "lobbe"
+022574:  711015172176  iordq    0, 172176(15)   ;"Y(-/1^" "r it?"
+022575:  200000000000  move     0, 0            ;"0     " " \0\0\0\0"
+022576:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022577:  561040022572  hrroi    1, 22572        ;"N(@"5Z"
+022600:  201100000020  movei    2, 20           ;"0)   0"
+022601:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+022602:  254000000315  jrst     315             ;"5@  #-"
+022603:  260740022576  pushj    17, 22576       ;"6'@"5^"
+022604:  101000000001                           ;"((   !"
+022605:  001000000001                           ;" (   !"
+022606:  771150574322  datao    710, 574322(10) ;"_)HOC2" "~&Exi"
+022607:  717515167316  bltub    12, 167316(15)  ;"Y]-.[." "sting"
+022610:  203155166312  moves    3, 166312(15)   ;"09M.S*" " file"
+022611:  715014171312  iowrq    0, 171312(14)   ;"YH,/+*" "s are"
+022612:  350000000000  aos      0, 0            ;"=     " ":\0\0\0\0"
+022613:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022614:  561040022606  hrroi    1, 22606        ;"N(@"6&"
+022615:  201100000025  movei    2, 25           ;"0)   5"
+022616:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+022617:  254000000315  jrst     315             ;"5@  #-"
+022620:  203752300000  moves    17, 300000(12)  ;"0?J8  " " ~S\0\0"
+022621:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022622:  261745002502  push     17, 2502(5)     ;"6/E 5""
+022623:  561040022620  hrroi    1, 22620        ;"N(@"60"
+022624:  201100000003  movei    2, 3            ;"0)   #"
+022625:  211140000001  movni    3, 1            ;"1)@  !"
+022626:  254000000315  jrst     315             ;"5@  #-"
+022627:  771152764322  datao    710, 764322(12) ;"_)J^C2" "~&Whi"
+022630:  617204063322  tsnn     4, 63322(4)     ;"QZ$&;2" "ch fi"
+022631:  663127720000  tloe     2, @720000(7)   ;"V97Z  " "le? \0"
+022632:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022633:  561040022627  hrroi    1, 22627        ;"N(@"67"
+022634:  201100000016  movei    2, 16           ;"0)   ."
+022635:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+022636:  254000000315  jrst     315             ;"5@  #-"
+022637:  260740022632  pushj    17, 22632       ;"6'@"6:"
+022640:  000016005661                           ;"  . NQ"
+022641:  201200024000  movei    4, 24000        ;"0* "@ "
+022642:  254000002567  jrst     2567            ;"5@  5W"
+022643:  201200024000  movei    4, 24000        ;"0* "@ "
+022644:  254000003005  jrst     3005            ;"5@  8%"
+022645:  201200026000  movei    4, 26000        ;"0* "P "
+022646:  254000002563  jrst     2563            ;"5@  5S"
+022647:  201200026000  movei    4, 26000        ;"0* "P "
+022650:  254000002565  jrst     2565            ;"5@  5U"
+022651:  201200042000  movei    4, 42000        ;"0* $0 "
+022652:  254000002567  jrst     2567            ;"5@  5W"
+022653:  201200042000  movei    4, 42000        ;"0* $0 "
+022654:  254000002625  jrst     2625            ;"5@  65"
+022655:  201200043000  movei    4, 43000        ;"0* $8 "
+022656:  254000002567  jrst     2567            ;"5@  5W"
+022657:  201200043000  movei    4, 43000        ;"0* $8 "
+022660:  254000002625  jrst     2625            ;"5@  65"
+022661:  201200044000  movei    4, 44000        ;"0* $@ "
+022662:  254000002567  jrst     2567            ;"5@  5W"
+022663:  201200044000  movei    4, 44000        ;"0* $@ "
+022664:  254000002625  jrst     2625            ;"5@  65"
+022665:  771151772750  datao    710, 772750(11) ;"_)I_7H" "~&Out"
+022666:  703536420350  blko     34, @420350(16) ;"X=>B#H" "put t"
+022667:  674000000000  tdoa     0, 0            ;"W@    " "o\0\0\0\0"
+022670:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022671:  561040022665  hrroi    1, 22665        ;"N(@"6U"
+022672:  201100000013  movei    2, 13           ;"0)   +"
+022673:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+022674:  254000000315  jrst     315             ;"5@  #-"
+022675:  260740022670  pushj    17, 22670       ;"6'@"6X"
+022676:  771150171312  datao    710, 171312(10) ;"_)H/+*" "~&Are"
+022677:  203635772500  moves    14, @772500(15) ;"0>=_5 " " you "
+022700:  717536262500  bltub    12, @262500(16) ;"Y]>65 " "sure "
+022701:  747376520356  conso    470, @520356(16);"\[^J#N" "you w"
+022702:  607356420350  tlnn     7, 420350(16)   ;"P[NB#H" "ant t"
+022703:  675016361744  tsoa     0, 361744(16)   ;"WH.>/D" "o scr"
+022704:  647054266312  tlcn     1, 266312(14)   ;"TXL6S*" "ibble"
+022705:  203235620350  moves    4, @620350(15)  ;"0:=R#H" " in t"
+022706:  643124043212  tlce     2, @43212(4)    ;"T94$:*" "he FE"
+022707:  203155166312  moves    3, 166312(15)   ;"09M.S*" " file"
+022710:  717636372312  bltub    14, @372312(16) ;"Y^>?3*" "syste"
+022711:  665764000000  tloa     17, @(4)        ;"VOT   " "m? \0\0"
+022712:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022713:  561040022676  hrroi    1, 22676        ;"N(@"6^"
+022714:  201100000072  movei    2, 72           ;"0)   Z"
+022715:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+022716:  254000000315  jrst     315             ;"5@  #-"
+022717:  260740022712  pushj    17, 22712       ;"6'@"7*"
+022720:  771151167340  datao    710, 167340(11) ;"_)I.[@" "~&Inp"
+022721:  727504063344  blko     274, 63344(4)   ;"Z]$&;D" "ut fr"
+022722:  677320000000  tson     6, @0           ;"W[0   " "om\0\0\0"
+022723:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022724:  561040022720  hrroi    1, 22720        ;"N(@"70"
+022725:  201100000014  movei    2, 14           ;"0)   ,"
+022726:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+022727:  254000000315  jrst     315             ;"5@  #-"
+022730:  260740022723  pushj    17, 22723       ;"6'@"73"
+022731:  000007000005                           ;"  '  %"
+022732:  774645446277  coni     744, 446277(5)  ;"_FEDR_"
+022733:  576564606564  hlrem    13, @606564(4)  ;"OUTPUT" "_W&\r:"
+022734:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022735:  576045560000  hlrem    1, 560000(5)    ;"OPEN  " "_B-`\0"
+022736:  000000022731                           ;"   "79"
+022737:  000002000000                           ;"  "   "
+022740:  000000022732                           ;"   "7:"
+022741:  000000022733                           ;"   "7;"
+022742:  400002000003  setz     0, 3(2)         ;"@ "  #"
+022743:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022744:  624556556757  trza     13, 556757(16)  ;"RENMWO"
+022745:  201000000005  movei    0, 5            ;"0(   %"
+022746:  000002000001                           ;"  "  !"
+022747:  400002000002  setz     0, 2(2)         ;"@ "  ""
+022750:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+022751:  576045560000  hlrem    1, 560000(5)    ;"OPEN  " "_B-`\0"
+022752:  000000022364                           ;"   "3T"
+022753:  000002000000                           ;"  "   "
+022754:  000002000001                           ;"  "  !"
+022755:  000002000002                           ;"  "  ""
+022756:  400002000003  setz     0, 3(2)         ;"@ "  #"
+022757:  771150551244  datao    710, 551244(10) ;"_)HM*D" "~&ERR"
+022760:  476447220100  setom    11, 220100(7)   ;"GTG2! " "OR:  "
+022761:  433235462500  xorb     4, @462500(15)  ;"C:=F5 " "File "
+022762:  723375720346  iowrb    7, @720346(15)  ;"Z;]Z#F" "too s"
+022763:  667035466134  tlon     0, @466134(15)  ;"VX=FQ<" "mall."
+022764:  201011667750  movei    0, 667750(11)   ;"0()V_H" "  Not"
+022765:  643235663500  tlce     4, @663500(15)  ;"T:=V= " "hing "
+022766:  737036320356  blki     370, @320356(16);"[X>:#N" "was w"
+022767:  713236472312  iowr     4, @472312(16)  ;"Y:>G3*" "ritte"
+022770:  671340000000  tso      7, 0            ;"W+@   " "n.\0\0\0"
+022771:  260740002026  pushj    17, 2026        ;"6'@ 06"
+022772:  561040022757  hrroi    1, 22757        ;"N(@"7O"
+022773:  201100000057  movei    2, 57           ;"0)   O"
+022774:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+022775:  254000000315  jrst     315             ;"5@  #-"
+022776:  260740022771  pushj    17, 22771       ;"6'@"7Y"
+022777:  042200000007  .close   4,              ;"$2   '"
+023000:  254000002110  jrst     2110            ;"5@  1("
+023001:  777777000007  conso    774, @7(17)     ;"___  '"
+023002:  771150551244  datao    710, 551244(10) ;"_)HM*D" "~&ERR"
+023003:  476447220100  setom    11, 220100(7)   ;"GTG2! " "OR:  "
+023004:  433235462500  xorb     4, @462500(15)  ;"C:=F5 " "File "
+023005:  723375720330  iowrb    7, @720330(15)  ;"Z;]Z#8" "too l"
+023006:  607454762534  tlnn     11, 762534(14)  ;"P\L^5<" "arge."
+023007:  201011667750  movei    0, 667750(11)   ;"0()V_H" "  Not"
+023010:  643235663500  tlce     4, @663500(15)  ;"T:=V= " "hing "
+023011:  737036320356  blki     370, @320356(16);"[X>:#N" "was w"
+023012:  713236472312  iowr     4, @472312(16)  ;"Y:>G3*" "ritte"
+023013:  671340000000  tso      7, 0            ;"W+@   " "n.\0\0\0"
+023014:  260740002026  pushj    17, 2026        ;"6'@ 06"
+023015:  561040023002  hrroi    1, 23002        ;"N(@"8""
+023016:  201100000057  movei    2, 57           ;"0)   O"
+023017:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+023020:  254000000315  jrst     315             ;"5@  #-"
+023021:  260740023014  pushj    17, 23014       ;"6'@"8,"
+023022:  042200000007  .close   4,              ;"$2   '"
+023023:  254000002110  jrst     2110            ;"5@  1("
+023024:  000004000004                           ;"  $  $"
+023025:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+023026:  576045560000  hlrem    1, 560000(5)    ;"OPEN  " "_B-`\0"
+023027:  000000023024                           ;"   "84"
+023030:  000002000000                           ;"  "   "
+023031:  000002000001                           ;"  "  !"
+023032:  000002000002                           ;"  "  ""
+023033:  400002000003  setz     0, 3(2)         ;"@ "  #"
+023034:  254000000001  jrst     1               ;"5@   !"
+023035:  002670005662                           ;" 6X NR"
+023036:  771150551244  datao    710, 551244(10) ;"_)HM*D" "~&ERR"
+023037:  476447220100  setom    11, 220100(7)   ;"GTG2! " "OR:  "
+023040:  417214561726  setmb    4, 561726(14)   ;"AZ,N/6" "Check"
+023041:  717535520312  bltub    12, @520312(15) ;"Y]=J#*" "sum e"
+023042:  713455771134  iowr     11, 771134(15)  ;"Y<M_)<" "rror."
+023043:  201011667750  movei    0, 667750(11)   ;"0()V_H" "  Not"
+023044:  643235663500  tlce     4, @663500(15)  ;"T:=V= " "hing "
+023045:  737036320356  blki     370, @320356(16);"[X>:#N" "was w"
+023046:  713236472312  iowr     4, @472312(16)  ;"Y:>G3*" "ritte"
+023047:  671340000000  tso      7, 0            ;"W+@   " "n.\0\0\0"
+023050:  260740002026  pushj    17, 2026        ;"6'@ 06"
+023051:  561040023036  hrroi    1, 23036        ;"N(@"8>"
+023052:  201100000057  movei    2, 57           ;"0)   O"
+023053:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+023054:  254000000315  jrst     315             ;"5@  #-"
+023055:  260740023050  pushj    17, 23050       ;"6'@"8H"
+023056:  042200000007  .close   4,              ;"$2   '"
+023057:  254000002110  jrst     2110            ;"5@  1("
+023060:  771150551244  datao    710, 551244(10) ;"_)HM*D" "~&ERR"
+023061:  476447220100  setom    11, 220100(7)   ;"GTG2! " "OR:  "
+023062:  516051445500  hrlzm    1, 445500(11)   ;"IPIDM " "SBLK "
+023063:  633235462500  tsze     4, @462500(15)  ;"S:=F5 " "file "
+023064:  723375720330  iowrb    7, @720330(15)  ;"Z;]Z#8" "too l"
+023065:  677354727100  tson     7, 727100(14)   ;"W[LZY " "ong. "
+023066:  202355772320  movem    7, 772320(15)   ;"03M_30" " Noth"
+023067:  647354720356  tlcn     7, 720356(14)   ;"T[LZ#N" "ing w"
+023070:  607464073744  tlnn     11, @73744(4)   ;"P\T'?D" "as wr"
+023071:  647516462734  tlcn     12, 462734(16)  ;"T].F7<" "itten"
+023072:  270000000000  add      0, 0            ;"7     " ".\0\0\0\0"
+023073:  260740002026  pushj    17, 2026        ;"6'@ 06"
+023074:  561040023060  hrroi    1, 23060        ;"N(@"8P"
+023075:  201100000063  movei    2, 63           ;"0)   S"
+023076:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+023077:  254000000315  jrst     315             ;"5@  #-"
+023100:  000001000005                           ;"  !  %"
+023101:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+023102:  576045560000  hlrem    1, 560000(5)    ;"OPEN  " "_B-`\0"
+023103:  000000023100                           ;"   "9 "
+023104:  000002000000                           ;"  "   "
+023105:  000000022732                           ;"   "7:"
+023106:  000000022733                           ;"   "7;"
+023107:  400002000003  setz     0, 3(2)         ;"@ "  #"
+023110:  301004000000  cail     0, (4)          ;"8($   " "0  \0\0"
+023111:  201004000000  movei    0, (4)          ;"0($   " "   \0\0"
+023112:  101004000000                           ;"(($   "
+023113:  001004000000                           ;" ($   "
+023114:  771150551244  datao    710, 551244(10) ;"_)HM*D" "~&ERR"
+023115:  476447220100  setom    11, 220100(7)   ;"GTG2! " "OR:  "
+023116:  447354464744  eqvb     7, 464744(14)   ;"D[LFGD" "Indir"
+023117:  627076420314  tlzn     1, @420314(16)  ;"RX^B#," "ect f"
+023120:  647314520334  tlcn     6, 520334(14)   ;"T[,J#<" "ile n"
+023121:  677504072312  tson     12, 72312(4)    ;"W]$'3*" "ot te"
+023122:  713335167302  iowr     6, @167302(15)  ;"Y;=.["" "rmina"
+023123:  723134420304  iowrb    2, @420304(14)  ;"Z9<B#$" "ted b"
+023124:  745014120334  blki     450, 120334(14) ;"\H,*#<" "y a n"
+023125:  727315427100  consz    270, 427100(15) ;"Z[-BY " "ull. "
+023126:  203741505022  moves    17, 505022(1)   ;"0?AHH2" " ~\r\n\t"
+023127:  046376572340  .status  7, @572340(16)  ;"$S^O3@" "\tOutp"
+023130:  727504063322  blko     274, 63322(4)   ;"Z]$&;2" "ut fi"
+023131:  663124073702  tloe     2, @73702(4)    ;"V94'?"" "le wa"
+023132:  715015667750  iowrq    0, 667750(15)   ;"YH-V_H" "s not"
+023133:  203454567302  moves    11, 567302(14)  ;"0<LN["" " rena"
+023134:  667134427000  tlon     2, @427000(14)  ;"VY<BX " "med.\0"
+023135:  260740002026  pushj    17, 2026        ;"6'@ 06"
+023136:  561040023114  hrroi    1, 23114        ;"N(@"9,"
+023137:  201100000124  movei    2, 124          ;"0)  !4"
+023140:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+023141:  254000000315  jrst     315             ;"5@  #-"
+023142:  000000000004                           ;"     $"
+023143:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+023144:  576045560000  hlrem    1, 560000(5)    ;"OPEN  " "_B-`\0"
+023145:  000000023142                           ;"   "9B"
+023146:  000002000000                           ;"  "   "
+023147:  000002000001                           ;"  "  !"
+023150:  000002000002                           ;"  "  ""
+023151:  400002000003  setz     0, 3(2)         ;"@ "  #"
+023152:  777000005662  blki     770, 5662       ;"_X  NR"
+023153:  301005000000  cail     0, (5)          ;"8(%   " "0 (\0\0"
+023154:  201005000000  movei    0, (5)          ;"0(%   " "  (\0\0"
+023155:  101005000000                           ;"((%   "
+023156:  001005000000                           ;" (%   "
+023157:  771150551244  datao    710, 551244(10) ;"_)HM*D" "~&ERR"
+023160:  476447220100  setom    11, 220100(7)   ;"GTG2! " "OR:  "
+023161:  447354464744  eqvb     7, 464744(14)   ;"D[LFGD" "Indir"
+023162:  627076420314  tlzn     1, @420314(16)  ;"RX^B#," "ect f"
+023163:  647314520350  tlcn     6, 520350(14)   ;"T[,J#H" "ile t"
+023164:  677364066302  tson     7, @66302(4)    ;"W[T&S"" "oo la"
+023165:  713174527100  iowr     3, @527100(14)  ;"Y9\JY " "rge. "
+023166:  202355772320  movem    7, 772320(15)   ;"03M_30" " Noth"
+023167:  647354720356  tlcn     7, 720356(14)   ;"T[LZ#N" "ing w"
+023170:  607464073744  tlnn     11, @73744(4)   ;"P\T'?D" "as wr"
+023171:  647516462734  tlcn     12, 462734(16)  ;"T].F7<" "itten"
+023172:  270000000000  add      0, 0            ;"7     " ".\0\0\0\0"
+023173:  260740002026  pushj    17, 2026        ;"6'@ 06"
+023174:  561040023157  hrroi    1, 23157        ;"N(@"9O"
+023175:  201100000070  movei    2, 70           ;"0)   X"
+023176:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+023177:  254000000315  jrst     315             ;"5@  #-"
+023200:  014060301406                           ;"!@P8,&"
+023201:  000002000004                           ;"  "  $"
+023202:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+023203:  576045560000  hlrem    1, 560000(5)    ;"OPEN  " "_B-`\0"
+023204:  000000023201                           ;"   ":!"
+023205:  000002000000                           ;"  "   "
+023206:  000002000001                           ;"  "  !"
+023207:  000002000002                           ;"  "  ""
+023210:  400002000003  setz     0, 3(2)         ;"@ "  #"
+023211:  776777005662  conso    764, @5662(17)  ;"_W_ NR"
+023212:  771150551244  datao    710, 551244(10) ;"_)HM*D" "~&ERR"
+023213:  476447220100  setom    11, 220100(7)   ;"GTG2! " "OR:  "
+023214:  433235462500  xorb     4, @462500(15)  ;"C:=F5 " "File "
+023215:  723375720330  iowrb    7, @720330(15)  ;"Z;]Z#8" "too l"
+023216:  677354727100  tson     7, 727100(14)   ;"W[LZY " "ong. "
+023217:  202355772320  movem    7, 772320(15)   ;"03M_30" " Noth"
+023220:  647354720356  tlcn     7, 720356(14)   ;"T[LZ#N" "ing w"
+023221:  607464073744  tlnn     11, @73744(4)   ;"P\T'?D" "as wr"
+023222:  647516462734  tlcn     12, 462734(16)  ;"T].F7<" "itten"
+023223:  270000000000  add      0, 0            ;"7     " ".\0\0\0\0"
+023224:  260740002026  pushj    17, 2026        ;"6'@ 06"
+023225:  561040023212  hrroi    1, 23212        ;"N(@":*"
+023226:  201100000056  movei    2, 56           ;"0)   N"
+023227:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+023230:  254000000315  jrst     315             ;"5@  #-"
+023231:  714563000000  iowri    13, @(3)        ;"YES   "
+023232:  565700000000  hlroi    16, 0           ;"NO    " "]<\0\0\0"
+023233:  771153142646  datao    710, 142646(13) ;"_)K,6F" "~&YES"
+023234:  203376220234  moves    7, @220234(16)  ;"0;^2"<" " or N"
+023235:  474000000000  seto     0,              ;"G@    " "O\0\0\0\0"
+023236:  260740002026  pushj    17, 2026        ;"6'@ 06"
+023237:  561040023233  hrroi    1, 23233        ;"N(@":;"
+023240:  201100000013  movei    2, 13           ;"0)   +"
+023241:  211140000000  movni    3, 0            ;"1)@   " "\"&\0\0\0"
+023242:  254000000315  jrst     315             ;"5@  #-"
+023243:  440700021664  andcb    16, 21664       ;"D' ".T"
+023244:  201210462714  movei    4, 462714(10)   ;"0*(F7," " (Def"
+023245:  607535472100  tlnn     12, @472100(15) ;"P]=G1 " "ault "
+023246:  772145135100  datao    720, 135100(5)  ;"_1E+I " "~F): "
+023247:  260740002026  pushj    17, 2026        ;"6'@ 06"
+023250:  261740021663  push     17, 21663       ;"6/@".S"
+023251:  561040023244  hrroi    1, 23244        ;"N(@":D"
+023252:  201100000017  movei    2, 17           ;"0)   /"
+023253:  211140000001  movni    3, 1            ;"1)@  !"
+023254:  254000000315  jrst     315             ;"5@  #-"
+023255:  260760021662  pushj    17, @21662      ;"6'P".R"
+023256:  260740023247  pushj    17, 23247       ;"6'@":G"
+023257:  263740000000  popj     17,             ;"6?@   "
+023260:  440600000004  andcb    14, 4           ;"D&   $"
+023261:  400000000000  setz     0,              ;"@     " "@\0\0\0\0"
+023262:  635157640000  tsza     3, 640000(17)   ;"SIOT  " "g&~@\0"
+023263:  201000000003  movei    0, 3            ;"0(   #"
+023264:  000000000004                           ;"     $"
+023265:  400000000007  setz     0, 7            ;"@    '"
+023266:  070000000000                           ;"'     "
+023267:  000000000130                           ;"    !8"

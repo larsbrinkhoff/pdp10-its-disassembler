@@ -1,5 +1,7 @@
 *~
 *.o
+*.dasm
+*.list
 bin2ascii
 bin2x
 its2bin
