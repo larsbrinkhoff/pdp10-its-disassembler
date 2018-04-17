@@ -29,7 +29,7 @@ typedef long long word_t;
 
 #define JRST_1 ((word_t)(0254000000001LL))
 
-enum { FORMAT_BIN, FORMAT_ITS, FORMAT_X, FORMAT_DTA };
+enum { FORMAT_BIN, FORMAT_ITS, FORMAT_X, FORMAT_DTA, FORMAT_AA };
 
 struct FILE;
 struct pdp10_file;
@@ -43,6 +43,8 @@ extern void	check_checksum (word_t);
 extern void	rewind_word (FILE *f);
 extern void	write_its_word (FILE *, word_t);
 extern void	flush_its_word (FILE *);
+extern word_t	get_aa_word (FILE *);
+extern void	rewind_aa_word (FILE *);
 extern void	dis_pdump (FILE *f, int cpu_model);
 extern void	dis_sblk (FILE *f, int cpu_model);
 typedef void    (*reader_t) (FILE *f, struct pdp10_memory *memory, int cpu);
