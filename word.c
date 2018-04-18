@@ -21,10 +21,12 @@ extern word_t get_bin_word (FILE *f);
 extern word_t get_its_word (FILE *f);
 extern word_t get_x_word (FILE *f);
 extern word_t get_dta_word (FILE *f);
+extern word_t get_core_word (FILE *f);
 extern void rewind_bin_word (FILE *f);
 extern void rewind_its_word (FILE *f);
 extern void rewind_x_word (FILE *f);
 extern void rewind_dta_word (FILE *f);
+extern void rewind_core_word (FILE *f);
 
 int file_36bit_format = FORMAT_ITS;
 static word_t checksum;
@@ -40,6 +42,7 @@ get_word (FILE *f)
     case FORMAT_DTA:	return get_dta_word (f);
     case FORMAT_AA:	return get_aa_word (f);
     case FORMAT_PT:	return get_pt_word (f);
+    case FORMAT_CORE:   return get_core_word (f);
     }
 
   return -1;
@@ -80,5 +83,6 @@ rewind_word (FILE *f)
     case FORMAT_DTA:	return rewind_dta_word (f);
     case FORMAT_AA:	return rewind_aa_word (f);
     case FORMAT_PT:	return rewind_pt_word (f);
+    case FORMAT_CORE:	return rewind_core_word (f);
     }
 }
