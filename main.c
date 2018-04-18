@@ -25,8 +25,24 @@
 static void
 usage (char **argv)
 {
-  fprintf (stderr, "Usage: %s [-6] [-r] <file>\n", argv[0]);
+  fprintf (stderr, "Usage: %s [-6] [-r] [-W<word format>] <file>\n", argv[0]);
+  fprintf (stderr, "\nValid word formats are: ascii, bin, dta, its.\n");
   exit (1);
+}
+
+static int
+word_format (char **argv, char *string)
+{
+  if (strcmp (string, "ascii") == 0)
+    return FORMAT_AA;
+  else if (strcmp (string, "bin") == 0)
+    return FORMAT_BIN;
+  else if (strcmp (string, "dta") == 0)
+    return FORMAT_DTA;
+  else if (strcmp (string, "its") == 0)
+    return FORMAT_ITS;
+  else
+    usage (argv);
 }
 
 int
@@ -39,7 +55,7 @@ main (int argc, char **argv)
   int opt;
   reader_t read_func = NULL;
 
-  while ((opt = getopt (argc, argv, "6r")) != -1)
+  while ((opt = getopt (argc, argv, "6rW:")) != -1)
     {
       switch (opt)
 	{
@@ -48,6 +64,9 @@ main (int argc, char **argv)
 	  break;
 	case 'r':
 	  read_func = read_raw;
+	  break;
+	case 'W':
+          file_36bit_format = word_format (argv, optarg);
 	  break;
 	default:
 	  usage (argv);
