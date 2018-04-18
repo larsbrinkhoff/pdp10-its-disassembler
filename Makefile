@@ -60,10 +60,17 @@ test/test_write: test/test_write.o $(OBJS)
 test/test_read: test/test_read.o $(OBJS)
 	$(CC) $^ -o $@
 
-check: ts.obs.dasm ts.ksfedr.dasm ts.name.dasm ts.srccom.dasm atsign.tcp.dasm arc.code.list
+check: ts.obs.dasm ts.ksfedr.dasm ts.name.dasm ts.srccom.dasm atsign.tcp.dasm arc.code.list macro.low.dasm
+
+samples/ts.obs = -Wits
+samples/ts.ksfedr = -Wits
+samples/ts.name = -Wits
+samples/ts.srccom = -Wits
+samples/atsign.tcp = -Wits
+samples/macro.low = -r -Wascii
 
 %.dasm: samples/% dis10 test/%.dasm
-	./dis10 $< > $@
+	./dis10 $($<) $< > $@
 	cmp $@ test/$@ || rm $@ /no-such-file
 
 %.list: samples/% itsarc test/%.list
