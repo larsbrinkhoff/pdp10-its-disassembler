@@ -1,9 +1,10 @@
 CC = gcc
 CFLAGS = -g -W -Wall
 
-OBJS =	pdp10-opc.o info.o word.o bin-word.o its-word.o x-word.o dta-word.o \
-	sblk.o pdump.o dis.o timing.o timing_ka10.o timing_ki10.o memory.o \
-	aa-word.o
+WORDS =  bin-word.o its-word.o x-word.o dta-word.o aa-word.o pt-word.o
+
+OBJS =	pdp10-opc.o info.o word.o sblk.o pdump.o dis.o \
+	timing.o timing_ka10.o timing_ki10.o memory.o $(WORDS)
 	#file.o
 
 UTILS =	bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
@@ -27,13 +28,13 @@ bin2ascii: bin2ascii.o
 bin2x: bin2x.o
 	$(CC) bin2x.o -o bin2x
 
-its2x: its2x.o word.o bin-word.o its-word.o x-word.o dta-word.o aa-word.o
+its2x: its2x.o word.o $(WORDS)
 	$(CC) $^ -o its2x
 
-its2bin: its2bin.o word.o bin-word.o its-word.o x-word.o dta-word.o aa-word.o
+its2bin: its2bin.o word.o $(WORDS)
 	$(CC) $^ -o its2bin
 
-its2rim: its2rim.o word.o bin-word.o its-word.o x-word.o dta-word.o aa-word.o
+its2rim: its2rim.o word.o $(WORDS)
 	$(CC) $^ -o its2rim
 
 dskdmp: dskdmp.c $(OBJS)
@@ -60,7 +61,7 @@ test/test_write: test/test_write.o $(OBJS)
 test/test_read: test/test_read.o $(OBJS)
 	$(CC) $^ -o $@
 
-check: ts.obs.dasm ts.ksfedr.dasm ts.name.dasm ts.srccom.dasm atsign.tcp.dasm arc.code.list macro.low.dasm
+check: ts.obs.dasm ts.ksfedr.dasm ts.name.dasm ts.srccom.dasm atsign.tcp.dasm arc.code.list macro.low.dasm pt.rim.dasm
 
 samples/ts.obs = -Wits
 samples/ts.ksfedr = -Wits
@@ -68,6 +69,7 @@ samples/ts.name = -Wits
 samples/ts.srccom = -Wits
 samples/atsign.tcp = -Wits
 samples/macro.low = -r -Wascii
+samples/pt.rim = -r -Wpt
 
 %.dasm: samples/% dis10 test/%.dasm
 	./dis10 $($<) $< > $@
