@@ -26,7 +26,7 @@ static void
 usage (char **argv)
 {
   fprintf (stderr, "Usage: %s [-6] [-r] [-W<word format>] <file>\n", argv[0]);
-  fprintf (stderr, "\nValid word formats are: ascii, bin, dta, its.\n");
+  fprintf (stderr, "\nValid word formats are: ascii, bin, dta, its, pt.\n");
   exit (1);
 }
 
@@ -41,6 +41,8 @@ word_format (char **argv, char *string)
     return FORMAT_DTA;
   else if (strcmp (string, "its") == 0)
     return FORMAT_ITS;
+  else if (strcmp (string, "pt") == 0)
+    return FORMAT_PT;
   else
     usage (argv);
 }

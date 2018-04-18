@@ -39,6 +39,7 @@ get_word (FILE *f)
     case FORMAT_X:	return get_x_word (f);
     case FORMAT_DTA:	return get_dta_word (f);
     case FORMAT_AA:	return get_aa_word (f);
+    case FORMAT_PT:	return get_pt_word (f);
     }
 
   return -1;
@@ -78,5 +79,6 @@ rewind_word (FILE *f)
     case FORMAT_X:	return rewind_x_word (f);
     case FORMAT_DTA:	return rewind_dta_word (f);
     case FORMAT_AA:	return rewind_aa_word (f);
+    case FORMAT_PT:	return rewind_pt_word (f);
     }
 }
