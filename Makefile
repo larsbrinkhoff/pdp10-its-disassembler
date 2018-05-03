@@ -7,7 +7,7 @@ OBJS =	pdp10-opc.o info.o word.o sblk.o pdump.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o $(WORDS)
 
 UTILS =	bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
-	macdmp saildart
+	macdmp saildart macro-tapes
 
 all: dis10 $(UTILS) check
 
@@ -52,6 +52,9 @@ magfrm: magfrm.c core-word.o $(OBJS)
 	$(CC) $^ -o $@
 
 itsarc: itsarc.o $(OBJS)
+	$(CC) $^ -o $@
+
+macro-tapes: macro-tapes.o $(OBJS)
 	$(CC) $^ -o $@
 
 test/test_write: test/test_write.o $(OBJS)
