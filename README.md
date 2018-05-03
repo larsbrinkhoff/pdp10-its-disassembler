@@ -7,6 +7,7 @@
 - View contents, and make MAGDMP tape images.
 - View disk image contents.
 - Extract files from a DECtape image in MACDMP format.
+- Print the contents of SYSENG; MACRO TAPES and .TAPEn; TAPE nnn files.
 
 A Linux FUSE implementation of the networking filesystem protocol MLDEV
 is elsewhere: http://github.com/larsbrinkhoff/lmdev
