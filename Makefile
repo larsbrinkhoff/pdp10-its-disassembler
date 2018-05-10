@@ -15,7 +15,8 @@ clean:
 	rm -f $(OBJS)
 	rm -f dis10 core
 	rm -f $(UTILS)
-	rm -f bin2ascii.o bin2x.o its2x.o its2bin.o
+	rm -f main.o dmp.o raw.o
+	for f in $(UTILS); do rm -f $${f}.o; done
 	rm -f *.dasm *.list
 
 dis10: main.o $(OBJS) dmp.o raw.o
