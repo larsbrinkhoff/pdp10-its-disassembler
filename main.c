@@ -25,44 +25,10 @@
 static void
 usage (char **argv)
 {
-  fprintf (stderr, "Usage: %s [-6] [-r] [-S<symbol mode>] [-W<word format>] <file>\n", argv[0]);
-  fprintf (stderr, "\nValid word formats are: ascii, bin, core, dta, its, pt.\n");
-  fprintf (stderr, "Valid symbol modes are: none, ddt, all.\n");
+  fprintf (stderr, "Usage: %s [-6] [-r] [-S<symbol mode>] [-W<word format>] <file>\n\n", argv[0]);
+  usage_word_format ();
+  usage_symbols_mode ();
   exit (1);
-}
-
-static int
-symbols_mode_opt (char **argv, char *string)
-{
-  if (strcmp (string, "none") == 0)
-    return SYMBOLS_NONE;
-  else if (strcmp (string, "ddt") == 0)
-    return SYMBOLS_DDT;
-  else if (strcmp (string, "all") == 0)
-    return SYMBOLS_ALL;
-
-  usage (argv);
-  return SYMBOLS_NONE; /* NOTREACHED */
-}
-
-static int
-word_format_opt (char **argv, char *string)
-{
-  if (strcmp (string, "ascii") == 0)
-    return FORMAT_AA;
-  else if (strcmp (string, "bin") == 0)
-    return FORMAT_BIN;
-  else if (strcmp (string, "core") == 0)
-    return FORMAT_CORE;
-  else if (strcmp (string, "dta") == 0)
-    return FORMAT_DTA;
-  else if (strcmp (string, "its") == 0)
-    return FORMAT_ITS;
-  else if (strcmp (string, "pt") == 0)
-    return FORMAT_PT;
-
-  usage (argv);
-  return FORMAT_AA; /* NOTREACHED */
 }
 
 int
@@ -86,10 +52,12 @@ main (int argc, char **argv)
 	  read_func = read_raw;
 	  break;
 	case 'S':
-	  symbols_mode = symbols_mode_opt (argv, optarg);
+	  if (parse_symbols_mode (optarg))
+	    usage (argv);
 	  break;
 	case 'W':
-          file_36bit_format = word_format_opt (argv, optarg);
+	  if (parse_word_format (optarg))
+	    usage (argv);
 	  break;
 	default:
 	  usage (argv);

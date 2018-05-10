@@ -14,6 +14,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include <stdio.h>
+#include <string.h>
 
 #include "dis.h"
 
@@ -30,6 +31,33 @@ extern void rewind_core_word (FILE *f);
 
 int file_36bit_format = FORMAT_ITS;
 static word_t checksum;
+
+void
+usage_word_format (void)
+{
+  fprintf (stderr, "Valid word formats are: ascii, bin, core, dta, its, pt.\n");
+}
+
+int
+parse_word_format (const char *string)
+{
+  if (strcmp (string, "ascii") == 0)
+    file_36bit_format = FORMAT_AA;
+  else if (strcmp (string, "bin") == 0)
+    file_36bit_format = FORMAT_BIN;
+  else if (strcmp (string, "core") == 0)
+    file_36bit_format = FORMAT_CORE;
+  else if (strcmp (string, "dta") == 0)
+    file_36bit_format = FORMAT_DTA;
+  else if (strcmp (string, "its") == 0)
+    file_36bit_format = FORMAT_ITS;
+  else if (strcmp (string, "pt") == 0)
+    file_36bit_format = FORMAT_PT;
+  else
+    return -1;
+
+  return 0;
+}
 
 word_t
 get_word (FILE *f)

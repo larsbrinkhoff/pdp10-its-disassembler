@@ -15,6 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include <stddef.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -23,7 +24,28 @@
 
 #define MAX_SYMBOLS 16384
 
-int symbols_mode = SYMBOLS_NONE;
+static int symbols_mode = SYMBOLS_NONE;
+
+void
+usage_symbols_mode (void)
+{
+  fprintf (stderr, "Valid symbol modes are: none, ddt, all.\n");
+}
+
+int
+parse_symbols_mode (const char *string)
+{
+  if (strcmp (string, "none") == 0)
+    symbols_mode = SYMBOLS_NONE;
+  else if (strcmp (string, "ddt") == 0)
+    symbols_mode = SYMBOLS_DDT;
+  else if (strcmp (string, "all") == 0)
+    symbols_mode = SYMBOLS_ALL;
+  else
+    return -1;
+
+  return 0;
+}
 
 static struct symbol symbols[MAX_SYMBOLS];
 static int num_symbols = 0;
