@@ -1,0 +1,61 @@
+#!/bin/sh -e
+# Copyright (C) 2018 Adam Sampson <ats@offog.org>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+# Convert a Harvard scan file into a PDF file.
+
+# Needs: mktemp harscntopbm pnmsplit pnmflip ppm2tiff tiffcp tiff2pdf
+
+usage () {
+	echo "Usage: $0 [-W<word format>] [-r<angle>] <harscn file> <PDF file>"
+	exit 1
+}
+
+wordformat=""
+rotate=""
+while getopts "W:r:" opt; do
+	case "$opt" in
+	W)
+		wordformat="-W$OPTARG"
+		;;
+	r)
+		rotate="-r$OPTARG"
+		;;
+	\?)
+		usage
+		;;
+	esac
+done
+shift $(expr "$OPTIND" - 1)
+
+if [ "$#" != 2 ]; then
+	usage
+fi
+input="$1"
+output="$2"
+
+tempdir=$(mktemp -d)
+mkdir -p "$tempdir"
+test -d "$tempdir"
+trap 'rm -fr "$tempdir"' 0
+
+harscntopbm $wordformat "$input" | pnmsplit - "$tempdir/%d.pbm"
+for f in "$tempdir"/*.pbm; do
+	n=$(basename "$f" .pbm)
+	pnmflip $rotate "$f" | \
+		ppm2tiff -R 200 /dev/stdin "$tempdir"/$(printf "p%06d" "$n").tif
+done
+tiffcp -t -c g4 "$tempdir"/p*.tif "$tempdir"/all.tif
+tiff2pdf -c "harscntopdf" -o "$output" "$tempdir"/all.tif
