@@ -7,7 +7,7 @@ OBJS =	pdp10-opc.o info.o word.o sblk.o pdump.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o $(WORDS)
 
 UTILS =	bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
-	macdmp saildart macro-tapes tape-dir harscntopbm
+	macdmp saildart macro-tapes tape-dir harscntopbm palx
 
 all: dis10 $(UTILS) check
 
@@ -62,6 +62,9 @@ tape-dir: tape-dir.o $(OBJS)
 	$(CC) $^ -o $@
 
 harscntopbm: harscntopbm.o word.o $(WORDS)
+	$(CC) $^ -o $@
+
+palx: palx.o word.o $(WORDS)
 	$(CC) $^ -o $@
 
 test/test_write: test/test_write.o $(OBJS)
