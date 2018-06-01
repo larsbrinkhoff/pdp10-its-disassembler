@@ -8,6 +8,7 @@
 - View disk image contents.
 - Extract files from a DECtape image in MACDMP format.
 - Print the contents of SYSENG; MACRO TAPES and .TAPEn; TAPE nnn files.
+- Convert PALX binary to PDP-11 paper tape image.
 
 A Linux FUSE implementation of the networking filesystem protocol MLDEV
 is elsewhere: http://github.com/larsbrinkhoff/lmdev
