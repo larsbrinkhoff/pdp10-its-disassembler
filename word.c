@@ -23,11 +23,13 @@ extern word_t get_its_word (FILE *f);
 extern word_t get_x_word (FILE *f);
 extern word_t get_dta_word (FILE *f);
 extern word_t get_core_word (FILE *f);
+extern word_t get_pt_word (FILE *f);
 extern void rewind_bin_word (FILE *f);
 extern void rewind_its_word (FILE *f);
 extern void rewind_x_word (FILE *f);
 extern void rewind_dta_word (FILE *f);
 extern void rewind_core_word (FILE *f);
+extern void rewind_pt_word (FILE *f);
 
 int file_36bit_format = FORMAT_ITS;
 static word_t checksum;
