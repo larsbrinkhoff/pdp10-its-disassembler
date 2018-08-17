@@ -18,6 +18,9 @@
 
 #include "dis.h"
 #include "memory.h"
+#include "cpu/cpu.h"
+
+int start_address;
 
 void
 read_sblk (FILE *f, struct pdp10_memory *memory, int cpu_model)
@@ -69,6 +72,12 @@ read_sblk (FILE *f, struct pdp10_memory *memory, int cpu_model)
 	}
 
       add_memory (memory, block_address, block_length, data);
+      while (block_length > 0)
+	{
+	  unpure_page (block_address);
+	  block_address += 02000;
+	  block_length -= 02000;
+	}
 
       word = get_word (f);
       check_checksum (word);

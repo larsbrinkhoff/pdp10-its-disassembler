@@ -38,6 +38,7 @@ struct FILE;
 struct pdp10_file;
 struct pdp10_memory;
 
+extern int      start_address;
 extern int	file_36bit_format;
 extern void     usage_word_format (void);
 extern int      parse_word_format (const char *string);

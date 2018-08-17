@@ -167,6 +167,7 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 
   printf ("Start instruction:\n");
   disassemble_word (NULL, word0, -1, cpu_model);
+  start_address = word0 & 0777777;
 
   while ((word = get_word (f)) & SIGNBIT)
     {

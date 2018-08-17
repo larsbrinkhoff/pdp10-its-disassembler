@@ -18,6 +18,8 @@
 
 #include "dis.h"
 
+#define MOBY  (256*1024)
+
 struct pdp10_area
 {
   int		start;

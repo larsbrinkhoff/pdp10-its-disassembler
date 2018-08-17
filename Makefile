@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -W -Wall
+CFLAGS = -g -W -Wall -I.
 
 WORDS =  bin-word.o its-word.o x-word.o dta-word.o aa-word.o pt-word.o core-word.o
 
@@ -19,7 +19,7 @@ clean:
 	for f in $(UTILS); do rm -f $${f}.o; done
 	rm -f *.dasm *.list
 
-dis10: main.o $(OBJS) dmp.o raw.o
+dis10: main.o $(OBJS) dmp.o raw.o cpu/cpu.o cpu/its.o
 	gcc $^ -o dis10
 
 bin2ascii: bin2ascii.o

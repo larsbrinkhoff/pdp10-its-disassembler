@@ -75,6 +75,10 @@ read_pdump (FILE *f, struct pdp10_memory *memory, int cpu_model)
 	    printf (" %03o", (int)(word & PAGE_NUM));
 
 	  printf ("\n");
+	  if (word & PAGE_WRITE)
+	    unpure_page (ITS_PAGESIZE * i);
+	  else
+	    pure_page (ITS_PAGESIZE * i);
 	}
     }
 

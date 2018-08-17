@@ -21,6 +21,7 @@
 #include "dis.h"
 #include "opcode/pdp10.h"
 #include "memory.h"
+#include "cpu/cpu.h"
 
 static void
 usage (char **argv)
@@ -40,8 +41,10 @@ main (int argc, char **argv)
   word_t word;
   int opt;
   reader_t read_func = NULL;
+  int execute = 0;
+  int a;
 
-  while ((opt = getopt (argc, argv, "6rS:W:")) != -1)
+  while ((opt = getopt (argc, argv, "6rS:W:E")) != -1)
     {
       switch (opt)
 	{
@@ -58,6 +61,9 @@ main (int argc, char **argv)
 	case 'W':
 	  if (parse_word_format (optarg))
 	    usage (argv);
+	  break;
+	case 'E':
+	  execute = 1;
 	  break;
 	default:
 	  usage (argv);
@@ -77,6 +83,9 @@ main (int argc, char **argv)
 
   init_memory (&memory);
 
+  for (a = 0; a < MOBY; a += 02000)
+    unmapped_page (a);
+
   word = get_word (file);
   rewind_word (file);
   if (!read_func)
@@ -90,6 +99,9 @@ main (int argc, char **argv)
 
   while ((word = get_word (file)) != -1)
     printf ("(extra word: %012llo)\n", word);
+
+  if (execute)
+    run (start_address, &memory);
 
   printf ("\nDisassembly:\n\n");
   dis (&memory, cpu_model);
