@@ -70,7 +70,7 @@ static void suset (void)
 
 static void lose (void)
 {
-  fprintf (stderr, ".LOSE\n");
+  printf ("ERROR; %o>>\n", PC-1);
   exit (1);
 }
 

@@ -18,6 +18,7 @@ clean:
 	rm -f main.o dmp.o raw.o
 	for f in $(UTILS); do rm -f $${f}.o; done
 	rm -f *.dasm *.list
+	rm -f ts.d.txt
 
 dis10: main.o $(OBJS) dmp.o raw.o cpu/cpu.o cpu/its.o
 	gcc -g $^ -o dis10
@@ -73,7 +74,11 @@ test/test_write: test/test_write.o $(OBJS)
 test/test_read: test/test_read.o $(OBJS)
 	$(CC) $^ -o $@
 
-check: ts.obs.dasm ts.ksfedr.dasm ts.name.dasm ts.srccom.dasm atsign.tcp.dasm arc.code.list macro.low.dasm pt.rim.dasm visib1.bin.dasm visib2.bin.dasm visib3.bin.dasm
+ts.d.txt: dis10 samples/ts.d
+	./dis10 -E samples/ts.d > $@ 2> /dev/null
+	grep ':KILL' $@ > /dev/null
+
+check: ts.obs.dasm ts.ksfedr.dasm ts.name.dasm ts.srccom.dasm atsign.tcp.dasm arc.code.list macro.low.dasm pt.rim.dasm visib1.bin.dasm visib2.bin.dasm visib3.bin.dasm ts.d.txt
 
 samples/ts.obs = -Wits
 samples/ts.ksfedr = -Wits
