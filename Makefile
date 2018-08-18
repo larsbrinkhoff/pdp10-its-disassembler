@@ -20,7 +20,7 @@ clean:
 	rm -f *.dasm *.list
 
 dis10: main.o $(OBJS) dmp.o raw.o cpu/cpu.o cpu/its.o
-	gcc $^ -o dis10
+	gcc -g $^ -o dis10
 
 bin2ascii: bin2ascii.o
 	$(CC) bin2ascii.o -o bin2ascii

@@ -72,5 +72,6 @@ extern void	sixbit_to_ascii (word_t sixbit, char *ascii);
 extern void	print_date (FILE *, word_t t);
 extern void	print_datime (FILE *, word_t t);
 extern int	byte_size (int, int *);
+extern void	squoze_to_ascii (word_t squoze, char *ascii);
 
 #endif /* DIS_H */

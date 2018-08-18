@@ -156,3 +156,21 @@ get_word_at (struct pdp10_memory *memory, int address)
 
   return getword (area, address);
 }
+
+void
+set_word_at (struct pdp10_memory *memory, int address, word_t data)
+{
+  struct pdp10_area *area;
+  int offset;
+
+  area = find_area (memory, address);
+  if (area == NULL)
+    return -1;
+
+  offset = 5 * (address - area->start);
+  area->data[offset++] = data >> 32;
+  area->data[offset++] = data >> 24;
+  area->data[offset++] = data >> 16;
+  area->data[offset++] = data >>  8;
+  area->data[offset++] = data >>  0;
+}

@@ -42,5 +42,7 @@ extern int	set_address (struct pdp10_memory *memory, int address);
 extern int	get_address (struct pdp10_memory *memory);
 extern word_t	get_next_word (struct pdp10_memory *memory);
 extern word_t	get_word_at (struct pdp10_memory *memory, int address);
+extern void	set_word_at (struct pdp10_memory *memory, int address,
+			     word_t data);
 
 #endif /* MEMORY_H */
