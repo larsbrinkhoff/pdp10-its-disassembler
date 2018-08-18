@@ -42,14 +42,14 @@ word_t read_memory (int address)
     return FM[address];
 
   data = get_word_at (memory, address);
-  fprintf (stderr, "CORE %06o %012llo\n", address, data);
+  fprintf (stderr, "READ %06o %012llo\n", address, data);
   return data;
 }
 
 void write_memory (int address, word_t data)
 {
   address &= 0777777;
-  fprintf (stderr, "CORE %06o %012llo\n", address, data);
+  fprintf (stderr, "WRITE %06o %012llo\n", address, data);
   invalidate_word (address);
   if (address < 16)
     FM[address] = data;
@@ -77,6 +77,7 @@ static void uop_read_immediate (void)
 static void uop_read_memory (void)
 {
   AR = read_memory (MA);
+  BR = 0;
   fprintf (stderr, "AR %012llo\n", AR);
 }
 
@@ -131,6 +132,12 @@ static void uop_write_both (void)
   write_memory (MA, AR);
 }
 
+static void uop_write_ac_mem (void)
+{
+  FM[AC] = AR;
+  write_memory (MA, BR);
+}
+
 static void uop_write_same (void)
 {
   if (AC != 0)
@@ -170,19 +177,19 @@ static uop read_operands[] = {
   RDB1, RDB1, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, 
   RDB1, RDB4, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, 
   /* 200-277 */
-  RDMA, RDNO, RDAA, RDMA, RDMA, RDNO, RDAA, RDMA, 
-  RDMA, RDNO, RDAA, RDMA, RDMA, RDNO, RDAA, RDMA, 
+  RDMA, RDNO, RDAA, RDMA, RDMA, RDNO, RDAA, RDMA, // MOVE, MOVS
+  RDMA, RDNO, RDAA, RDMA, RDMA, RDNO, RDAA, RDMA, // MOVN, MOVM
   RDB1, RDAB, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, 
   RDB2, RDAA, RDB2, RDB2, RDB3, RDA2, RDB3, RDB3, 
   RDAA, RDAA, RDAA, RDAA, RDA2, RDA2, RDA2, RDNO, 
-  RDB2, RDAA, RDAA, RDAA, RDNO, RDNO, RDNO, RDNO, 
-  RDAA, RDB2, RDAA, RDAA, RDNO, RDNO, RDAB, RDNO, 
+  RDB2, RDAA, RDAA, RDAA, RDNO, RDNO, RDNO, RDNO, // EXCH etc
+  RDAA, RDB2, RDAA, RDAA, RDNO, RDNO, RDAB, RDNO, // PUSHJ etc
   RDB1, RDAB, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, 
   /* 300-377 */
-  RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, 
-  RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, 
-  RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, 
-  RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, 
+  RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, // CAI
+  RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, // CAM
+  RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, // JUMP
+  RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, // SKIP
   RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, 
   RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, 
   RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, 
@@ -235,6 +242,7 @@ static uop read_operands[] = {
 #define WRB1 uop_write_both
 #define WRB2 uop_write_same
 #define WRB3 0
+#define WRB4 uop_write_ac_mem
 
 static uop write_back[] = {
   /* 000-077 */
@@ -256,19 +264,19 @@ static uop write_back[] = {
   WRA1, WRA3, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, 
   WRA1, WRA3, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, 
   /* 200-277 */
-  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, 
-  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, 
+  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, // MOVE, MOVS
+  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, // MOVN, MOVM
   WRA1, WRA1, WRM1, WRB1, WRA3, WRA3, WRM1, WRB3, 
   WRA3, WRA3, WRM1, WRB3, WRA3, WRA3, WRM1, WRB3, 
   WRA1, WRA1, WRA1, WRNO, WRA3, WRA3, WRA3, WRNO, 
-  WRNO, WRNO, WRA1, WRA1, WRNO, WRNO, WRNO, WRNO, 
-  WRA1, WRA1, WRA1, WRA1, WRNO, WRA1, WRM1, WRNO, 
+  WRB4, WRNO, WRA1, WRA1, WRNO, WRNO, WRNO, WRNO, // EXCH etc
+  WRA1, WRA1, WRA1, WRA1, WRNO, WRA1, WRM1, WRNO, // PUSHJ etc
   WRA1, WRA1, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, 
   /* 300-377 */
-  WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, 
-  WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, 
-  WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, 
-  WRA0, WRA0, WRA0, WRA0, WRA0, WRA0, WRA0, WRA0, 
+  WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // CAI
+  WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // CAM
+  WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // JUMP
+  WRA0, WRA0, WRA0, WRA0, WRA0, WRA0, WRA0, WRA0, // SKIP
   WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, 
   WRB2, WRB2, WRB2, WRB2, WRB2, WRB2, WRB2, WRB2, 
   WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, 
@@ -316,10 +324,36 @@ static void uop_move (void)
   fprintf (stderr, "MOVE\n");
 }
 
+static void uop_movs (void)
+{
+  fprintf (stderr, "MOVS\n");
+  AR = ((AR >> 18) & 0777777) | ((AR & 0777777) << 18);
+  fprintf (stderr, "AR %012llo\n", AR);
+}
+
+static void uop_movn (void)
+{
+  fprintf (stderr, "MOVN\n");
+  AR = (-AR) & 0777777777777LL;
+  fprintf (stderr, "AR %012llo\n", AR);
+}
+
+static void uop_movm (void)
+{
+  fprintf (stderr, "MOVM\n");
+  if (AR & 0400000000000LL)
+    AR = (-AR) & 0777777777777LL;
+  fprintf (stderr, "AR %012llo\n", AR);
+}
+
 static void uop_exch (void)
 {
   fprintf (stderr, "EXCH\n");
-  exit (0);
+  fprintf (stderr, "AR %012llo, BR %012llo\n", AR, BR);
+  MQ = AR;
+  AR = BR;
+  BR = MQ;
+  fprintf (stderr, "AR %012llo, BR %012llo\n", AR, BR);
 }
 
 static void uop_blt (void)
@@ -458,24 +492,25 @@ static void uop_skipg (void)
 
 static void uop_jumpl (void)
 {
-  fprintf (stderr, "JumpL\n");
+  fprintf (stderr, "JUMPL: %012llo < 0\n", AR);
   SIGN_EXTEND (AR);
-  SIGN_EXTEND (BR);
-  if (AR < BR)
+  if (AR < 0)
     PC = MA;
 }
 
 static void uop_jumpe (void)
 {
   fprintf (stderr, "JumpE\n");
-  if (AR == BR)
+  if (AR == 0)
     PC = MA;
 }
 
 static void uop_jumple (void)
 {
   fprintf (stderr, "JumpLE\n");
-  if (AR <= BR)
+  SIGN_EXTEND (AR);
+  SIGN_EXTEND (BR);
+  if (AR <= 0)
     PC = MA;
 }
 
@@ -489,15 +524,14 @@ static void uop_jumpge (void)
 {
   fprintf (stderr, "JumpN\n");
   SIGN_EXTEND (AR);
-  SIGN_EXTEND (BR);
-  if (AR >= BR)
+  if (AR >= 0)
     PC = MA;
 }
 
 static void uop_jumpn (void)
 {
   fprintf (stderr, "JumpN\n");
-  if (AR != BR)
+  if (AR != 0)
     PC = MA;
 }
 
@@ -505,8 +539,7 @@ static void uop_jumpg (void)
 {
   fprintf (stderr, "JumpN\n");
   SIGN_EXTEND (AR);
-  SIGN_EXTEND (BR);
-  if (AR > BR)
+  if (AR > 0)
     PC = MA;
 }
 
@@ -566,8 +599,8 @@ static uop operate[] = {
   0, 0, 0, 0, 0, 0, 0, 0, 
   0, 0, 0, 0, 0, 0, 0, 0, 
   /* 200-277 */
-  uop_move, uop_move, uop_move, uop_move, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
+  uop_move, uop_move, uop_move, uop_move, uop_movs, uop_movs, uop_movs, uop_movs,
+  uop_movn, uop_movn, uop_movn, uop_movn, uop_movm, uop_movm, uop_movm, uop_movm,
   0, 0, 0, 0, 0, 0, 0, 0, 
   0, 0, 0, 0, 0, 0, 0, 0, 
   0, 0, 0, 0, 0, 0, 0, 0, 
