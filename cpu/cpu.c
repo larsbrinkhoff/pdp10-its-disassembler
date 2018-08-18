@@ -169,58 +169,58 @@ static uop read_operands[] = {
   RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, 
   /* 100-177 */
   RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, 
-  RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, 
-  RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, 
-  RDB1, RDB2, RDAA, RDNO, RDNO, RDNO, RDNO, RDNO, 
-  RDB1, RDB1, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, 
-  RDB1, RDB1, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, 
-  RDB1, RDB1, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, 
-  RDB1, RDB4, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, 
+  RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, // DFAD etc 
+  RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, // DMOVE etc
+  RDB1, RDB2, RDAA, RDNO, RDNO, RDNO, RDNO, RDNO, // UFA etc
+  RDB1, RDB1, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, // FAD
+  RDB1, RDB1, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, // FSB
+  RDB1, RDB1, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, // FMP
+  RDB1, RDB4, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, // FDV
   /* 200-277 */
   RDMA, RDNO, RDAA, RDMA, RDMA, RDNO, RDAA, RDMA, // MOVE, MOVS
   RDMA, RDNO, RDAA, RDMA, RDMA, RDNO, RDAA, RDMA, // MOVN, MOVM
-  RDB1, RDAB, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, 
-  RDB2, RDAA, RDB2, RDB2, RDB3, RDA2, RDB3, RDB3, 
-  RDAA, RDAA, RDAA, RDAA, RDA2, RDA2, RDA2, RDNO, 
+  RDB1, RDAB, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, // IMUL, MUL
+  RDB2, RDAA, RDB2, RDB2, RDB3, RDA2, RDB3, RDB3, // IDIV, DIV
+  RDAA, RDAA, RDAA, RDAA, RDA2, RDA2, RDA2, RDNO, // ASH etc
   RDB2, RDAA, RDAA, RDAA, RDNO, RDNO, RDNO, RDNO, // EXCH etc
   RDAA, RDB2, RDAA, RDAA, RDNO, RDNO, RDAB, RDNO, // PUSHJ etc
-  RDB1, RDAB, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, 
+  RDB1, RDAB, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, // ADD, SUB
   /* 300-377 */
   RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, // CAI
   RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, // CAM
   RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, // JUMP
   RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, // SKIP
-  RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, 
-  RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, 
-  RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, 
-  RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, 
+  RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, // AOJ
+  RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, // AOS
+  RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, // SOJ
+  RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, // SOS
   /* 400-477 */
-  RDNO, RDNO, RDNO, RDNO, RDB1, RDAB, RDB1, RDB1, 
-  RDB1, RDAB, RDB1, RDB1, RDMA, RDNO, RDNO, RDMA, 
-  RDB1, RDAB, RDB1, RDB1, RDAB, RDAB, RDAB, RDAB, 
-  RDB1, RDAB, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, 
-  RDB1, RDAB, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, 
-  RDAB, RDAB, RDAB, RDAB, RDB1, RDAB, RDB1, RDB1, 
-  RDMA, RDNO, RDMA, RDMA, RDB1, RDAB, RDB1, RDB1, 
-  RDB1, RDAB, RDB1, RDB1, RDNO, RDNO, RDNO, RDNO, 
+  RDNO, RDNO, RDNO, RDNO, RDB1, RDAB, RDB1, RDB1, // SETZ, AND
+  RDB1, RDAB, RDB1, RDB1, RDMA, RDNO, RDNO, RDMA, // ANDCA, SETM
+  RDB1, RDAB, RDB1, RDB1, RDAB, RDAB, RDAB, RDAB, // ANDCM, SETA
+  RDB1, RDAB, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, // XOR, IOR
+  RDB1, RDAB, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, // ANDCB, EQV
+  RDAB, RDAB, RDAB, RDAB, RDB1, RDAB, RDB1, RDB1, // SETCA, ORCA
+  RDMA, RDNO, RDMA, RDMA, RDB1, RDAB, RDB1, RDB1, // SETCM, ORCM
+  RDB1, RDAB, RDB1, RDB1, RDNO, RDNO, RDNO, RDNO, // ORCB, SETO
   /* 500-577 */
-  RDB1, RDAB, RDB2, RDMA, RDB1, RDAB, RDB2, RDMA, 
-  RDMA, RDNO, RDAA, RDMA, RDMA, RDNO, RDAA, RDMA, 
-  RDMA, RDNO, RDAA, RDMA, RDMA, RDNO, RDAA, RDMA, 
-  RDMA, RDNO, RDAA, RDMA, RDMA, RDNO, RDAA, RDMA, 
-  RDB1, RDAB, RDB2, RDMA, RDB1, RDAB, RDB2, RDMA, 
-  RDMA, RDNO, RDAA, RDMA, RDMA, RDNO, RDAA, RDMA, 
-  RDMA, RDNO, RDAA, RDMA, RDMA, RDNO, RDAA, RDMA, 
-  RDMA, RDNO, RDAA, RDMA, RDMA, RDNO, RDAA, RDMA, 
+  RDB1, RDAB, RDB2, RDMA, RDB1, RDAB, RDB2, RDMA, // HLL, HRL
+  RDMA, RDNO, RDAA, RDMA, RDMA, RDNO, RDAA, RDMA, // HLLZ, HRLZ
+  RDMA, RDNO, RDAA, RDMA, RDMA, RDNO, RDAA, RDMA, // HLLO, HRLO
+  RDMA, RDNO, RDAA, RDMA, RDMA, RDNO, RDAA, RDMA, // HLLE, HRLE
+  RDB1, RDAB, RDB2, RDMA, RDB1, RDAB, RDB2, RDMA, // HLL, HRL
+  RDMA, RDNO, RDAA, RDMA, RDMA, RDNO, RDAA, RDMA, // HLLZ, HRLZ
+  RDMA, RDNO, RDAA, RDMA, RDMA, RDNO, RDAA, RDMA, // HLLO, HRLO
+  RDMA, RDNO, RDAA, RDMA, RDMA, RDNO, RDAA, RDMA, // HLLE, HRLE
   /* 600-677 */
-  RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, 
-  RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, 
-  RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, 
-  RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, 
-  RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, 
-  RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, 
-  RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, 
-  RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, 
+  RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, // TxN
+  RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, // TxN
+  RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, // TxZ
+  RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, // TxZ
+  RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, // TxC
+  RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, // TxC
+  RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, // TxO
+  RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, // TxO
   /* 700-777 */
   RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, 
   RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, RDNO, 
@@ -346,6 +346,48 @@ static void uop_movm (void)
   fprintf (stderr, "AR %012llo\n", AR);
 }
 
+static void uop_ash (void)
+{
+  fprintf (stderr, "ASH\n");
+  exit (0);
+}
+
+static void uop_rot (void)
+{
+  fprintf (stderr, "ROT\n");
+  exit (0);
+}
+
+static void uop_lsh (void)
+{
+  fprintf (stderr, "LSH\n");
+  exit (0);
+}
+
+static void uop_jffo (void)
+{
+  fprintf (stderr, "JFFO\n");
+  exit (0);
+}
+
+static void uop_ashc (void)
+{
+  fprintf (stderr, "ASHC\n");
+  exit (0);
+}
+
+static void uop_rotc (void)
+{
+  fprintf (stderr, "ROTC\n");
+  exit (0);
+}
+
+static void uop_lshc (void)
+{
+  fprintf (stderr, "LSHC\n");
+  exit (0);
+}
+
 static void uop_exch (void)
 {
   fprintf (stderr, "EXCH\n");
@@ -396,7 +438,7 @@ static void uop_pushj (void)
 {
   fprintf (stderr, "PUSHJ\n");
   AR = ((AR + 0000001000000LL) & 0777777000000LL) | ((AR + 1) & 0777777LL);
-  write_memory (AR, PC);
+  write_memory (AR, (flags << 18) | PC);
   PC = MA;
 }
 
@@ -409,9 +451,12 @@ static void uop_push (void)
 
 static void uop_popj (void)
 {
+  word_t x;
   fprintf (stderr, "POPJ\n");
   fprintf (stderr, "AR %012llo\n", AR);
-  PC = read_memory (AR);
+  x = read_memory (AR);
+  PC = x & 0777777;
+  flags = (x >> 18) & 0777777;
   fprintf (stderr, "PC %06o\n", PC);
   AR = ((AR + 0777777000000LL) & 0777777000000LL) | ((AR - 1) & 0777777LL);
 }
@@ -422,6 +467,44 @@ static void uop_pop (void)
   MB = read_memory (AR);
   write_memory (MA, MB);
   AR = ((AR + 0777777000000LL) & 0777777000000LL) | ((AR - 1) & 0777777LL);
+}
+
+static void uop_jsr (void)
+{
+  fprintf (stderr, "JSR\n");
+  write_memory (AR, (flags << 18) | PC);
+  PC = AR + 1;
+}
+
+static void uop_jsp (void)
+{
+  fprintf (stderr, "JSP\n");
+  AR = (flags << 18) | PC;
+  PC = MA;
+}
+
+static void uop_jsa (void)
+{
+  fprintf (stderr, "JSA\n");
+  exit (0);
+}
+
+static void uop_jra (void)
+{
+  fprintf (stderr, "JRA\n");
+  exit (0);
+}
+
+static void uop_add (void)
+{
+  fprintf (stderr, "ADD\n");
+  AR = AR + BR;
+}
+
+static void uop_sub (void)
+{
+  fprintf (stderr, "SUB\n");
+  AR = AR - BR;
 }
 
 static void uop_setz (void)
@@ -603,10 +686,10 @@ static uop operate[] = {
   uop_movn, uop_movn, uop_movn, uop_movn, uop_movm, uop_movm, uop_movm, uop_movm,
   0, 0, 0, 0, 0, 0, 0, 0, 
   0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
+  uop_ash, uop_rot, uop_lsh, uop_jffo, uop_ashc, uop_rotc, uop_lshc, 0, 
   uop_exch, uop_blt, uop_aobjp, uop_aobjn, uop_jrst, uop_jfcl, uop_xct, 0, 
-  uop_pushj, uop_push, uop_pop, uop_popj, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 
+  uop_pushj, uop_push, uop_pop, uop_popj, uop_jsr, uop_jsp, uop_jsa, uop_jra,
+  uop_add, uop_add, uop_add, uop_add, uop_sub, uop_sub, uop_sub, uop_sub,
   /* 300-377 */
   uop_nop, uop_skipl, uop_skipe, uop_skiple, uop_skipa, uop_skipge, uop_skipn, uop_skipg,
   uop_nop, uop_skipl, uop_skipe, uop_skiple, uop_skipa, uop_skipge, uop_skipn, uop_skipg,
@@ -736,14 +819,12 @@ static void fill_page (int a, uop op)
 /* Fill an unpure page. */
 void unpure_page (int a)
 {
-  fprintf (stderr, "Unpure page at %06o\n", a);
   fill_page (a, decode_word);
 }
 
 /* Fill an pure page. */
 void pure_page (int a)
 {
-  fprintf (stderr, "Pure page at %06o\n", a);
   fill_page (a, decode_page);
 }
 
@@ -767,8 +848,8 @@ static void calculate_ea (void)
 
   do {
     address = x & 0777777;
-    X = (IR >> 18) & 017;
-    I = (IR >> 22) & 01;
+    X = (x >> 18) & 017;
+    I = (x >> 22) & 01;
     if (X)
       address += FM[X];
     if (I)
