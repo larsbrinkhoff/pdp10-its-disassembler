@@ -37,28 +37,28 @@ its2bin: its2bin.o word.o $(WORDS)
 its2rim: its2rim.o word.o $(WORDS)
 	$(CC) $^ -o its2rim
 
-dskdmp: dskdmp.c $(OBJS)
+dskdmp: dskdmp.c $(OBJS) cpu/stub.o
 	$(CC) $^ -o $@
 
-macdmp: macdmp.c $(OBJS)
+macdmp: macdmp.c $(OBJS) cpu/stub.o
 	$(CC) $^ -o $@
 
-saildart: saildart.o $(OBJS)
+saildart: saildart.o $(OBJS) cpu/stub.o
 	$(CC) $^ -o $@
 
-magdmp: magdmp.c core-word.o $(OBJS)
+magdmp: magdmp.c core-word.o $(OBJS) cpu/stub.o
 	$(CC) $^ -o $@
 
-magfrm: magfrm.c core-word.o $(OBJS)
+magfrm: magfrm.c core-word.o $(OBJS) cpu/stub.o
 	$(CC) $^ -o $@
 
-itsarc: itsarc.o $(OBJS)
+itsarc: itsarc.o $(OBJS) cpu/stub.o cpu/stub.o
 	$(CC) $^ -o $@
 
-macro-tapes: macro-tapes.o $(OBJS)
+macro-tapes: macro-tapes.o $(OBJS) cpu/stub.o
 	$(CC) $^ -o $@
 
-tape-dir: tape-dir.o $(OBJS)
+tape-dir: tape-dir.o $(OBJS) cpu/stub.o
 	$(CC) $^ -o $@
 
 harscntopbm: harscntopbm.o word.o $(WORDS)

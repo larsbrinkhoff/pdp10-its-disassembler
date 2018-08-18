@@ -21,16 +21,16 @@ typedef long long word_t;
 
 /* Machine state. */
 
-static int PC;
-static int flags;
-static word_t IR;
-static word_t AR;
-static word_t BR;
-static word_t MQ;
-static word_t MA;
-static word_t MB;
-static word_t AC[16];
-static struct pdp10_memory *memory;
+int PC;
+int flags;
+word_t IR;
+word_t AR;
+word_t BR;
+word_t MQ;
+word_t MA;
+word_t MB;
+word_t FM[16];
+struct pdp10_memory *memory;
 
 word_t fetch (int address)
 {
@@ -57,7 +57,7 @@ static void uop_rdma (void)
 static void uop_write_ac (void)
 {
   fprintf (stderr, "AC%llo %012llo\n", (IR >> 23) & 017, AR);
-  AC[(IR >> 23) & 017] = AR;
+  FM[(IR >> 23) & 017] = AR;
 }
 
 /* Table to decode an opcode into a read uop. */
@@ -431,7 +431,7 @@ static void calculate_ea (void)
     X = (IR >> 18) & 017;
     I = (IR >> 22) & 01;
     if (X)
-      address += AC[X];
+      address += FM[X];
     if (I)
       x = fetch (address);
   } while (I);
