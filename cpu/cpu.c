@@ -37,17 +37,18 @@ word_t read_memory (int address)
 {
   word_t data;
 
+  address &= 0777777;
   if (address < 16)
     return FM[address];
 
   data = get_word_at (memory, address);
-  if (data & 0400000000000LL)
-    data |= -1LL << 36;
+  fprintf (stderr, "CORE %06o %012llo\n", address, data);
   return data;
 }
 
 void write_memory (int address, word_t data)
 {
+  address &= 0777777;
   fprintf (stderr, "CORE %06o %012llo\n", address, data);
   invalidate_word (address);
   if (address < 16)
@@ -145,7 +146,7 @@ static void uop_write_same (void)
 #define RDAM 0
 #define RDA2 0
 #define RDB1 uop_read_both
-#define RDB2 0
+#define RDB2 uop_read_both
 #define RDB3 0
 #define RDB4 0
 
@@ -361,14 +362,31 @@ static void uop_pushj (void)
 {
   fprintf (stderr, "PUSHJ\n");
   AR = ((AR + 0000001000000LL) & 0777777000000LL) | ((AR + 1) & 0777777LL);
-  write_memory (AR & 0777777, PC);
+  write_memory (AR, PC);
   PC = MA;
+}
+
+static void uop_push (void)
+{
+  fprintf (stderr, "PUSH\n");
+  AR = ((AR + 0000001000000LL) & 0777777000000LL) | ((AR + 1) & 0777777LL);
+  write_memory (AR, BR);
 }
 
 static void uop_popj (void)
 {
   fprintf (stderr, "POPJ\n");
-  PC = read_memory (AR & 0777777);
+  fprintf (stderr, "AR %012llo\n", AR);
+  PC = read_memory (AR);
+  fprintf (stderr, "PC %06o\n", PC);
+  AR = ((AR + 0777777000000LL) & 0777777000000LL) | ((AR - 1) & 0777777LL);
+}
+
+static void uop_pop (void)
+{
+  fprintf (stderr, "POP\n");
+  MB = read_memory (AR);
+  write_memory (MA, MB);
   AR = ((AR + 0777777000000LL) & 0777777000000LL) | ((AR - 1) & 0777777LL);
 }
 
@@ -378,9 +396,15 @@ static void uop_setz (void)
   AR = 0;
 }
 
+#define SIGN_EXTEND(X) \
+  if (X & 0400000000000LL)                      \
+    X |= -1LL << 36;
+
 static void uop_skipl (void)
 {
   fprintf (stderr, "SKIPL: %012llo < %012llo\n", AR, BR);
+  SIGN_EXTEND (AR);
+  SIGN_EXTEND (BR);
   if (AR < BR)
     PC++;
 }
@@ -395,6 +419,8 @@ static void uop_skipe (void)
 static void uop_skiple (void)
 {
   fprintf (stderr, "SkipLE\n");
+  SIGN_EXTEND (AR);
+  SIGN_EXTEND (BR);
   if (AR <= BR)
     PC++;
 }
@@ -408,6 +434,8 @@ static void uop_skipa (void)
 static void uop_skipge (void)
 {
   fprintf (stderr, "SkipN\n");
+  SIGN_EXTEND (AR);
+  SIGN_EXTEND (BR);
   if (AR >= BR)
     PC++;
 }
@@ -422,6 +450,8 @@ static void uop_skipn (void)
 static void uop_skipg (void)
 {
   fprintf (stderr, "SkipN\n");
+  SIGN_EXTEND (AR);
+  SIGN_EXTEND (BR);
   if (AR > BR)
     PC++;
 }
@@ -429,6 +459,8 @@ static void uop_skipg (void)
 static void uop_jumpl (void)
 {
   fprintf (stderr, "JumpL\n");
+  SIGN_EXTEND (AR);
+  SIGN_EXTEND (BR);
   if (AR < BR)
     PC = MA;
 }
@@ -456,6 +488,8 @@ static void uop_jumpa (void)
 static void uop_jumpge (void)
 {
   fprintf (stderr, "JumpN\n");
+  SIGN_EXTEND (AR);
+  SIGN_EXTEND (BR);
   if (AR >= BR)
     PC = MA;
 }
@@ -470,6 +504,8 @@ static void uop_jumpn (void)
 static void uop_jumpg (void)
 {
   fprintf (stderr, "JumpN\n");
+  SIGN_EXTEND (AR);
+  SIGN_EXTEND (BR);
   if (AR > BR)
     PC = MA;
 }
@@ -536,7 +572,7 @@ static uop operate[] = {
   0, 0, 0, 0, 0, 0, 0, 0, 
   0, 0, 0, 0, 0, 0, 0, 0, 
   uop_exch, uop_blt, uop_aobjp, uop_aobjn, uop_jrst, uop_jfcl, uop_xct, 0, 
-  uop_pushj, 0, 0, uop_popj, 0, 0, 0, 0, 
+  uop_pushj, uop_push, uop_pop, uop_popj, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 
   /* 300-377 */
   uop_nop, uop_skipl, uop_skipe, uop_skiple, uop_skipa, uop_skipge, uop_skipn, uop_skipg,
