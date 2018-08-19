@@ -13,12 +13,25 @@
    run (address) - Run the emulator.
 */
 
+#include <unistd.h>
+#include <sys/mman.h>
 #include "memory.h"
 #include "cpu/its.h"
 
+#define THREADED 0
+
+#if defined(__GNUC__) && defined (__i386__)
+#define REGPARM __attribute__((regparm(1)))
+#else
+#define REGPARM
+#endif
+
 typedef long long word_t;
+static int REGPARM calculate_ea (int);
 void invalidate_word (int a);
-static void execute (int *pc);
+#if THREADED
+static int execute (int);
+#endif
 
 #define DEBUG(X) fprintf X
 #define TODO(X) DEBUG((stderr, "TODO: %s\n", #X)); exit (1)
@@ -31,7 +44,7 @@ static void execute (int *pc);
 
 int MA;
 int AC;
-int PC;
+//int PC;
 int flags;
 word_t IR;
 word_t AR;
@@ -69,91 +82,118 @@ void write_memory (int address, word_t data)
    operands, the second is the operation, and the third writes back
    the result. */
 
-typedef void (*uop) (void);
+typedef int REGPARM (*uop) (int);
+
+#if THREADED
 #define UOPSIZE 3
 static uop ops[UOPSIZE*MOBY];
+typedef uop *upc_t;
+#else
+#define UOPSIZE 4*5
+static unsigned char ops[UOPSIZE*MOBY];
+typedef unsigned char *upc_t;
+#endif
 
-static void uop_nop (void)
+
+static int REGPARM uop_nop (int PC)
 {
+  return PC;
 }
 
-static void uop_read_immediate (void)
+static int REGPARM uop_read_immediate (int PC)
 {
   AR = MA;
   DEBUG((stderr, "AR %012llo\n", AR));
+  PC++;
+  return PC;
 }
 
-static void uop_read_memory (void)
+static int REGPARM uop_read_memory (int PC)
 {
   AR = read_memory (MA);
   BR = 0;
   if (AR == 0777700000000LL)
     AR = -010000LL << 18;
   DEBUG((stderr, "AR %012llo\n", AR));
+  PC++;
+  return PC;
 }
 
-static void uop_read_ac (void)
+static int REGPARM uop_read_ac (int PC)
 {
   AR = FM[AC];
   DEBUG((stderr, "AC %o, AR %012llo\n", AC, AR));
+  PC++;
+  return PC;
 }
 
-static void uop_read_ac_immediate (void)
+static int REGPARM uop_read_ac_immediate (int PC)
 {
   AR = FM[AC];
   BR = MA;
   DEBUG((stderr, "AR %012llo\n", AR));
   DEBUG((stderr, "BR %012llo\n", BR));
+  PC++;
+  return PC;
 }
 
-static void uop_read_both (void)
+static int REGPARM uop_read_both (int PC)
 {
   AR = FM[AC];
   BR = read_memory (MA);
   DEBUG((stderr, "AR %012llo\n", AR));
   DEBUG((stderr, "AC %o, BR %012llo\n", AC, BR));
+  PC++;
+  return PC;
 }
 
-static void uop_write_ac (void)
+static int REGPARM uop_write_ac (int PC)
 {
   DEBUG((stderr, "AC%o %012llo\n", AC, AR));
   FM[AC] = AR;
+  return PC;
 }
 
-static void uop_write_ac1 (void)
+static int REGPARM uop_write_ac1 (int PC)
 {
   DEBUG((stderr, "AC%o %012llo\n", AC + 1, MQ));
   FM[AC+1] = MQ;
+  return PC;
 }
 
-static void uop_write_acnz (void)
+static int REGPARM uop_write_acnz (int PC)
 {
   if (AC != 0)
     FM[AC] = AR;
+  return PC;
 }
 
-static void uop_write_mem (void)
+static int REGPARM uop_write_mem (int PC)
 {
   write_memory (MA, AR);
+  return PC;
 }
 
-static void uop_write_both (void)
+static int REGPARM uop_write_both (int PC)
 {
   FM[AC] = AR;
   write_memory (MA, AR);
+  return PC;
 }
 
-static void uop_write_ac_mem (void)
+static int REGPARM uop_write_ac_mem (int PC)
 {
   FM[AC] = AR;
   write_memory (MA, BR);
+  return PC;
 }
 
-static void uop_write_same (void)
+static int REGPARM uop_write_same (int PC)
 {
   if (AC != 0)
     FM[AC] = AR;
   write_memory (MA, AR);
+  return PC;
 }
 
 /* Table to decode an opcode into a read uop. */
@@ -330,82 +370,100 @@ static uop write_back[] = {
   WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, 
 };
 
-static void uop_luuo (void)
+static int REGPARM uop_luuo (int PC)
 {
   word_t x = IR & 0777740000000LL;
   write_memory (040, x + MA);
   // XCT 41; don't change PC.
   TODO(LUUO);
+  return PC;
 }
 
-static void uop_muuo (void)
+static int REGPARM uop_muuo (int PC)
 {
-  its_muuo ();
+  PC = its_muuo (PC);
+  return PC;
 }
 
-static void uop_move (void)
+static int REGPARM uop_move (int PC)
 {
   DEBUG((stderr, "MOVE\n"));
+  // TODO: flags
+  return PC;
 }
 
-static void uop_movs (void)
+static int REGPARM uop_movs (int PC)
 {
   DEBUG((stderr, "MOVS\n"));
   AR = ((AR >> 18) & 0777777) | ((AR & 0777777) << 18);
   DEBUG((stderr, "AR %012llo\n", AR));
+  return PC;
 }
 
-static void uop_movn (void)
+static int REGPARM uop_movn (int PC)
 {
   DEBUG((stderr, "MOVN\n"));
   AR = (-AR) & 0777777777777LL;
   DEBUG((stderr, "AR %012llo\n", AR));
+  return PC;
 }
 
-static void uop_movm (void)
+static int REGPARM uop_movm (int PC)
 {
   DEBUG((stderr, "MOVM\n"));
   if (AR & 0400000000000LL)
     AR = (-AR) & 0777777777777LL;
   DEBUG((stderr, "AR %012llo\n", AR));
+  return PC;
 }
 
-static void uop_ash (void)
+static int REGPARM uop_ash (int PC)
 {
-  TODO(ASH);
+  DEBUG((stderr, "ASH\n"));
+  return PC;
 }
 
-static void uop_rot (void)
+static int REGPARM uop_rot (int PC)
 {
   TODO(ROT);
+  return PC;
 }
 
-static void uop_lsh (void)
+static int REGPARM uop_lsh (int PC)
 {
-  TODO(LSH);
+  DEBUG((stderr, "LSH\n"));
+  if (MA & 0400000000000LL)
+    AR >>= MA;
+  else
+    AR <<= MA;
+  return PC;
 }
 
-static void uop_jffo (void)
+static int REGPARM uop_jffo (int PC)
 {
   TODO(JFFO);
+  return PC;
 }
 
-static void uop_ashc (void)
+static int REGPARM uop_ashc (int PC)
 {
   TODO(ASHC);
+  return PC;
 }
 
-static void uop_rotc (void)
+static int REGPARM uop_rotc (int PC)
 {
   TODO(ROTC);
+  return PC;
 }
 
-static void uop_lshc (void)
+static int REGPARM uop_lshc (int PC)
 {
   TODO(LSHC);
+  return PC;
 }
 
-static void uop_exch (void)
+static int REGPARM uop_exch (int PC)
 {
   DEBUG((stderr, "EXCH\n"));
   DEBUG((stderr, "AR %012llo, BR %012llo\n", AR, BR));
@@ -413,19 +471,22 @@ static void uop_exch (void)
   AR = BR;
   BR = MQ;
   DEBUG((stderr, "AR %012llo, BR %012llo\n", AR, BR));
+  return PC;
 }
 
-static void uop_blt (void)
+static int REGPARM uop_blt (int PC)
 {
   TODO(BLT);
+  return PC;
 }
 
-static void uop_aobjp (void)
+static int REGPARM uop_aobjp (int PC)
 {
   TODO(AOBJP);
+  return PC;
 }
 
-static void uop_aobjn (void)
+static int REGPARM uop_aobjn (int PC)
 {
   word_t LH = AR & 0777777000000LL;
   DEBUG((stderr, "AOBJN\n"));
@@ -435,45 +496,52 @@ static void uop_aobjn (void)
     LH = 0;
   else
     PC = MA;
+  return PC;
 }
 
-static void uop_jrst (void)
+static int REGPARM uop_jrst (int PC)
 {
   DEBUG((stderr, "JRST\n"));
   if (AC & 14)
-    return uop_muuo ();
+    return uop_muuo (PC);
   if (AC & 2)
     flags = MB >> 18;
   PC = MA;
+  return PC;
 }
 
-static void uop_jfcl (void)
+static int REGPARM uop_jfcl (int PC)
 {
   TODO(JFCL);
+  return PC;
 }
 
-static void uop_xct (void)
+static int REGPARM uop_xct (int PC)
 {
-  DEBUG((stderr, "XCT\n"));
-  execute (&MA);
+  TODO(XCT);
+  // Don't set PC to target instruction.
+  // Or do, and work around it.
+  return PC;
 }
 
-static void uop_pushj (void)
+static int REGPARM uop_pushj (int PC)
 {
   DEBUG((stderr, "PUSHJ\n"));
   AR = ((AR + 0000001000000LL) & 0777777000000LL) | ((AR + 1) & 0777777LL);
   write_memory (AR, (flags << 18) | PC);
   PC = MA;
+  return PC;
 }
 
-static void uop_push (void)
+static int REGPARM uop_push (int PC)
 {
   DEBUG((stderr, "PUSH\n"));
   AR = ((AR + 0000001000000LL) & 0777777000000LL) | ((AR + 1) & 0777777LL);
   write_memory (AR, BR);
+  return PC;
 }
 
-static void uop_popj (void)
+static int REGPARM uop_popj (int PC)
 {
   word_t x;
   DEBUG((stderr, "POPJ\n"));
@@ -483,195 +551,327 @@ static void uop_popj (void)
   flags = (x >> 18) & 0777777;
   DEBUG((stderr, "PC %06o\n", PC));
   AR = ((AR + 0777777000000LL) & 0777777000000LL) | ((AR - 1) & 0777777LL);
+  return PC;
 }
 
-static void uop_pop (void)
+static int REGPARM uop_pop (int PC)
 {
   DEBUG((stderr, "POP\n"));
   MB = read_memory (AR);
   write_memory (MA, MB);
   AR = ((AR + 0777777000000LL) & 0777777000000LL) | ((AR - 1) & 0777777LL);
+  return PC;
 }
 
-static void uop_jsr (void)
+static int REGPARM uop_jsr (int PC)
 {
   DEBUG((stderr, "JSR\n"));
   write_memory (AR, (flags << 18) | PC);
   PC = AR + 1;
+  return PC;
 }
 
-static void uop_jsp (void)
+static int REGPARM uop_jsp (int PC)
 {
   DEBUG((stderr, "JSP\n"));
   AR = (flags << 18) | PC;
   PC = MA;
+  return PC;
 }
 
-static void uop_jsa (void)
+static int REGPARM uop_jsa (int PC)
 {
   TODO(JSA);
+  return PC;
 }
 
-static void uop_jra (void)
+static int REGPARM uop_jra (int PC)
 {
   TODO(JRA);
+  return PC;
 }
 
-static void uop_add (void)
+static int REGPARM uop_add (int PC)
 {
   DEBUG((stderr, "ADD\n"));
   AR = AR + BR;
+  return PC;
 }
 
-static void uop_sub (void)
+static int REGPARM uop_sub (int PC)
 {
   DEBUG((stderr, "SUB\n"));
   AR = AR - BR;
+  return PC;
 }
 
-static void uop_setz (void)
+static int REGPARM uop_setz (int PC)
 {
   DEBUG((stderr, "SETZ\n"));
   AR = 0;
+  return PC;
 }
 
-static void uop_skipl (void)
+static int REGPARM uop_and (int PC)
+{
+  DEBUG((stderr, "AND\n"));
+  AR &= BR;
+  return PC;
+}
+
+static int REGPARM uop_andca (int PC)
+{
+  DEBUG((stderr, "ANDCA\n"));
+  AR = BR & (~AR & 0777777777777LL);
+  return PC;
+}
+
+static int REGPARM uop_setm (int PC)
+{
+  DEBUG((stderr, "SETM\n"));
+  AR = BR;
+  return PC;
+}
+
+static int REGPARM uop_andcm (int PC)
+{
+  DEBUG((stderr, "ANDCM\n"));
+  AR &= ~BR & 0777777777777LL;
+  return PC;
+}
+
+static int REGPARM uop_seta (int PC)
+{
+  DEBUG((stderr, "SETA\n"));
+  return PC;
+}
+
+static int REGPARM uop_xor (int PC)
+{
+  DEBUG((stderr, "XOR\n"));
+  AR ^= BR;
+  return PC;
+}
+
+static int REGPARM uop_ior (int PC)
+{
+  DEBUG((stderr, "IOR\n"));
+  AR |= BR;
+  return PC;
+}
+
+static int REGPARM uop_andcb (int PC)
+{
+  DEBUG((stderr, "ANDCB\n"));
+  AR = (~AR & 0777777777777LL) & (~BR & 0777777777777LL);
+  return PC;
+}
+
+static int REGPARM uop_eqv (int PC)
+{
+  DEBUG((stderr, "EQV\n"));
+  AR = ~(AR ^ BR) & 0777777777777LL;
+  return PC;
+}
+
+static int REGPARM uop_setca (int PC)
+{
+  DEBUG((stderr, "SETCA\n"));
+  AR = ~AR & 0777777777777LL;
+  return PC;
+}
+
+static int REGPARM uop_orca (int PC)
+{
+  DEBUG((stderr, "ORCA\n"));
+  AR = BR | (~AR & 0777777777777LL);
+  return PC;
+}
+
+static int REGPARM uop_setcm (int PC)
+{
+  DEBUG((stderr, "SETCM\n"));
+  AR = ~BR & 0777777777777LL;
+  return PC;
+}
+
+static int REGPARM uop_orcm (int PC)
+{
+  DEBUG((stderr, "ORCM\n"));
+  AR |= ~BR & 0777777777777LL;
+  return PC;
+}
+
+static int REGPARM uop_orcb (int PC)
+{
+  DEBUG((stderr, "ORCB\n"));
+  AR = (~AR & 0777777777777LL) | (~BR & 0777777777777LL);
+  return PC;
+}
+
+static int REGPARM uop_seto (int PC)
+{
+  DEBUG((stderr, "SETO\n"));
+  AR = 0777777777777LL;
+  return PC;
+}
+
+static int REGPARM uop_skipl (int PC)
 {
   DEBUG((stderr, "SKIPL: %012llo < %012llo\n", AR, BR));
   SIGN_EXTEND (AR);
   SIGN_EXTEND (BR);
   if (AR < BR)
     PC++;
+  return PC;
 }
 
-static void uop_skipe (void)
+static int REGPARM uop_skipe (int PC)
 {
   DEBUG((stderr, "SKIPE\n"));
   if (AR == BR)
     PC++;
+  return PC;
 }
 
-static void uop_skiple (void)
+static int REGPARM uop_skiple (int PC)
 {
   DEBUG((stderr, "SKIPLE\n"));
   SIGN_EXTEND (AR);
   SIGN_EXTEND (BR);
   if (AR <= BR)
     PC++;
+  return PC;
 }
 
-static void uop_skipa (void)
+static int REGPARM uop_skipa (int PC)
 {
   DEBUG((stderr, "SKIPA\n"));
   PC++;
+  return PC;
 }
 
-static void uop_skipge (void)
+static int REGPARM uop_skipge (int PC)
 {
   DEBUG((stderr, "SKIPGE\n"));
   SIGN_EXTEND (AR);
   SIGN_EXTEND (BR);
   if (AR >= BR)
     PC++;
+  return PC;
 }
 
-static void uop_skipn (void)
+static int REGPARM uop_skipn (int PC)
 {
   DEBUG((stderr, "SKIPN\n"));
   if (AR != BR)
     PC++;
+  return PC;
 }
 
-static void uop_skipg (void)
+static int REGPARM uop_skipg (int PC)
 {
   DEBUG((stderr, "SKIPG\n"));
   SIGN_EXTEND (AR);
   SIGN_EXTEND (BR);
   if (AR > BR)
     PC++;
+  return PC;
 }
 
-static void uop_jumpl (void)
+static int REGPARM uop_jumpl (int PC)
 {
   DEBUG((stderr, "JUMPL: %012llo < 0\n", AR));
   SIGN_EXTEND (AR);
   if (AR < 0)
     PC = MA;
+  return PC;
 }
 
-static void uop_jumpe (void)
+static int REGPARM uop_jumpe (int PC)
 {
   DEBUG((stderr, "JUMPE\n"));
   if (AR == 0)
     PC = MA;
+  return PC;
 }
 
-static void uop_jumple (void)
+static int REGPARM uop_jumple (int PC)
 {
   DEBUG((stderr, "JUMPLE\n"));
   SIGN_EXTEND (AR);
   SIGN_EXTEND (BR);
   if (AR <= 0)
     PC = MA;
+  return PC;
 }
 
-static void uop_jumpa (void)
+static int REGPARM uop_jumpa (int PC)
 {
   DEBUG((stderr, "JUMPA\n"));
   PC = MA;
+  return PC;
 }
 
-static void uop_jumpge (void)
+static int REGPARM uop_jumpge (int PC)
 {
   DEBUG((stderr, "JUMPGE\n"));
   SIGN_EXTEND (AR);
   if (AR >= 0)
     PC = MA;
+  return PC;
 }
 
-static void uop_jumpn (void)
+static int REGPARM uop_jumpn (int PC)
 {
   DEBUG((stderr, "JUMPN\n"));
   if (AR != 0)
     PC = MA;
+  return PC;
 }
 
-static void uop_jumpg (void)
+static int REGPARM uop_jumpg (int PC)
 {
   DEBUG((stderr, "JUMPG\n"));
   SIGN_EXTEND (AR);
   if (AR > 0)
     PC = MA;
+  return PC;
 }
 
-static void uop_tlo (void)
+static int REGPARM uop_tlo (int PC)
 {
   DEBUG((stderr, "TLO\n"));
   AR |= BR;
+  return PC;
 }
 
-static void uop_hll (void)
+static int REGPARM uop_hll (int PC)
 {
   DEBUG((stderr, "HLL\n"));
   AR = (BR & 0777777000000LL) | (AR & 0777777);
+  return PC;
 }
 
-static void uop_hrl (void)
+static int REGPARM uop_hrl (int PC)
 {
   DEBUG((stderr, "HRL\n"));
   AR = ((BR & 0777777LL) << 18) | (AR & 0777777);
+  return PC;
 }
 
-static void uop_hlr (void)
+static int REGPARM uop_hlr (int PC)
 {
   DEBUG((stderr, "HLR\n"));
   AR = (AR & 0777777000000LL) | ((BR >> 18) & 0777777);
+  return PC;
 }
 
-static void uop_hrr (void)
+static int REGPARM uop_hrr (int PC)
 {
   DEBUG((stderr, "HRR\n"));
   AR = (AR & 0777777000000LL) | (BR & 0777777);
+  return PC;
 }
 
 /* Table to decode an opcode into an operation uop. */
@@ -713,14 +913,14 @@ static uop operate[] = {
   0, 0, 0, 0, 0, 0, 0, 0, // SOJ 
   0, 0, 0, 0, 0, 0, 0, 0, // SOS
   /* 400-477 */
-  uop_setz, uop_setz, uop_setz, uop_setz, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
+  uop_setz, uop_setz, uop_setz, uop_setz, uop_and, uop_and, uop_and, uop_and, 
+  uop_andca, uop_andca, uop_andca, uop_andca, uop_setm, uop_setm, uop_setm, uop_setm, 
+  uop_andcm, uop_andcm, uop_andcm, uop_andcm, uop_seta, uop_seta, uop_seta, uop_seta, 
+  uop_xor, uop_xor, uop_xor, uop_xor, uop_ior, uop_ior, uop_ior, uop_ior, 
+  uop_andcb, uop_andcb, uop_andcb, uop_andcb, uop_eqv, uop_eqv, uop_eqv, uop_eqv, 
+  uop_setca, uop_setca, uop_setca, uop_setca, uop_orca, uop_orca, uop_orca, uop_orca, 
+  uop_setcm, uop_setcm, uop_setcm, uop_setcm, uop_orcm, uop_orcm, uop_orcm, uop_orcm, 
+  uop_orcb, uop_orcb, uop_orcb, uop_orcb, uop_seto, uop_seto, uop_seto, uop_seto, 
   /* 500-577 */
 
   /* HLL,  HLLI,  HLLM,  HLLS       HRL,  HRLI,  HRLM,  HRLS */
@@ -770,68 +970,164 @@ static uop iot[] = {
   CONI, CONO, DATAI, DATAO
 };
 
-/* Decode one word. */
-static void decode (void)
+#if !THREADED
+static void write_call (upc_t *upc, uop op)
 {
-  word_t opcode = (IR >> 27) & 0777;
-  uop *upc = ops + UOPSIZE*PC;
-  *upc++ = read_operands[opcode];
-  if (opcode == 0777)
-    *upc++ = iot[(IR >> 23) & 3];
+  size_t a = (size_t)op;
+  a -= (size_t)*upc;
+  a -= 5;
+  **upc = 0xE8; (*upc)++;
+  **upc = a; (*upc)++;
+  **upc = a >> 8; (*upc)++;
+  **upc = a >> 16; (*upc)++;
+  **upc = a >> 24; (*upc)++;
+}
+
+static void write_jump (upc_t *upc, uop op)
+{
+  size_t a = (size_t)op;
+  a -= (size_t)*upc;
+  a -= 5;
+  **upc = 0xE9; (*upc)++;
+  **upc = a; (*upc)++;
+  **upc = a >> 8; (*upc)++;
+  **upc = a >> 16; (*upc)++;
+  **upc = a >> 24; (*upc)++;
+}
+
+static void write_set_pc (upc_t *upc, int x)
+{
+  **upc = 0xB8; (*upc)++;
+  **upc = x; (*upc)++;
+  **upc = x >> 8; (*upc)++;
+  **upc = x >> 16; (*upc)++;
+  **upc = x >> 24; (*upc)++;
+}
+
+static void write_nop (upc_t *upc)
+{
+  // Recommended five byte NOP.
+  **upc = 0x0F; (*upc)++;
+  **upc = 0x1F; (*upc)++;
+  **upc = 0x44; (*upc)++;
+  **upc = 0x00; (*upc)++;
+  **upc = 0x00; (*upc)++;
+
+  // 90
+  // 66 90
+  // 0F 1F 00
+  // 0F 1F 40 00
+  // 0F 1F 44 00 00
+  // 66 0F 1F 44 00 00
+  // 0F 1F 80 00 00 00 00
+  // 0F 1F 84 00 00 00 00 00
+  // 66 0F 1F 84 00 00 00 00 00
+}
+#endif
+
+static void write_uop (upc_t *upc, uop op)
+{
+#if THREADED
+  **upc = op;
+  (*upc)++;
+#else
+  if (op == uop_nop)
+    write_nop (upc);
   else
-    *upc++ = operate[opcode];
-  *upc++ = write_back[opcode];
+    write_call (upc, op);
+#endif
+}
+
+/* Decode one word. */
+static void decode (int PC)
+{
+  upc_t upc = ops + UOPSIZE*PC;
+  word_t opcode;
+  IR = read_memory (PC);
+
+  opcode = (IR >> 27) & 0777;
+#if !THREADED
+  if (1 && (IR & 0777777000000) == 0254000000000LL) {
+    write_set_pc (&upc, IR & 0777777);
+    write_jump (&upc, (uop)(ops + UOPSIZE*(IR & 0777777)));
+    write_nop (&upc);
+    write_nop (&upc);
+    return;
+  }
+  write_uop (&upc, calculate_ea);
+#endif
+  write_uop (&upc, read_operands[opcode]);
+  if (opcode == 0777)
+    write_uop (&upc, iot[(IR >> 23) & 3]);
+  else
+    write_uop (&upc, operate[opcode]);
+  write_uop (&upc, write_back[opcode]);
 }
 
 /* Retry executing the first uop after a decode operation. */
-static void retry (void)
+static int retry (int PC)
 {
-  ops[UOPSIZE*PC]();
+#if THREADED
+  PC = ops[UOPSIZE*PC](PC);
+#else
+  upc_t upc = ops + UOPSIZE*PC;
+  uop op = (uop)upc;
+  PC = op (PC);
+#endif
+  return PC;
 }
 
 /* Uop to decode a single word and execute it. */
-static void decode_word (void)
+static int REGPARM decode_word (int PC)
 {
   DEBUG((stderr, "Decode word\n"));
-  decode ();
-  retry ();
+  decode (PC);
+  PC = retry (PC);
+  return PC;
 }
 
 /* Uop to decode a page and then resume execution. */
-static void decode_page (void)
+static int REGPARM decode_page (int PC)
 {
   int save = PC;
   DEBUG((stderr, "Decode page\n"));
   PC &= 0776000;
   do {
     IR = read_memory (PC);
-    decode ();
+    decode (PC);
     PC++;
   } while ((PC & 01777) != 0);
   PC = save;
-  retry ();
+  PC = retry (PC);
+  return PC;
 }
 
 /* Invalidate a single word. */
 void invalidate_word (int a)
 {
-  ops[UOPSIZE*a] = decode_word;
+  upc_t upc = ops + UOPSIZE*a;
+  write_uop (&upc, decode_word);
 }
 
 /* Fill a page with a uop. */
 static void fill_page (int a, uop op)
 {
   int i;
-  uop *upc = &ops[UOPSIZE*(a & 0776000)];
+  upc_t upc = &ops[UOPSIZE*(a & 0776000)];
   for (i = 0; i < 02000; i++) {
-    *upc = op;
-    upc += UOPSIZE;
+    write_uop (&upc, op);
+    write_uop (&upc, uop_nop);
+    write_uop (&upc, uop_nop);
+#if !THREADED
+    write_uop (&upc, uop_nop);
+#endif
   }
 }
 
 /* Fill an unpure page. */
 void unpure_page (int a)
 {
+  DEBUG((stderr, "Unpure page: %06o.\n", a));
   fill_page (a, decode_word);
 }
 
@@ -842,10 +1138,11 @@ void pure_page (int a)
 }
 
 /* Uop for an unmapped word. */
-static void unmapped_word (void)
+static int REGPARM unmapped_word (int PC)
 {
   DEBUG((stderr, "Unmapped word.\n"));
   exit (1);
+  return PC;
 }
 
 /* Fill an unmapped page. */
@@ -854,10 +1151,13 @@ void unmapped_page (int a)
   fill_page (a, unmapped_word);
 }
 
-static void calculate_ea (void)
+static int REGPARM calculate_ea (int PC)
 {
-  MB = IR;
   int address, X, I;
+
+  MB = IR = read_memory (PC);
+  AC = (IR >> 23) & 017;
+  DEBUG((stderr, "IR %012llo\n", IR));
 
   do {
     address = MB & 0777777;
@@ -870,48 +1170,51 @@ static void calculate_ea (void)
   } while (I);
 
   MA = address;
+  DEBUG((stderr, "EA %06o\n", MA));
+  return PC;
 }
 
-/* Execute one instruction. */
-static void execute (int *pc)
+static void rwx (void)
 {
-  uop *upc = ops + UOPSIZE*(*pc);
-  DEBUG((stderr, "\nExecute %06o\n", *pc));
-  IR = read_memory (*pc);
-  AC = (IR >> 23) & 017;
-  DEBUG((stderr, "IR %012llo\n", IR));
-  calculate_ea ();
-  DEBUG((stderr, "EA %06o\n", MA));
-  (*upc++) ();
-  (*pc)++; /* Needs to happen here. */
-  (*upc++) ();
-  (*upc++) ();
+  size_t length = sizeof ops;
+  size_t start = (size_t)ops;
+  long page_size = sysconf (_SC_PAGESIZE);
+  start &= -page_size;
+  length += page_size - 1;
+  start &= -page_size;
+  if (mprotect ((void *)start, length,
+                PROT_READ | PROT_WRITE | PROT_EXEC))
+    perror ("mprotect");
 }
+
+#if THREADED
+/* Execute one instruction. */
+static int execute (int PC)
+{
+  upc_t upc = ops + UOPSIZE*PC;
+  DEBUG((stderr, "\nExecute %06o\n", PC));
+  PC = calculate_ea (PC);
+  PC = (*upc++) (PC);
+  PC = (*upc++) (PC);
+  PC = (*upc++) (PC);
+  return PC;
+}
+#endif
 
 /* Run. */
 void run (int start, struct pdp10_memory *m)
 {
+  int PC = start;
   memory = m;
-  PC = start;
+#if THREADED
   for (;;)
-    execute (&PC);
-}
-
-#if 0
-int foo1 (int x)
-{
-  return x + 1;
-  // 8d 47 01             	lea    0x1(%rdi),%eax
-  // c3                   	retq   
-}
-
-int foo2 (int x)
-{
-  extern int bar (int);
-  return bar(x) + 1;
-  // 50                   	push   %rax
-  // e8 de 05 00 00       	callq  409440 <bar>
-  // ff c0                	inc    %eax
-  // c3                   	retq   
-}
+    PC = execute (PC);
+#else
+  rwx ();
+  {
+    upc_t upc = ops + UOPSIZE*PC;
+    uop op = (uop)upc;
+    PC = op (PC);
+  }
 #endif
+}

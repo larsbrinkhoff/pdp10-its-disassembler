@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -W -Wall -I. -O3 -fomit-frame-pointer
+CFLAGS = -m32 -g -Os -W -Wall -I. -fomit-frame-pointer
 
 WORDS =  bin-word.o its-word.o x-word.o dta-word.o aa-word.o pt-word.o core-word.o
 
@@ -9,19 +9,20 @@ OBJS =	pdp10-opc.o info.o word.o sblk.o pdump.o dis.o symbols.o \
 UTILS =	bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
 	macdmp saildart macro-tapes tape-dir harscntopbm palx
 
-all: dis10 $(UTILS) check
+all: dis10 $(UTILS)
 
 clean:
 	rm -f $(OBJS)
 	rm -f dis10 core
 	rm -f $(UTILS)
 	rm -f main.o dmp.o raw.o
+	rm -f cpu/*.o
 	for f in $(UTILS); do rm -f $${f}.o; done
 	rm -f *.dasm *.list
 	rm -f ts.d.txt
 
 dis10: main.o $(OBJS) dmp.o raw.o cpu/cpu.o cpu/its.o
-	gcc -g $^ -o dis10
+	gcc -m32 -g $^ -o dis10
 
 bin2ascii: bin2ascii.o
 	$(CC) bin2ascii.o -o bin2ascii

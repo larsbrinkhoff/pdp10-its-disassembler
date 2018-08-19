@@ -4,6 +4,8 @@
 
 typedef long long word_t;
 
+int PC;
+
 /* User variables. */
 
 static word_t option = 0;
@@ -283,20 +285,24 @@ static void call (void)
     }
 }
 
-void its_muuo (void)
+int its_muuo (int pc)
 {
+  PC = pc;
   switch (IR >> 27)
     {
     case 040:
       fprintf (stderr, ".IOT\n");
       //fprintf (stderr, ".");
-      return;  //  exit (0);
+      return PC;  //  exit (0);
     case 041:
-      return its_open ();
+      its_open ();
+      return PC;
     case 042:
-      return oper ();
+      oper ();
+      return PC;
     case 043:
-      return call ();
+      call ();
+      return PC;
     case 044:
       fprintf (stderr, ".USET\n");
       exit (0);
@@ -313,4 +319,5 @@ void its_muuo (void)
       fprintf (stderr, "Unknown MUUO\n");
       exit (0);
     }
+  return PC;
 }
