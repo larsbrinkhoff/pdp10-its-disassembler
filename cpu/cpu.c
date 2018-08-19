@@ -18,6 +18,14 @@
 
 typedef long long word_t;
 void invalidate_word (int a);
+static void execute (int *pc);
+
+#define DEBUG(X) fprintf X
+#define TODO(X) DEBUG((stderr, "TODO: %s\n", #X)); exit (1)
+
+#define SIGN_EXTEND(X)                          \
+  if (X & 0400000000000LL)                      \
+    X |= -1LL << 36;
 
 /* Machine state. */
 
@@ -42,14 +50,14 @@ word_t read_memory (int address)
     return FM[address];
 
   data = get_word_at (memory, address);
-  fprintf (stderr, "READ %06o %012llo\n", address, data);
+  DEBUG((stderr, "READ %06o %012llo\n", address, data));
   return data;
 }
 
 void write_memory (int address, word_t data)
 {
   address &= 0777777;
-  fprintf (stderr, "WRITE %06o %012llo\n", address, data);
+  DEBUG((stderr, "WRITE %06o %012llo\n", address, data));
   invalidate_word (address);
   if (address < 16)
     FM[address] = data;
@@ -62,7 +70,8 @@ void write_memory (int address, word_t data)
    the result. */
 
 typedef void (*uop) (void);
-static uop ops[3*MOBY];
+#define UOPSIZE 3
+static uop ops[UOPSIZE*MOBY];
 
 static void uop_nop (void)
 {
@@ -71,47 +80,49 @@ static void uop_nop (void)
 static void uop_read_immediate (void)
 {
   AR = MA;
-  fprintf (stderr, "AR %012llo\n", AR);
+  DEBUG((stderr, "AR %012llo\n", AR));
 }
 
 static void uop_read_memory (void)
 {
   AR = read_memory (MA);
   BR = 0;
-  fprintf (stderr, "AR %012llo\n", AR);
+  if (AR == 0777700000000LL)
+    AR = -010000LL << 18;
+  DEBUG((stderr, "AR %012llo\n", AR));
 }
 
 static void uop_read_ac (void)
 {
   AR = FM[AC];
-  fprintf (stderr, "AC %o, AR %012llo\n", AC, AR);
+  DEBUG((stderr, "AC %o, AR %012llo\n", AC, AR));
 }
 
 static void uop_read_ac_immediate (void)
 {
   AR = FM[AC];
   BR = MA;
-  fprintf (stderr, "AR %012llo\n", AR);
-  fprintf (stderr, "BR %012llo\n", BR);
+  DEBUG((stderr, "AR %012llo\n", AR));
+  DEBUG((stderr, "BR %012llo\n", BR));
 }
 
 static void uop_read_both (void)
 {
   AR = FM[AC];
   BR = read_memory (MA);
-  fprintf (stderr, "AR %012llo\n", AR);
-  fprintf (stderr, "AC %o, BR %012llo\n", AC, BR);
+  DEBUG((stderr, "AR %012llo\n", AR));
+  DEBUG((stderr, "AC %o, BR %012llo\n", AC, BR));
 }
 
 static void uop_write_ac (void)
 {
-  fprintf (stderr, "AC%o %012llo\n", AC, AR);
+  DEBUG((stderr, "AC%o %012llo\n", AC, AR));
   FM[AC] = AR;
 }
 
 static void uop_write_ac1 (void)
 {
-  fprintf (stderr, "AC%o %012llo\n", AC + 1, MQ);
+  DEBUG((stderr, "AC%o %012llo\n", AC + 1, MQ));
   FM[AC+1] = MQ;
 }
 
@@ -319,124 +330,137 @@ static uop write_back[] = {
   WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, 
 };
 
+static void uop_luuo (void)
+{
+  word_t x = IR & 0777740000000LL;
+  write_memory (040, x + MA);
+  // XCT 41; don't change PC.
+  TODO(LUUO);
+}
+
+static void uop_muuo (void)
+{
+  its_muuo ();
+}
+
 static void uop_move (void)
 {
-  fprintf (stderr, "MOVE\n");
+  DEBUG((stderr, "MOVE\n"));
 }
 
 static void uop_movs (void)
 {
-  fprintf (stderr, "MOVS\n");
+  DEBUG((stderr, "MOVS\n"));
   AR = ((AR >> 18) & 0777777) | ((AR & 0777777) << 18);
-  fprintf (stderr, "AR %012llo\n", AR);
+  DEBUG((stderr, "AR %012llo\n", AR));
 }
 
 static void uop_movn (void)
 {
-  fprintf (stderr, "MOVN\n");
+  DEBUG((stderr, "MOVN\n"));
   AR = (-AR) & 0777777777777LL;
-  fprintf (stderr, "AR %012llo\n", AR);
+  DEBUG((stderr, "AR %012llo\n", AR));
 }
 
 static void uop_movm (void)
 {
-  fprintf (stderr, "MOVM\n");
+  DEBUG((stderr, "MOVM\n"));
   if (AR & 0400000000000LL)
     AR = (-AR) & 0777777777777LL;
-  fprintf (stderr, "AR %012llo\n", AR);
+  DEBUG((stderr, "AR %012llo\n", AR));
 }
 
 static void uop_ash (void)
 {
-  fprintf (stderr, "ASH\n");
-  exit (0);
+  TODO(ASH);
 }
 
 static void uop_rot (void)
 {
-  fprintf (stderr, "ROT\n");
-  exit (0);
+  TODO(ROT);
 }
 
 static void uop_lsh (void)
 {
-  fprintf (stderr, "LSH\n");
-  exit (0);
+  TODO(LSH);
 }
 
 static void uop_jffo (void)
 {
-  fprintf (stderr, "JFFO\n");
-  exit (0);
+  TODO(JFFO);
 }
 
 static void uop_ashc (void)
 {
-  fprintf (stderr, "ASHC\n");
-  exit (0);
+  TODO(ASHC);
 }
 
 static void uop_rotc (void)
 {
-  fprintf (stderr, "ROTC\n");
-  exit (0);
+  TODO(ROTC);
 }
 
 static void uop_lshc (void)
 {
-  fprintf (stderr, "LSHC\n");
-  exit (0);
+  TODO(LSHC);
 }
 
 static void uop_exch (void)
 {
-  fprintf (stderr, "EXCH\n");
-  fprintf (stderr, "AR %012llo, BR %012llo\n", AR, BR);
+  DEBUG((stderr, "EXCH\n"));
+  DEBUG((stderr, "AR %012llo, BR %012llo\n", AR, BR));
   MQ = AR;
   AR = BR;
   BR = MQ;
-  fprintf (stderr, "AR %012llo, BR %012llo\n", AR, BR);
+  DEBUG((stderr, "AR %012llo, BR %012llo\n", AR, BR));
 }
 
 static void uop_blt (void)
 {
-  fprintf (stderr, "BLT\n");
-  exit (0);
+  TODO(BLT);
 }
 
 static void uop_aobjp (void)
 {
-  fprintf (stderr, "AOBJP\n");
-  exit (0);
+  TODO(AOBJP);
 }
 
 static void uop_aobjn (void)
 {
-  fprintf (stderr, "AOBJN\n");
-  exit (0);
+  word_t LH = AR & 0777777000000LL;
+  DEBUG((stderr, "AOBJN\n"));
+  LH += 01000000LL;
+  AR = LH | ((AR + 1) & 0777777LL);
+  if (LH == 01000000LL)
+    LH = 0;
+  else
+    PC = MA;
 }
 
 static void uop_jrst (void)
 {
-  fprintf (stderr, "JRST\n");
+  DEBUG((stderr, "JRST\n"));
+  if (AC & 14)
+    return uop_muuo ();
+  if (AC & 2)
+    flags = MB >> 18;
   PC = MA;
 }
 
 static void uop_jfcl (void)
 {
-  fprintf (stderr, "JFCL\n");
-  exit (0);
+  TODO(JFCL);
 }
 
 static void uop_xct (void)
 {
-  fprintf (stderr, "XCT\n");
-  exit (0);
+  DEBUG((stderr, "XCT\n"));
+  execute (&MA);
 }
 
 static void uop_pushj (void)
 {
-  fprintf (stderr, "PUSHJ\n");
+  DEBUG((stderr, "PUSHJ\n"));
   AR = ((AR + 0000001000000LL) & 0777777000000LL) | ((AR + 1) & 0777777LL);
   write_memory (AR, (flags << 18) | PC);
   PC = MA;
@@ -444,7 +468,7 @@ static void uop_pushj (void)
 
 static void uop_push (void)
 {
-  fprintf (stderr, "PUSH\n");
+  DEBUG((stderr, "PUSH\n"));
   AR = ((AR + 0000001000000LL) & 0777777000000LL) | ((AR + 1) & 0777777LL);
   write_memory (AR, BR);
 }
@@ -452,18 +476,18 @@ static void uop_push (void)
 static void uop_popj (void)
 {
   word_t x;
-  fprintf (stderr, "POPJ\n");
-  fprintf (stderr, "AR %012llo\n", AR);
+  DEBUG((stderr, "POPJ\n"));
+  DEBUG((stderr, "AR %012llo\n", AR));
   x = read_memory (AR);
   PC = x & 0777777;
   flags = (x >> 18) & 0777777;
-  fprintf (stderr, "PC %06o\n", PC);
+  DEBUG((stderr, "PC %06o\n", PC));
   AR = ((AR + 0777777000000LL) & 0777777000000LL) | ((AR - 1) & 0777777LL);
 }
 
 static void uop_pop (void)
 {
-  fprintf (stderr, "POP\n");
+  DEBUG((stderr, "POP\n"));
   MB = read_memory (AR);
   write_memory (MA, MB);
   AR = ((AR + 0777777000000LL) & 0777777000000LL) | ((AR - 1) & 0777777LL);
@@ -471,55 +495,49 @@ static void uop_pop (void)
 
 static void uop_jsr (void)
 {
-  fprintf (stderr, "JSR\n");
+  DEBUG((stderr, "JSR\n"));
   write_memory (AR, (flags << 18) | PC);
   PC = AR + 1;
 }
 
 static void uop_jsp (void)
 {
-  fprintf (stderr, "JSP\n");
+  DEBUG((stderr, "JSP\n"));
   AR = (flags << 18) | PC;
   PC = MA;
 }
 
 static void uop_jsa (void)
 {
-  fprintf (stderr, "JSA\n");
-  exit (0);
+  TODO(JSA);
 }
 
 static void uop_jra (void)
 {
-  fprintf (stderr, "JRA\n");
-  exit (0);
+  TODO(JRA);
 }
 
 static void uop_add (void)
 {
-  fprintf (stderr, "ADD\n");
+  DEBUG((stderr, "ADD\n"));
   AR = AR + BR;
 }
 
 static void uop_sub (void)
 {
-  fprintf (stderr, "SUB\n");
+  DEBUG((stderr, "SUB\n"));
   AR = AR - BR;
 }
 
 static void uop_setz (void)
 {
-  fprintf (stderr, "SETZ\n");
+  DEBUG((stderr, "SETZ\n"));
   AR = 0;
 }
 
-#define SIGN_EXTEND(X) \
-  if (X & 0400000000000LL)                      \
-    X |= -1LL << 36;
-
 static void uop_skipl (void)
 {
-  fprintf (stderr, "SKIPL: %012llo < %012llo\n", AR, BR);
+  DEBUG((stderr, "SKIPL: %012llo < %012llo\n", AR, BR));
   SIGN_EXTEND (AR);
   SIGN_EXTEND (BR);
   if (AR < BR)
@@ -528,14 +546,14 @@ static void uop_skipl (void)
 
 static void uop_skipe (void)
 {
-  fprintf (stderr, "SkipE\n");
+  DEBUG((stderr, "SKIPE\n"));
   if (AR == BR)
     PC++;
 }
 
 static void uop_skiple (void)
 {
-  fprintf (stderr, "SkipLE\n");
+  DEBUG((stderr, "SKIPLE\n"));
   SIGN_EXTEND (AR);
   SIGN_EXTEND (BR);
   if (AR <= BR)
@@ -544,13 +562,13 @@ static void uop_skiple (void)
 
 static void uop_skipa (void)
 {
-  fprintf (stderr, "SkipN\n");
+  DEBUG((stderr, "SKIPA\n"));
   PC++;
 }
 
 static void uop_skipge (void)
 {
-  fprintf (stderr, "SkipN\n");
+  DEBUG((stderr, "SKIPGE\n"));
   SIGN_EXTEND (AR);
   SIGN_EXTEND (BR);
   if (AR >= BR)
@@ -559,14 +577,14 @@ static void uop_skipge (void)
 
 static void uop_skipn (void)
 {
-  fprintf (stderr, "SkipN\n");
+  DEBUG((stderr, "SKIPN\n"));
   if (AR != BR)
     PC++;
 }
 
 static void uop_skipg (void)
 {
-  fprintf (stderr, "SkipN\n");
+  DEBUG((stderr, "SKIPG\n"));
   SIGN_EXTEND (AR);
   SIGN_EXTEND (BR);
   if (AR > BR)
@@ -575,7 +593,7 @@ static void uop_skipg (void)
 
 static void uop_jumpl (void)
 {
-  fprintf (stderr, "JUMPL: %012llo < 0\n", AR);
+  DEBUG((stderr, "JUMPL: %012llo < 0\n", AR));
   SIGN_EXTEND (AR);
   if (AR < 0)
     PC = MA;
@@ -583,14 +601,14 @@ static void uop_jumpl (void)
 
 static void uop_jumpe (void)
 {
-  fprintf (stderr, "JumpE\n");
+  DEBUG((stderr, "JUMPE\n"));
   if (AR == 0)
     PC = MA;
 }
 
 static void uop_jumple (void)
 {
-  fprintf (stderr, "JumpLE\n");
+  DEBUG((stderr, "JUMPLE\n"));
   SIGN_EXTEND (AR);
   SIGN_EXTEND (BR);
   if (AR <= 0)
@@ -599,13 +617,13 @@ static void uop_jumple (void)
 
 static void uop_jumpa (void)
 {
-  fprintf (stderr, "JumpN\n");
+  DEBUG((stderr, "JUMPA\n"));
   PC = MA;
 }
 
 static void uop_jumpge (void)
 {
-  fprintf (stderr, "JumpN\n");
+  DEBUG((stderr, "JUMPGE\n"));
   SIGN_EXTEND (AR);
   if (AR >= 0)
     PC = MA;
@@ -613,14 +631,14 @@ static void uop_jumpge (void)
 
 static void uop_jumpn (void)
 {
-  fprintf (stderr, "JumpN\n");
+  DEBUG((stderr, "JUMPN\n"));
   if (AR != 0)
     PC = MA;
 }
 
 static void uop_jumpg (void)
 {
-  fprintf (stderr, "JumpN\n");
+  DEBUG((stderr, "JUMPG\n"));
   SIGN_EXTEND (AR);
   if (AR > 0)
     PC = MA;
@@ -628,43 +646,38 @@ static void uop_jumpg (void)
 
 static void uop_tlo (void)
 {
-  fprintf (stderr, "TLO\n");
+  DEBUG((stderr, "TLO\n"));
   AR |= BR;
 }
 
 static void uop_hll (void)
 {
-  fprintf (stderr, "HLL\n");
+  DEBUG((stderr, "HLL\n"));
   AR = (BR & 0777777000000LL) | (AR & 0777777);
 }
 
 static void uop_hrl (void)
 {
-  fprintf (stderr, "HRL\n");
+  DEBUG((stderr, "HRL\n"));
   AR = ((BR & 0777777LL) << 18) | (AR & 0777777);
 }
 
 static void uop_hlr (void)
 {
-  fprintf (stderr, "HLR\n");
+  DEBUG((stderr, "HLR\n"));
   AR = (AR & 0777777000000LL) | ((BR >> 18) & 0777777);
 }
 
 static void uop_hrr (void)
 {
-  fprintf (stderr, "HRR\n");
+  DEBUG((stderr, "HRR\n"));
   AR = (AR & 0777777000000LL) | (BR & 0777777);
-}
-
-static void uop_muuo (void)
-{
-  its_muuo ();
 }
 
 /* Table to decode an opcode into an operation uop. */
 static uop operate[] = {
   /* 000-077 */
-  0, 0, 0, 0, 0, 0, 0, 0, 
+  uop_muuo, 0, 0, 0, 0, 0, 0, 0, 
   0, 0, 0, 0, 0, 0, 0, 0, 
   0, 0, 0, 0, 0, 0, 0, 0, 
   0, 0, 0, 0, 0, 0, 0, 0, 
@@ -761,7 +774,7 @@ static uop iot[] = {
 static void decode (void)
 {
   word_t opcode = (IR >> 27) & 0777;
-  uop *upc = ops + 3*PC;
+  uop *upc = ops + UOPSIZE*PC;
   *upc++ = read_operands[opcode];
   if (opcode == 0777)
     *upc++ = iot[(IR >> 23) & 3];
@@ -773,13 +786,13 @@ static void decode (void)
 /* Retry executing the first uop after a decode operation. */
 static void retry (void)
 {
-  ops[3*PC]();
+  ops[UOPSIZE*PC]();
 }
 
 /* Uop to decode a single word and execute it. */
 static void decode_word (void)
 {
-  fprintf (stderr, "Decode word\n");
+  DEBUG((stderr, "Decode word\n"));
   decode ();
   retry ();
 }
@@ -788,7 +801,7 @@ static void decode_word (void)
 static void decode_page (void)
 {
   int save = PC;
-  fprintf (stderr, "Decode page\n");
+  DEBUG((stderr, "Decode page\n"));
   PC &= 0776000;
   do {
     IR = read_memory (PC);
@@ -802,17 +815,17 @@ static void decode_page (void)
 /* Invalidate a single word. */
 void invalidate_word (int a)
 {
-  ops[3*a] = decode_word;
+  ops[UOPSIZE*a] = decode_word;
 }
 
 /* Fill a page with a uop. */
 static void fill_page (int a, uop op)
 {
   int i;
-  uop *upc = &ops[3*(a & 0776000)];
+  uop *upc = &ops[UOPSIZE*(a & 0776000)];
   for (i = 0; i < 02000; i++) {
     *upc = op;
-    upc += 3;
+    upc += UOPSIZE;
   }
 }
 
@@ -831,7 +844,7 @@ void pure_page (int a)
 /* Uop for an unmapped word. */
 static void unmapped_word (void)
 {
-  fprintf (stderr, "Unmapped word.\n");
+  DEBUG((stderr, "Unmapped word.\n"));
   exit (1);
 }
 
@@ -843,34 +856,34 @@ void unmapped_page (int a)
 
 static void calculate_ea (void)
 {
-  word_t x = IR;
+  MB = IR;
   int address, X, I;
 
   do {
-    address = x & 0777777;
-    X = (x >> 18) & 017;
-    I = (x >> 22) & 01;
+    address = MB & 0777777;
+    X = (MB >> 18) & 017;
+    I = (MB >> 22) & 01;
     if (X)
       address += FM[X];
     if (I)
-      x = read_memory (address);
+      MB = read_memory (address);
   } while (I);
 
   MA = address;
 }
 
 /* Execute one instruction. */
-static void step (void)
+static void execute (int *pc)
 {
-  uop *upc = ops + 3*PC;
-  fprintf (stderr, "\nExecute %06o\n", PC);
-  IR = read_memory (PC);
+  uop *upc = ops + UOPSIZE*(*pc);
+  DEBUG((stderr, "\nExecute %06o\n", *pc));
+  IR = read_memory (*pc);
   AC = (IR >> 23) & 017;
-  fprintf (stderr, "IR %012llo\n", IR);
+  DEBUG((stderr, "IR %012llo\n", IR));
   calculate_ea ();
-  fprintf (stderr, "EA %06o\n", MA);
+  DEBUG((stderr, "EA %06o\n", MA));
   (*upc++) ();
-  PC++; /* Needs to happen here. */
+  (*pc)++; /* Needs to happen here. */
   (*upc++) ();
   (*upc++) ();
 }
@@ -881,5 +894,24 @@ void run (int start, struct pdp10_memory *m)
   memory = m;
   PC = start;
   for (;;)
-    step ();
+    execute (&PC);
 }
+
+#if 0
+int foo1 (int x)
+{
+  return x + 1;
+  // 8d 47 01             	lea    0x1(%rdi),%eax
+  // c3                   	retq   
+}
+
+int foo2 (int x)
+{
+  extern int bar (int);
+  return bar(x) + 1;
+  // 50                   	push   %rax
+  // e8 de 05 00 00       	callq  409440 <bar>
+  // ff c0                	inc    %eax
+  // c3                   	retq   
+}
+#endif

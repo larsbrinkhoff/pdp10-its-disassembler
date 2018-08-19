@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -W -Wall -I.
+CFLAGS = -g -W -Wall -I. -O3 -fomit-frame-pointer
 
 WORDS =  bin-word.o its-word.o x-word.o dta-word.o aa-word.o pt-word.o core-word.o
 

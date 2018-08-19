@@ -289,7 +289,8 @@ void its_muuo (void)
     {
     case 040:
       fprintf (stderr, ".IOT\n");
-      exit (0);
+      //fprintf (stderr, ".");
+      return;  //  exit (0);
     case 041:
       return its_open ();
     case 042:
