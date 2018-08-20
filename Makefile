@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -m32 -g -O3 -W -Wall -I. -fomit-frame-pointer -freg-struct-return
+CFLAGS = -m32 -g -W -Wall -I. -fomit-frame-pointer -freg-struct-return
 
 WORDS =  bin-word.o its-word.o x-word.o dta-word.o aa-word.o pt-word.o core-word.o
 

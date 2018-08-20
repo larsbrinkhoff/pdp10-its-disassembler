@@ -26,6 +26,8 @@
 #define REGPARM
 #endif
 
+typedef long long word_t;
+
 #if THREADED
 #define UDEF(NAME) int REGPARM NAME (int PC)
 #define URET return PC
@@ -34,8 +36,8 @@
 #define RETRY PC = retry (PC)
 #define JUMP(X) PC = (X)
 #else
-#define UDEF(NAME) void NAME (void)
-#define URET return
+#define UDEF(NAME) word_t REGPARM NAME (word_t AR)
+#define URET return AR
 #define PCINC
 #define UPC (1 + ((size_t)__builtin_return_address (0) - (size_t)ops) / USIZE)
 #define RETRY ((size_t *)__builtin_frame_address (0))[1] -= 5; \
@@ -46,7 +48,6 @@
   } while (0)
 #endif
 
-typedef long long word_t;
 static UDEF(calculate_ea);
 void invalidate_word (int a);
 #if THREADED
@@ -66,7 +67,9 @@ int MA;
 int AC;
 int flags;
 word_t IR;
+#if !THREADED
 word_t AR;
+#endif
 word_t BR;
 word_t MQ;
 word_t MB;
@@ -128,6 +131,16 @@ static UDEF(uop_read_nop)
 static UDEF(uop_read_immediate)
 {
   AR = MA;
+  BR = 0;
+  DEBUG((stderr, "AR %012llo\n", AR));
+  PCINC;
+  URET;
+}
+
+static UDEF(uop_read_immediate2)
+{
+  AR = 0;
+  BR = MA;
   DEBUG((stderr, "AR %012llo\n", AR));
   PCINC;
   URET;
@@ -142,9 +155,37 @@ static UDEF(uop_read_memory)
   URET;
 }
 
+static UDEF(uop_read_memory2)
+{
+  AR = 0;
+  BR = read_memory (MA);
+  DEBUG((stderr, "AR %012llo\n", AR));
+  PCINC;
+  URET;
+}
+
+static UDEF(uop_read_same)
+{
+  AR = read_memory (MA);
+  BR = AR;
+  DEBUG((stderr, "Same: AR %012llo\n", AR));
+  PCINC;
+  URET;
+}
+
 static UDEF(uop_read_ac)
 {
   AR = FM[AC];
+  BR = 0;
+  DEBUG((stderr, "AC %o, AR %012llo\n", AC, AR));
+  PCINC;
+  URET;
+}
+
+static UDEF(uop_read_ac2)
+{
+  AR = 0;
+  BR = FM[AC];
   DEBUG((stderr, "AC %o, AR %012llo\n", AC, AR));
   PCINC;
   URET;
@@ -164,6 +205,16 @@ static UDEF(uop_read_both)
 {
   AR = FM[AC];
   BR = read_memory (MA);
+  DEBUG((stderr, "AR %012llo\n", AR));
+  DEBUG((stderr, "AC %o, BR %012llo\n", AC, BR));
+  PCINC;
+  URET;
+}
+
+static UDEF(uop_read_both2)
+{
+  AR = read_memory (MA);
+  BR = FM[AC];
   DEBUG((stderr, "AR %012llo\n", AR));
   DEBUG((stderr, "AC %o, BR %012llo\n", AC, BR));
   PCINC;
@@ -224,13 +275,16 @@ static UDEF(uop_write_same)
 /* Table to decode an opcode into a read uop. */
 #define RDNO uop_read_nop
 #define RDIM uop_read_immediate
+#define RDI2 uop_read_immediate2
 #define RDMA uop_read_memory
+#define RDM2 uop_read_memory2
 #define RDAA uop_read_ac
 #define RDAB uop_read_ac_immediate
 #define RDAM 0
-#define RDA2 0
+#define RDA2 uop_read_ac2
 #define RDB1 uop_read_both
-#define RDB2 uop_read_both
+#define RDB2 uop_read_both2
+#define RDSM uop_read_same
 #define RDB3 0
 #define RDB4 0
 
@@ -259,8 +313,8 @@ static uop read_operands[] = {
   RDB1, RDAB, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, // IMUL, MUL
   RDB2, RDAA, RDB2, RDB2, RDB3, RDA2, RDB3, RDB3, // IDIV, DIV
   RDAA, RDAA, RDAA, RDAA, RDA2, RDA2, RDA2, RDIM, // ASH etc
-  RDB2, RDAA, RDAA, RDAA, RDIM, RDIM, RDIM, RDIM, // EXCH etc
-  RDAA, RDB2, RDAA, RDAA, RDIM, RDIM, RDAB, RDIM, // PUSHJ etc
+  RDB1, RDAA, RDAA, RDAA, RDIM, RDIM, RDIM, RDIM, // EXCH etc
+  RDAA, RDB1, RDAA, RDAA, RDIM, RDIM, RDAB, RDIM, // PUSHJ etc
   RDB1, RDAB, RDB1, RDB1, RDB1, RDAB, RDB1, RDB1, // ADD, SUB
   /* 300-377 */
   RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, // CAI
@@ -281,14 +335,14 @@ static uop read_operands[] = {
   RDMA, RDIM, RDMA, RDMA, RDB1, RDAB, RDB1, RDB1, // SETCM, ORCM
   RDB1, RDAB, RDB1, RDB1, RDNO, RDNO, RDNO, RDNO, // ORCB, SETO
   /* 500-577 */
-  RDB1, RDAB, RDB2, RDMA, RDB1, RDAB, RDB2, RDMA, // HLL, HRL
-  RDMA, RDIM, RDAA, RDMA, RDMA, RDIM, RDAA, RDMA, // HLLZ, HRLZ
-  RDMA, RDIM, RDAA, RDMA, RDMA, RDIM, RDAA, RDMA, // HLLO, HRLO
-  RDMA, RDIM, RDAA, RDMA, RDMA, RDIM, RDAA, RDMA, // HLLE, HRLE
-  RDB1, RDAB, RDB2, RDMA, RDB1, RDAB, RDB2, RDMA, // HLL, HRL
-  RDMA, RDIM, RDAA, RDMA, RDMA, RDIM, RDAA, RDMA, // HLLZ, HRLZ
-  RDMA, RDIM, RDAA, RDMA, RDMA, RDIM, RDAA, RDMA, // HLLO, HRLO
-  RDMA, RDIM, RDAA, RDMA, RDMA, RDIM, RDAA, RDMA, // HLLE, HRLE
+  RDB1, RDAB, RDB2, RDSM, RDB1, RDAB, RDB2, RDSM, // HLL, HRL
+  RDM2, RDI2, RDA2, RDM2, RDM2, RDI2, RDA2, RDM2, // HLLZ, HRLZ
+  RDM2, RDIM, RDA2, RDM2, RDM2, RDI2, RDA2, RDM2, // HLLO, HRLO
+  RDM2, RDIM, RDA2, RDM2, RDM2, RDI2, RDA2, RDM2, // HLLE, HRLE
+  RDB1, RDAB, RDB2, RDSM, RDB1, RDAB, RDB2, RDSM, // HRR, HLR
+  RDM2, RDI2, RDA2, RDM2, RDM2, RDIM, RDA2, RDM2, // HRRZ, HLRZ
+  RDM2, RDI2, RDA2, RDM2, RDM2, RDIM, RDA2, RDM2, // HRRO, HLRO
+  RDM2, RDI2, RDA2, RDM2, RDM2, RDIM, RDA2, RDM2, // HRRE, HLRE
   /* 600-677 */
   RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, RDAB, // TxN
   RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, // TxN
@@ -414,6 +468,7 @@ static UDEF(uop_muuo)
 static UDEF(uop_move)
 {
   DEBUG((stderr, "MOVE\n"));
+  DEBUG((stderr, "AR %012llo\n", AR));
   // TODO: flags
   URET;
 }
@@ -887,6 +942,7 @@ static UDEF(uop_hll)
 static UDEF(uop_hrl)
 {
   DEBUG((stderr, "HRL\n"));
+  DEBUG((stderr, "AR %012llo, BR %012llo\n", AR, BR));
   AR = ((BR & 0777777LL) << 18) | (AR & 0777777);
   URET;
 }
@@ -902,6 +958,66 @@ static UDEF(uop_hrr)
 {
   DEBUG((stderr, "HRR\n"));
   AR = (AR & 0777777000000LL) | (BR & 0777777);
+  URET;
+}
+
+static UDEF(uop_hllo)
+{
+  DEBUG((stderr, "HLLO\n"));
+  AR = (BR & 0777777000000LL) | 0777777LL;
+  URET;
+}
+
+static UDEF(uop_hrlo)
+{
+  DEBUG((stderr, "HRLO\n"));
+  AR = ((BR & 0777777LL) << 18) | 0777777LL;
+  URET;
+}
+
+static UDEF(uop_hlro)
+{
+  DEBUG((stderr, "HLRO\n"));
+  AR = 0777777000000LL | ((BR >> 18) & 0777777);
+  URET;
+}
+
+static UDEF(uop_hrro)
+{
+  DEBUG((stderr, "HRRO\n"));
+  AR = 0777777000000LL | (BR & 0777777);
+  URET;
+}
+
+static UDEF(uop_hlle)
+{
+  DEBUG((stderr, "HLLE\n"));
+  AR = (BR & 0400000000000LL) ? 0777777LL : 0;
+  AR |= BR & 0777777000000LL;
+  URET;
+}
+
+static UDEF(uop_hrle)
+{
+  DEBUG((stderr, "HRLE\n"));
+  AR = (BR & 0400000LL) ? 0777777LL : 0;
+  AR |= (BR & 0777777LL) << 18;
+  URET;
+}
+
+static UDEF(uop_hlre)
+{
+  DEBUG((stderr, "HLRE\n"));
+  AR = (BR & 0400000000000LL) ? 0777777000000LL : 0;
+  AR |= (BR >> 18) & 0777777;
+  URET;
+}
+
+static UDEF(uop_hrre)
+{
+  DEBUG((stderr, "HRRE\n"));
+  AR = (BR & 0400000LL) ? 0777777000000LL : 0;
+  AR |= BR & 0777777;
   URET;
 }
 
@@ -928,8 +1044,8 @@ static uop operate[] = {
   /* 200-277 */
   uop_move, uop_move, uop_move, uop_move, uop_movs, uop_movs, uop_movs, uop_movs,
   uop_movn, uop_movn, uop_movn, uop_movn, uop_movm, uop_movm, uop_movm, uop_movm,
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
+  0, 0, 0, 0, 0, 0, 0, 0, // IMUL, MUL
+  0, 0, 0, 0, 0, 0, 0, 0, // IDIV, DIV
   uop_ash, uop_rot, uop_lsh, uop_jffo, uop_ashc, uop_rotc, uop_lshc, 0, 
   uop_exch, uop_blt, uop_aobjp, uop_aobjn, uop_jrst, uop_jfcl, uop_xct, 0, 
   uop_pushj, uop_push, uop_pop, uop_popj, uop_jsr, uop_jsp, uop_jsa, uop_jra,
@@ -953,25 +1069,14 @@ static uop operate[] = {
   uop_setcm, uop_setcm, uop_setcm, uop_setcm, uop_orcm, uop_orcm, uop_orcm, uop_orcm, 
   uop_orcb, uop_orcb, uop_orcb, uop_orcb, uop_seto, uop_seto, uop_seto, uop_seto, 
   /* 500-577 */
-
-  /* HLL,  HLLI,  HLLM,  HLLS       HRL,  HRLI,  HRLM,  HRLS */
-  /* HLLZ, HLLZI, HLLZM, HLLZS      HRLZ, HRLZI, HRLZM, HRLZS */
-  /* HLLO, HLLOI, HLLOM, HLLOS      HRLO, HRLOI, HRLOM, HRLOS */
-  /* HLLE, HLLEI, HLLEM, HLLES      HRLE, HRLEI, HRLEM, HRLES */
-
-  /* HRR,  HRRI,  HRRM,  HRRS       HLR,  HLRI,  HLRM,  HLRS */
-  /* HRRZ, HRRZI, HRRZM, HRRZS      HLRZ, HLRZI, HLRZM, HLRZS */
-  /* HRRO, HRROI, HRROM, HRROS      HLRO, HLROI, HLROM, HLROS */
-  /* HRRE, HRREI, HRREM, HLLES      HLRE, HLREI, HLREM, HLRES */
-
-  uop_hll, uop_hll, uop_hll, uop_hll, uop_hrl, uop_hrl, uop_hrl, uop_hll,
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  uop_hrr, uop_hrr, uop_hrr, uop_hrr, uop_hlr, uop_hlr, uop_hlr, uop_hrr,
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
+  uop_hll, uop_hll, uop_hll, uop_hll, uop_hrl, uop_hrl, uop_hrl, uop_hrl,
+  uop_hll, uop_hll, uop_hll, uop_hll, uop_hrl, uop_hrl, uop_hrl, uop_hrl,
+  uop_hllo, uop_hllo, uop_hllo, uop_hllo, uop_hrlo, uop_hrlo, uop_hrlo, uop_hrlo,
+  uop_hlle, uop_hlle, uop_hlle, uop_hlle, uop_hrle, uop_hrle, uop_hrle, uop_hrle,
+  uop_hrr, uop_hrr, uop_hrr, uop_hrr, uop_hlr, uop_hlr, uop_hlr, uop_hlr,
+  uop_hrr, uop_hrr, uop_hrr, uop_hrr, uop_hlr, uop_hlr, uop_hlr, uop_hlr,
+  uop_hrro, uop_hrro, uop_hrro, uop_hrro, uop_hlro, uop_hlro, uop_hlro, uop_hlro,
+  uop_hrre, uop_hrre, uop_hrre, uop_hrre, uop_hlre, uop_hlre, uop_hlre, uop_hlre,
   /* 600-677 */
   0, 0, 0, 0, 0, 0, 0, 0, 
   0, 0, 0, 0, 0, 0, 0, 0, 
@@ -1250,7 +1355,7 @@ void run (int start, struct pdp10_memory *m)
   {
     upc_t upc = ops + USIZE*PC;
     uop op = (uop)upc;
-    op ();
+    op (0);
   }
 #endif
 }
