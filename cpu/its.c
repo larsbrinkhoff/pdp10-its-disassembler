@@ -72,7 +72,9 @@ static void suset (void)
 
 static void lose (void)
 {
-  printf ("ERROR; %o>>\n", PC-1);
+  extern int cpu_model;
+  printf ("ERROR; %o>>\n", PC-2);
+  disassemble_word (memory, read_memory (PC-2), -1, 4);
   exit (1);
 }
 

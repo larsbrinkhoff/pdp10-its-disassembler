@@ -32,6 +32,11 @@ usage (char **argv)
   exit (1);
 }
 
+void retryyy (size_t *x)
+{
+  *x -= 5;
+}
+
 int
 main (int argc, char **argv)
 {
