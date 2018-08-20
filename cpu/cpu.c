@@ -67,7 +67,7 @@ int MA;
 int AC;
 int flags;
 word_t IR;
-#if !THREADED
+#if THREADED
 word_t AR;
 #endif
 word_t BR;
@@ -1051,14 +1051,14 @@ static uop operate[] = {
   uop_pushj, uop_push, uop_pop, uop_popj, uop_jsr, uop_jsp, uop_jsa, uop_jra,
   uop_add, uop_add, uop_add, uop_add, uop_sub, uop_sub, uop_sub, uop_sub,
   /* 300-377 */
-  uop_nop, uop_skipl, uop_skipe, uop_skiple, uop_skipa, uop_skipge, uop_skipn, uop_skipg,
-  uop_nop, uop_skipl, uop_skipe, uop_skiple, uop_skipa, uop_skipge, uop_skipn, uop_skipg,
-  uop_nop, uop_jumpl, uop_jumpe, uop_jumple, uop_jumpa, uop_jumpge, uop_jumpn, uop_jumpg,
+  uop_nop, uop_skipl, uop_skipe, uop_skiple, uop_skipa, uop_skipge, uop_skipn, uop_skipg, // CAI
+  uop_nop, uop_skipl, uop_skipe, uop_skiple, uop_skipa, uop_skipge, uop_skipn, uop_skipg, // CAM
+  uop_nop, uop_jumpl, uop_jumpe, uop_jumple, uop_jumpa, uop_jumpge, uop_jumpn, uop_jumpg, // JUMP
   uop_nop, uop_skipl, uop_skipe, uop_skiple, uop_skipa, uop_skipge, uop_skipn, uop_skipg, // SKIP
-  0, 0, 0, 0, 0, 0, 0, 0, // AOJ
-  0, 0, 0, 0, 0, 0, 0, 0, // AOS
-  0, 0, 0, 0, 0, 0, 0, 0, // SOJ 
-  0, 0, 0, 0, 0, 0, 0, 0, // SOS
+  uop_nop, uop_jumpl, uop_jumpe, uop_jumple, uop_jumpa, uop_jumpge, uop_jumpn, uop_jumpg, // AOJ
+  uop_nop, uop_skipl, uop_skipe, uop_skiple, uop_skipa, uop_skipge, uop_skipn, uop_skipg, // AOS
+  uop_nop, uop_jumpl, uop_jumpe, uop_jumple, uop_jumpa, uop_jumpge, uop_jumpn, uop_jumpg, // SOJ
+  uop_nop, uop_skipl, uop_skipe, uop_skiple, uop_skipa, uop_skipge, uop_skipn, uop_skipg, // SOS
   /* 400-477 */
   uop_setz, uop_setz, uop_setz, uop_setz, uop_and, uop_and, uop_and, uop_and, 
   uop_andca, uop_andca, uop_andca, uop_andca, uop_nop, uop_nop, uop_nop, uop_nop, 
