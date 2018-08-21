@@ -1,5 +1,9 @@
+# The first one is for i386, and the second is for amd64.
+#MFLAGS = -m32
+MFLAGS = -mcmodel=small
+
 CC = gcc
-CFLAGS = -m32 -g -W -Wall -I. -fomit-frame-pointer -freg-struct-return
+CFLAGS = $(MFLAGS) -g -Os -W -Wall -I. -fomit-frame-pointer -freg-struct-return
 
 WORDS =  bin-word.o its-word.o x-word.o dta-word.o aa-word.o pt-word.o core-word.o
 
@@ -22,58 +26,58 @@ clean:
 	rm -f ts.d.txt
 
 dis10: main.o $(OBJS) dmp.o raw.o cpu/cpu.o cpu/its.o
-	gcc -m32 -g $^ -o dis10
+	$(CC) $(MFLAGS) -g $^ -o dis10
 
 bin2ascii: bin2ascii.o
-	$(CC) bin2ascii.o -o bin2ascii
+	$(CC) $(MFLAGS) bin2ascii.o -o bin2ascii
 
 bin2x: bin2x.o
-	$(CC) bin2x.o -o bin2x
+	$(CC) $(MFLAGS) bin2x.o -o bin2x
 
 its2x: its2x.o word.o $(WORDS)
-	$(CC) $^ -o its2x
+	$(CC) $(MFLAGS) $^ -o its2x
 
 its2bin: its2bin.o word.o $(WORDS)
-	$(CC) $^ -o its2bin
+	$(CC) $(MFLAGS) $^ -o its2bin
 
 its2rim: its2rim.o word.o $(WORDS)
-	$(CC) $^ -o its2rim
+	$(CC) $(MFLAGS) $^ -o its2rim
 
 dskdmp: dskdmp.c $(OBJS) cpu/stub.o
-	$(CC) $^ -o $@
+	$(CC) $(MFLAGS) $^ -o $@
 
 macdmp: macdmp.c $(OBJS) cpu/stub.o
-	$(CC) $^ -o $@
+	$(CC) $(MFLAGS) $^ -o $@
 
 saildart: saildart.o $(OBJS) cpu/stub.o
-	$(CC) $^ -o $@
+	$(CC) $(MFLAGS) $^ -o $@
 
 magdmp: magdmp.c core-word.o $(OBJS) cpu/stub.o
-	$(CC) $^ -o $@
+	$(CC) $(MFLAGS) $^ -o $@
 
 magfrm: magfrm.c core-word.o $(OBJS) cpu/stub.o
-	$(CC) $^ -o $@
+	$(CC) $(MFLAGS) $^ -o $@
 
 itsarc: itsarc.o $(OBJS) cpu/stub.o cpu/stub.o
-	$(CC) $^ -o $@
+	$(CC) $(MFLAGS) $^ -o $@
 
 macro-tapes: macro-tapes.o $(OBJS) cpu/stub.o
-	$(CC) $^ -o $@
+	$(CC) $(MFLAGS) $^ -o $@
 
 tape-dir: tape-dir.o $(OBJS) cpu/stub.o
-	$(CC) $^ -o $@
+	$(CC) $(MFLAGS) $^ -o $@
 
 harscntopbm: harscntopbm.o word.o $(WORDS)
-	$(CC) $^ -o $@
+	$(CC) $(MFLAGS) $^ -o $@
 
 palx: palx.o word.o $(WORDS)
-	$(CC) $^ -o $@
+	$(CC) $(MFLAGS) $^ -o $@
 
 test/test_write: test/test_write.o $(OBJS)
-	$(CC) $^ -o $@
+	$(CC) $(MFLAGS) $^ -o $@
 
 test/test_read: test/test_read.o $(OBJS)
-	$(CC) $^ -o $@
+	$(CC) $(MFLAGS) $^ -o $@
 
 ts.d.txt: dis10 samples/ts.d
 	./dis10 -E samples/ts.d > $@ 2> /dev/null

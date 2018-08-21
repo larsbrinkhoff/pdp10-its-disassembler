@@ -21,7 +21,11 @@
 
 #define THREADED 0
 
-#if defined(__GNUC__) && defined (__i386__)
+#ifndef __GNUC__
+#error This program requires GCC extensions.
+#endif
+
+#ifdef __i386__
 #define REGPARM __attribute__((regparm(2)))
 #else
 #define REGPARM
@@ -37,8 +41,17 @@ typedef long long word_t;
 #define RETRY PC = retry (PC)
 #define JUMP(X) PC = (X)
 #else
+
+#ifdef __i386__
 #define UDEF(NAME) word_t REGPARM NAME (word_t AR)
 #define URET return AR
+#define UARG 0
+#else
+#define UDEF(NAME) void REGPARM NAME (void)
+#define URET return
+#define UARG
+#endif
+
 #define PCINC
 #define UPC (1 + ((size_t)__builtin_return_address (0) - (size_t)ops) / USIZE)
 #define RETRY ((size_t *)__builtin_frame_address (0))[1] -= 5; \
@@ -70,6 +83,9 @@ int flags;
 word_t IR;
 #if THREADED
 word_t AR;
+#elif defined (__x86_64__)
+// Callee saved: RBX, RBP, R12–R15.
+register word_t AR asm ("rbx");
 #endif
 word_t BR;
 word_t MQ;
@@ -284,13 +300,6 @@ static UDEF(uop_write_ac1)
 }
 #endif
 
-static UDEF(uop_write_acnz)
-{
-  if (AC != 0)
-    FM[AC] = AR;
-  URET;
-}
-
 static UDEF(uop_write_mem)
 {
   write_memory (MA, AR);
@@ -458,7 +467,7 @@ static uop write_back[] = {
   WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // CAI
   WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // CAM
   WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // JUMP
-  WRA0, WRA0, WRA0, WRA0, WRA0, WRA0, WRA0, WRA0, // SKIP
+  WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // SKIP
   WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // AOJ
   WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // AOS
   WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // SOJ
@@ -608,11 +617,12 @@ static UDEF(uop_lshc)
 
 static UDEF(uop_exch)
 {
+  word_t temp;
   DEBUG((stderr, "EXCH\n"));
   DEBUG((stderr, "AR %012llo, BR %012llo\n", AR, BR));
-  MQ = AR;
+  temp = AR;
   AR = BR;
-  BR = MQ;
+  BR = temp;
   DEBUG((stderr, "AR %012llo, BR %012llo\n", AR, BR));
   URET;
 }
@@ -1196,6 +1206,7 @@ static void write_jump (upc_t *upc, uop op)
   **upc = a >> 24; (*upc)++;
 }
 
+#if 0
 static void write_set_pc (upc_t *upc, int x)
 {
   **upc = 0xB8; (*upc)++;
@@ -1204,15 +1215,60 @@ static void write_set_pc (upc_t *upc, int x)
   **upc = x >> 16; (*upc)++;
   **upc = x >> 24; (*upc)++;
 }
+#endif
 
-static void write_nop (upc_t *upc)
+static void write_nop (upc_t *upc, int n)
 {
-  // Recommended five byte NOP.
-  **upc = 0x0F; (*upc)++;
-  **upc = 0x1F; (*upc)++;
-  **upc = 0x44; (*upc)++;
-  **upc = 0x00; (*upc)++;
-  **upc = 0x00; (*upc)++;
+  switch (n) {
+  case 0:
+    break;
+  case 1:
+    **upc = 0x90; (*upc)++;
+    break;
+  case 2:
+    **upc = 0x66; (*upc)++;
+    **upc = 0x90; (*upc)++;
+    break;
+  case 3:
+    **upc = 0x0F; (*upc)++;
+    **upc = 0x1F; (*upc)++;
+    **upc = 0x00; (*upc)++;
+    break;
+  case 4:
+    **upc = 0x0F; (*upc)++;
+    **upc = 0x1F; (*upc)++;
+    **upc = 0x40; (*upc)++;
+    **upc = 0x00; (*upc)++;
+    break;
+  case 5:
+    **upc = 0x0F; (*upc)++;
+    **upc = 0x1F; (*upc)++;
+    **upc = 0x44; (*upc)++;
+    **upc = 0x00; (*upc)++;
+    **upc = 0x00; (*upc)++;
+    break;
+  case 7:
+    **upc = 0x0F; (*upc)++;
+    **upc = 0x1F; (*upc)++;
+    **upc = 0x80; (*upc)++;
+    **upc = 0x00; (*upc)++;
+    **upc = 0x00; (*upc)++;
+    **upc = 0x00; (*upc)++;
+    **upc = 0x00; (*upc)++;
+    break;
+  case 8:
+    **upc = 0x0F; (*upc)++;
+    **upc = 0x1F; (*upc)++;
+    **upc = 0x84; (*upc)++;
+    **upc = 0x00; (*upc)++;
+    **upc = 0x00; (*upc)++;
+    **upc = 0x00; (*upc)++;
+    **upc = 0x00; (*upc)++;
+    **upc = 0x00; (*upc)++;
+    break;
+  default:
+    TODO(NOP);
+  }
 
   // 90
   // 66 90
@@ -1224,6 +1280,20 @@ static void write_nop (upc_t *upc)
   // 0F 1F 84 00 00 00 00 00
   // 66 0F 1F 84 00 00 00 00 00
 }
+
+static void write_setz (upc_t *upc)
+{
+#if __i386__
+  // XOR EAX,EAX
+  **upc = 0x31; (*upc)++;
+  **upc = 0xC0; (*upc)++;
+#else
+  // XOR EBX,EBX
+  **upc = 0x31; (*upc)++;
+  **upc = 0xDB; (*upc)++;
+#endif
+  write_nop (upc, 3);
+}
 #endif
 
 static void write_uop (upc_t *upc, uop op)
@@ -1233,7 +1303,10 @@ static void write_uop (upc_t *upc, uop op)
   (*upc)++;
 #else
   if (op == uop_nop)
-    write_nop (upc);
+    write_nop (upc, 5);
+  else if (op == uop_setz)
+    write_setz (upc);
+  // exch, seto, and, xor, ior, tlo
   else
     write_call (upc, op);
 #endif
@@ -1249,11 +1322,9 @@ static void decode (int a)
   opcode = (IR >> 27) & 0777;
 #if !THREADED
   if (1 && (IR & 0777777000000) == 0254000000000LL) {
-    //write_set_pc (&upc, IR & 0777777);
     write_jump (&upc, (uop)(ops + USIZE*(IR & 0777777)));
-    write_nop (&upc);
-    write_nop (&upc);
-    write_nop (&upc);
+    write_nop (&upc, 8);
+    write_nop (&upc, 7);
     return;
   }
   write_uop (&upc, calculate_ea);
@@ -1303,11 +1374,18 @@ static UDEF(decode_page)
   URET;
 }
 
-/* Invalidate a single word. */
+/* Invalidate a single word.  This is called for every memory write,
+   so it's nice if it's quick */
 void invalidate_word (int a)
 {
   upc_t upc = ops + USIZE*a;
+#if THREADED
   write_uop (&upc, decode_word);
+#else
+  static size_t dw = (size_t)decode_word;
+  upc[0] = 0xE8;
+  memcpy (upc+1, &dw, 4);
+#endif
 }
 
 /* Fill a page with a uop. */
@@ -1421,7 +1499,7 @@ void run (int start, struct pdp10_memory *m)
   {
     upc_t upc = ops + USIZE*PC;
     uop op = (uop)upc;
-    op (0);
+    op (UARG);
   }
 #endif
 }
