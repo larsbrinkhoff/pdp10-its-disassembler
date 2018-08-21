@@ -68,7 +68,7 @@ void invalidate_word (int a);
 static int execute (int);
 #endif
 
-#define DEBUG(X) //fprintf X
+#define DEBUG(X) fprintf X
 #define TODO(X) DEBUG((stderr, "TODO: %s\n", #X)); exit (1)
 
 #define SIGN_EXTEND(X)                          \
@@ -1316,6 +1316,52 @@ static void write_uop (upc_t *upc, uop op)
 #endif
 }
 
+static UDEF(uop_ea_address)
+{
+  DEBUG((stderr, "\nCalculate EA, just address.\n"));
+#if THREADED
+  MB = IR = read_memory (UPC);
+#else
+  MB = IR = read_memory (UPC-1);
+#endif
+  
+  AC = (IR >> 23) & 017;
+  MA = MB & 0777777;
+  DEBUG((stderr, "EA %06o\n", MA));
+  URET;
+}
+
+static UDEF(uop_ea_indexing)
+{
+  DEBUG((stderr, "\nCalculate EA, indexing.\n"));
+#if THREADED
+  MB = IR = read_memory (UPC);
+#else
+  MB = IR = read_memory (UPC-1);
+#endif
+  
+  AC = (IR >> 23) & 017;
+  MA = (MB & 0777777) + ACCUMULATOR((MB >> 18) & 017);
+  DEBUG((stderr, "EA %06o\n", MA));
+  URET;
+}
+
+static void write_ea (upc_t *upc)
+{
+  if ((IR >> 22) & 1) {
+    // Indirect addressing; do full calculation.
+    write_uop (upc, calculate_ea);
+    return;
+  }
+
+  if ((IR >> 18) & 017)
+    // Indexing.
+    write_uop (upc, uop_ea_indexing);
+  else
+    // No indexing.
+    write_uop (upc, uop_ea_address);
+}
+
 /* Decode one word. */
 static void decode (int a)
 {
@@ -1331,7 +1377,7 @@ static void decode (int a)
     write_nop (&upc, 7);
     return;
   }
-  write_uop (&upc, calculate_ea);
+  write_ea (&upc);
 #endif
   write_uop (&upc, read_operands[opcode]);
   if (opcode == 0777)
@@ -1438,7 +1484,7 @@ static UDEF(calculate_ea)
 {
   int address, X, I;
 
-  DEBUG((stderr, "\nCalculate EA (%p)\n", &address));
+  DEBUG((stderr, "\nCalculate EA, indirect.\n"));
 #if THREADED
   MB = IR = read_memory (UPC);
 #else
@@ -1516,12 +1562,12 @@ void run (int start, struct pdp10_memory *m)
 #endif
 }
 
-typedef struct { int a; int b; } two;
-
-two REGPARM foo (int x, int y)
+int calc_ac (void)
 {
-  two c;
-  c.a = x;
-  c.b = y;
-  return c;
+  return 5;
+}
+
+int calc_address (int x)
+{
+  return 8*x + 0x12345678;
 }
