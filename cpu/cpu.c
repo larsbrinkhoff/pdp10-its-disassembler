@@ -68,7 +68,7 @@ void invalidate_word (int a);
 static int execute (int);
 #endif
 
-#define DEBUG(X) fprintf X
+#define DEBUG(X) //fprintf X
 #define TODO(X) DEBUG((stderr, "TODO: %s\n", #X)); exit (1)
 
 #define SIGN_EXTEND(X)                          \
@@ -92,18 +92,26 @@ word_t MQ;
 word_t MB;
 word_t FM[16];
 struct pdp10_memory *memory;
+word_t moby[MOBY];
 
-word_t read_memory (int address)
+#define ACCUMULATOR(AC) moby[AC]
+
+word_t really_read_memory (int address)
 {
   word_t data;
 
   address &= 0777777;
   if (address < 16)
-    return FM[address];
+    return ACCUMULATOR(address);
 
   data = get_word_at (memory, address);
-  DEBUG((stderr, "READ %06o %012llo\n", address, data));
   return data;
+}
+
+word_t read_memory (int address)
+{
+  address &= 0777777;
+  return moby[address];
 }
 
 void write_memory (int address, word_t data)
@@ -111,10 +119,7 @@ void write_memory (int address, word_t data)
   address &= 0777777;
   DEBUG((stderr, "WRITE %06o %012llo\n", address, data));
   invalidate_word (address);
-  if (address < 16)
-    FM[address] = data;
-  else
-    set_word_at (memory, address, data);
+  moby[address] = data;
 }
 
 /* Every word is decoded into three uops.  The first reads the
@@ -132,7 +137,6 @@ typedef uop *upc_t;
 static unsigned char ops[USIZE*MOBY];
 typedef unsigned char *upc_t;
 #endif
-
 
 static UDEF(uop_nop)
 {
@@ -216,7 +220,7 @@ static UDEF(uop_read_same)
 
 static UDEF(uop_read_ac)
 {
-  AR = FM[AC];
+  AR = ACCUMULATOR(AC);
   BR = 0;
   DEBUG((stderr, "AC %o, AR %012llo\n", AC, AR));
   PCINC;
@@ -226,8 +230,8 @@ static UDEF(uop_read_ac)
 static UDEF(uop_read_ac_plus)
 {
   DEBUG((stderr, "AC %o, AR %012llo\n", AC, AR));
-  AR = (FM[AC] + 1) & 0777777777777LL;
-  FM[AC] = AR;
+  AR = (ACCUMULATOR(AC) + 1) & 0777777777777LL;
+  ACCUMULATOR(AC) = AR;
   BR = 0;
   DEBUG((stderr, "+1 -> AR %012llo\n", AR));
   PCINC;
@@ -237,8 +241,8 @@ static UDEF(uop_read_ac_plus)
 static UDEF(uop_read_ac_minus)
 {
   DEBUG((stderr, "AC %o, AR %012llo\n", AC, AR));
-  AR = (FM[AC] - 1) & 0777777777777LL;
-  FM[AC] = AR;
+  AR = (ACCUMULATOR(AC) - 1) & 0777777777777LL;
+  ACCUMULATOR(AC) = AR;
   BR = 0;
   DEBUG((stderr, "-1 -> AR %012llo\n", AR));
   PCINC;
@@ -248,7 +252,7 @@ static UDEF(uop_read_ac_minus)
 static UDEF(uop_read_ac2)
 {
   AR = 0;
-  BR = FM[AC];
+  BR = ACCUMULATOR(AC);
   DEBUG((stderr, "AC %o, AR %012llo\n", AC, AR));
   PCINC;
   URET;
@@ -256,7 +260,7 @@ static UDEF(uop_read_ac2)
 
 static UDEF(uop_read_ac_immediate)
 {
-  AR = FM[AC];
+  AR = ACCUMULATOR(AC);
   BR = MA;
   DEBUG((stderr, "AR %012llo\n", AR));
   DEBUG((stderr, "BR %012llo\n", BR));
@@ -266,7 +270,7 @@ static UDEF(uop_read_ac_immediate)
 
 static UDEF(uop_read_both)
 {
-  AR = FM[AC];
+  AR = ACCUMULATOR(AC);
   BR = read_memory (MA);
   DEBUG((stderr, "AR %012llo\n", AR));
   DEBUG((stderr, "AC %o, BR %012llo\n", AC, BR));
@@ -277,7 +281,7 @@ static UDEF(uop_read_both)
 static UDEF(uop_read_both2)
 {
   AR = read_memory (MA);
-  BR = FM[AC];
+  BR = ACCUMULATOR(AC);
   DEBUG((stderr, "AR %012llo\n", AR));
   DEBUG((stderr, "AC %o, BR %012llo\n", AC, BR));
   PCINC;
@@ -287,7 +291,7 @@ static UDEF(uop_read_both2)
 static UDEF(uop_write_ac)
 {
   DEBUG((stderr, "AC%o %012llo\n", AC, AR));
-  FM[AC] = AR;
+  ACCUMULATOR(AC) = AR;
   URET;
 }
 
@@ -295,7 +299,7 @@ static UDEF(uop_write_ac)
 static UDEF(uop_write_ac1)
 {
   DEBUG((stderr, "AC%o %012llo\n", AC + 1, MQ));
-  FM[AC+1] = MQ;
+  ACCUMULATOR(AC+1) = MQ;
   URET;
 }
 #endif
@@ -308,14 +312,14 @@ static UDEF(uop_write_mem)
 
 static UDEF(uop_write_both)
 {
-  FM[AC] = AR;
+  ACCUMULATOR(AC) = AR;
   write_memory (MA, AR);
   URET;
 }
 
 static UDEF(uop_write_ac_mem)
 {
-  FM[AC] = AR;
+  ACCUMULATOR(AC) = AR;
   write_memory (MA, BR);
   URET;
 }
@@ -323,7 +327,7 @@ static UDEF(uop_write_ac_mem)
 static UDEF(uop_write_same)
 {
   if (AC != 0)
-    FM[AC] = AR;
+    ACCUMULATOR(AC) = AR;
   write_memory (MA, AR);
   URET;
 }
@@ -646,10 +650,10 @@ static UDEF(uop_aobjn)
   LH += 01000000LL;
   AR = (AR + 1) & 0777777LL;
   if (LH != 01000000000000LL) {
-    FM[AC] = AR | LH;
+    ACCUMULATOR(AC) = AR | LH;
     JUMP(MA);
   } else
-    FM[AC] = AR;
+    ACCUMULATOR(AC) = AR;
   URET;
 }
 
@@ -685,7 +689,7 @@ static UDEF(uop_pushj)
   DEBUG((stderr, "PUSHJ\n"));
   AR = ((AR + 0000001000000LL) & 0777777000000LL) | ((AR + 1) & 0777777LL);
   write_memory (AR, (flags << 18) | UPC);
-  FM[AC] = AR;
+  ACCUMULATOR(AC) = AR;
   JUMP(MA);
   URET;
 }
@@ -706,7 +710,7 @@ static UDEF(uop_popj)
   x = read_memory (AR);
   flags = (x >> 18) & 0777777;
   AR = ((AR + 0777777000000LL) & 0777777000000LL) | ((AR - 1) & 0777777LL);
-  FM[AC] = AR;
+  ACCUMULATOR(AC) = AR;
   JUMP(x & 0777777);
   URET;
 }
@@ -732,7 +736,7 @@ static UDEF(uop_jsp)
 {
   DEBUG((stderr, "JSP\n"));
   AR = (flags << 18) | UPC;
-  FM[AC] = AR;
+  ACCUMULATOR(AC) = AR;
   JUMP(MA);
   URET;
 }
@@ -869,7 +873,7 @@ static UDEF(uop_skipl)
   SIGN_EXTEND (AR);
   SIGN_EXTEND (BR);
   if (AC != 0)
-    FM[AC] = AR;
+    ACCUMULATOR(AC) = AR;
   if (AR < BR)
     JUMP(UPC+1);
   URET;
@@ -879,7 +883,7 @@ static UDEF(uop_skipe)
 {
   DEBUG((stderr, "SKIPE\n"));
   if (AC != 0)
-    FM[AC] = AR;
+    ACCUMULATOR(AC) = AR;
   if (AR == BR)
     JUMP(UPC+1);
   URET;
@@ -891,7 +895,7 @@ static UDEF(uop_skiple)
   SIGN_EXTEND (AR);
   SIGN_EXTEND (BR);
   if (AC != 0)
-    FM[AC] = AR;
+    ACCUMULATOR(AC) = AR;
   if (AR <= BR)
     JUMP(UPC+1);
   URET;
@@ -901,7 +905,7 @@ static UDEF(uop_skipa)
 {
   DEBUG((stderr, "SKIPA\n"));
   if (AC != 0)
-    FM[AC] = AR;
+    ACCUMULATOR(AC) = AR;
   JUMP(UPC+1);
   URET;
 }
@@ -912,7 +916,7 @@ static UDEF(uop_skipge)
   SIGN_EXTEND (AR);
   SIGN_EXTEND (BR);
   if (AC != 0)
-    FM[AC] = AR;
+    ACCUMULATOR(AC) = AR;
   if (AR >= BR)
     JUMP(UPC+1);
   URET;
@@ -922,7 +926,7 @@ static UDEF(uop_skipn)
 {
   DEBUG((stderr, "SKIPN\n"));
   if (AC != 0)
-    FM[AC] = AR;
+    ACCUMULATOR(AC) = AR;
   if (AR != BR)
     JUMP(UPC+1);
   URET;
@@ -934,7 +938,7 @@ static UDEF(uop_skipg)
   SIGN_EXTEND (AR);
   SIGN_EXTEND (BR);
   if (AC != 0)
-    FM[AC] = AR;
+    ACCUMULATOR(AC) = AR;
   if (AR > BR)
     JUMP(UPC+1);
   URET;
@@ -1448,7 +1452,7 @@ static UDEF(calculate_ea)
     X = (MB >> 18) & 017;
     I = (MB >> 22) & 01;
     if (X)
-      address += FM[X];
+      address += ACCUMULATOR(X);
     if (I)
       MB = read_memory (address);
   } while (I);
@@ -1490,7 +1494,15 @@ static int execute (int PC)
 void run (int start, struct pdp10_memory *m)
 {
   int PC = start;
+  int i;
   memory = m;
+
+  for (i = 0; i < MOBY; i++) {
+    word_t x = really_read_memory (i);
+    if (x != -1)
+      moby[i] = x;
+  }
+
 #if THREADED
   for (;;)
     PC = execute (PC);
