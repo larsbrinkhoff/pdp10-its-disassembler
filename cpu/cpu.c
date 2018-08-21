@@ -14,6 +14,7 @@
 */
 
 #include <unistd.h>
+#include <string.h>
 #include <sys/mman.h>
 #include "memory.h"
 #include "cpu/its.h"
@@ -59,7 +60,7 @@ static int execute (int);
 
 #define SIGN_EXTEND(X)                          \
   if (X & 0400000000000LL)                      \
-    X |= -1LL << 36;
+    X |= -1LL << 36
 
 /* Machine state. */
 
@@ -164,6 +165,30 @@ static UDEF(uop_read_memory2)
   URET;
 }
 
+static UDEF(uop_read_memory_plus)
+{
+  AR = read_memory (MA);
+  DEBUG((stderr, "AR %012llo\n", AR));
+  AR = (AR + 1) & 0777777777777LL;
+  write_memory (MA, AR);
+  BR = 0;
+  DEBUG((stderr, "+1 -> AR %012llo\n", AR));
+  PCINC;
+  URET;
+}
+
+static UDEF(uop_read_memory_minus)
+{
+  AR = read_memory (MA);
+  DEBUG((stderr, "AR %012llo\n", AR));
+  AR = (AR - 1) & 0777777777777LL;
+  write_memory (MA, AR);
+  BR = 0;
+  DEBUG((stderr, "-1 -> AR %012llo\n", AR));
+  PCINC;
+  URET;
+}
+
 static UDEF(uop_read_same)
 {
   AR = read_memory (MA);
@@ -178,6 +203,28 @@ static UDEF(uop_read_ac)
   AR = FM[AC];
   BR = 0;
   DEBUG((stderr, "AC %o, AR %012llo\n", AC, AR));
+  PCINC;
+  URET;
+}
+
+static UDEF(uop_read_ac_plus)
+{
+  DEBUG((stderr, "AC %o, AR %012llo\n", AC, AR));
+  AR = (FM[AC] + 1) & 0777777777777LL;
+  FM[AC] = AR;
+  BR = 0;
+  DEBUG((stderr, "+1 -> AR %012llo\n", AR));
+  PCINC;
+  URET;
+}
+
+static UDEF(uop_read_ac_minus)
+{
+  DEBUG((stderr, "AC %o, AR %012llo\n", AC, AR));
+  AR = (FM[AC] - 1) & 0777777777777LL;
+  FM[AC] = AR;
+  BR = 0;
+  DEBUG((stderr, "-1 -> AR %012llo\n", AR));
   PCINC;
   URET;
 }
@@ -278,7 +325,11 @@ static UDEF(uop_write_same)
 #define RDI2 uop_read_immediate2
 #define RDMA uop_read_memory
 #define RDM2 uop_read_memory2
+#define RDMP uop_read_memory_plus
+#define RDMD uop_read_memory_minus
 #define RDAA uop_read_ac
+#define RDAP uop_read_ac_plus
+#define RDAD uop_read_ac_minus
 #define RDAB uop_read_ac_immediate
 #define RDAM 0
 #define RDA2 uop_read_ac2
@@ -321,10 +372,10 @@ static uop read_operands[] = {
   RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, RDB1, // CAM
   RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, // JUMP
   RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, // SKIP
-  RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, // AOJ
-  RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, // AOS
-  RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, RDAA, // SOJ
-  RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, RDMA, // SOS
+  RDAP, RDAP, RDAP, RDAP, RDAP, RDAP, RDAP, RDAP, // AOJ
+  RDMP, RDMP, RDMP, RDMP, RDMP, RDMP, RDMP, RDMP, // AOS
+  RDAD, RDAD, RDAD, RDAD, RDAD, RDAD, RDAD, RDAD, // SOJ
+  RDMD, RDMD, RDMD, RDMD, RDMD, RDMD, RDMD, RDMD, // SOS
   /* 400-477 */
   RDNO, RDNO, RDNO, RDNO, RDB1, RDAB, RDB1, RDB1, // SETZ, AND
   RDB1, RDAB, RDB1, RDB1, RDMA, RDIM, RDIM, RDMA, // ANDCA, SETM
@@ -387,58 +438,58 @@ static uop write_back[] = {
   WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, 
   /* 100-177 */
   WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, 
-  WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, 
-  WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, 
-  WRNO, WRA1, WRA1, WRNO, WRNO, WRNO, WRNO, WRNO, 
-  WRA1, WRA3, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, 
-  WRA1, WRA3, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, 
-  WRA1, WRA3, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, 
-  WRA1, WRA3, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, 
+  WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // DFAD etc 
+  WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // DMOVE etc
+  WRNO, WRA1, WRA1, WRNO, WRNO, WRNO, WRNO, WRNO, // UFA etc
+  WRA1, WRA3, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, // FAD
+  WRA1, WRA3, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, // FSB
+  WRA1, WRA3, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, // FMP
+  WRA1, WRA3, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, // FDV
   /* 200-277 */
   WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, // MOVE, MOVS
   WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, // MOVN, MOVM
-  WRA1, WRA1, WRM1, WRB1, WRA3, WRA3, WRM1, WRB3, 
-  WRA3, WRA3, WRM1, WRB3, WRA3, WRA3, WRM1, WRB3, 
-  WRA1, WRA1, WRA1, WRNO, WRA3, WRA3, WRA3, WRNO, 
+  WRA1, WRA1, WRM1, WRB1, WRA3, WRA3, WRM1, WRB3, // ASH etc
+  WRA3, WRA3, WRM1, WRB3, WRA3, WRA3, WRM1, WRB3, // EXCH etc
+  WRA1, WRA1, WRA1, WRNO, WRA3, WRA3, WRA3, WRNO, // PUSHJ etc
   WRB4, WRNO, WRA1, WRNO, WRNO, WRNO, WRNO, WRNO, // EXCH etc
   WRA1, WRA1, WRA1, WRA1, WRNO, WRNO, WRM1, WRNO, // PUSHJ etc
-  WRA1, WRA1, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, 
+  WRA1, WRA1, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, // ADD, SUB
   /* 300-377 */
   WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // CAI
   WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // CAM
   WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // JUMP
   WRA0, WRA0, WRA0, WRA0, WRA0, WRA0, WRA0, WRA0, // SKIP
-  WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, 
-  WRB2, WRB2, WRB2, WRB2, WRB2, WRB2, WRB2, WRB2, 
-  WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, 
-  WRB2, WRB2, WRB2, WRB2, WRB2, WRB2, WRB2, WRB2, 
+  WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // AOJ
+  WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // AOS
+  WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // SOJ
+  WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // SOS
   /* 400-477 */
-  WRA1, WRA1, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, 
-  WRA1, WRA1, WRM1, WRB1, WRA1, WRA1, WRNO, WRA1, 
-  WRA1, WRA1, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, 
-  WRA1, WRA1, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, 
-  WRA1, WRA1, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, 
-  WRA1, WRA1, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, 
-  WRA1, WRA1, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, 
-  WRA1, WRA1, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, 
+  WRA1, WRA1, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, // SETZ, AND
+  WRA1, WRA1, WRM1, WRB1, WRA1, WRA1, WRNO, WRA1, // ANDCA, SETM
+  WRA1, WRA1, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, // ANDCM, SETA
+  WRA1, WRA1, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, // XOR, IOR
+  WRA1, WRA1, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, // ANDCB, EQV
+  WRA1, WRA1, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, // SETCA, ORCA
+  WRA1, WRA1, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, // SETCM, ORCM
+  WRA1, WRA1, WRM1, WRB1, WRA1, WRA1, WRM1, WRB1, // ORCB, SETO
   /* 500-577 */
-  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, 
-  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, 
-  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, 
-  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, 
-  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, 
-  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, 
-  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, 
-  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, 
+  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, // HLL, HRL
+  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, // HLLZ, HRLZ
+  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, // HLLO, HRLO
+  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, // HLLE, HRLE
+  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, // HRR, HLR
+  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, // HRRZ, HLRZ
+  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, // HRRO, HLRO
+  WRA1, WRA1, WRM1, WRB2, WRA1, WRA1, WRM1, WRB2, // HRRE, HLRE
   /* 600-677 */
-  WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, 
-  WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, 
-  WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, 
-  WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, 
-  WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, 
-  WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, 
-  WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, 
-  WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, 
+  WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // TxN
+  WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, // TxN
+  WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, // TxZ
+  WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, // TxZ
+  WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, // TxC
+  WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, // TxC
+  WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, // TxO
+  WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, WRA1, // TxO
   /* 700-777 */
   WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, 
   WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, WRNO, 
@@ -807,6 +858,8 @@ static UDEF(uop_skipl)
   DEBUG((stderr, "SKIPL: %012llo < %012llo\n", AR, BR));
   SIGN_EXTEND (AR);
   SIGN_EXTEND (BR);
+  if (AC != 0)
+    FM[AC] = AR;
   if (AR < BR)
     JUMP(UPC+1);
   URET;
@@ -815,6 +868,8 @@ static UDEF(uop_skipl)
 static UDEF(uop_skipe)
 {
   DEBUG((stderr, "SKIPE\n"));
+  if (AC != 0)
+    FM[AC] = AR;
   if (AR == BR)
     JUMP(UPC+1);
   URET;
@@ -825,6 +880,8 @@ static UDEF(uop_skiple)
   DEBUG((stderr, "SKIPLE\n"));
   SIGN_EXTEND (AR);
   SIGN_EXTEND (BR);
+  if (AC != 0)
+    FM[AC] = AR;
   if (AR <= BR)
     JUMP(UPC+1);
   URET;
@@ -833,6 +890,8 @@ static UDEF(uop_skiple)
 static UDEF(uop_skipa)
 {
   DEBUG((stderr, "SKIPA\n"));
+  if (AC != 0)
+    FM[AC] = AR;
   JUMP(UPC+1);
   URET;
 }
@@ -842,6 +901,8 @@ static UDEF(uop_skipge)
   DEBUG((stderr, "SKIPGE\n"));
   SIGN_EXTEND (AR);
   SIGN_EXTEND (BR);
+  if (AC != 0)
+    FM[AC] = AR;
   if (AR >= BR)
     JUMP(UPC+1);
   URET;
@@ -850,6 +911,8 @@ static UDEF(uop_skipge)
 static UDEF(uop_skipn)
 {
   DEBUG((stderr, "SKIPN\n"));
+  if (AC != 0)
+    FM[AC] = AR;
   if (AR != BR)
     JUMP(UPC+1);
   URET;
@@ -860,6 +923,8 @@ static UDEF(uop_skipg)
   DEBUG((stderr, "SKIPG\n"));
   SIGN_EXTEND (AR);
   SIGN_EXTEND (BR);
+  if (AC != 0)
+    FM[AC] = AR;
   if (AR > BR)
     JUMP(UPC+1);
   URET;
@@ -1184,8 +1249,9 @@ static void decode (int a)
   opcode = (IR >> 27) & 0777;
 #if !THREADED
   if (1 && (IR & 0777777000000) == 0254000000000LL) {
-    write_set_pc (&upc, IR & 0777777);
+    //write_set_pc (&upc, IR & 0777777);
     write_jump (&upc, (uop)(ops + USIZE*(IR & 0777777)));
+    write_nop (&upc);
     write_nop (&upc);
     write_nop (&upc);
     return;
