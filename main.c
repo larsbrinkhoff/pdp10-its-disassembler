@@ -28,6 +28,7 @@ usage (char **argv)
   fprintf (stderr, "Usage: %s [-6] [-r] [-S<symbol mode>] [-W<word format>] <file>\n\n", argv[0]);
   usage_word_format ();
   usage_symbols_mode ();
+  usage_machine ();
   exit (1);
 }
 
@@ -41,7 +42,7 @@ main (int argc, char **argv)
   int opt;
   reader_t read_func = NULL;
 
-  while ((opt = getopt (argc, argv, "6rS:W:")) != -1)
+  while ((opt = getopt (argc, argv, "6rS:W:m:")) != -1)
     {
       switch (opt)
 	{
@@ -50,6 +51,10 @@ main (int argc, char **argv)
 	  break;
 	case 'r':
 	  read_func = read_raw;
+	  break;
+	case 'm':
+	  if (parse_machine (optarg, &cpu_model))
+	    usage (argv);
 	  break;
 	case 'S':
 	  if (parse_symbols_mode (optarg))
