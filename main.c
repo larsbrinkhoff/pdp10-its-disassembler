@@ -35,7 +35,7 @@ usage (char **argv)
 int
 main (int argc, char **argv)
 {
-  int cpu_model = PDP10_KS10_ITS;
+  int cpu_model = PDP10_KA10_ITS;
   struct pdp10_memory memory;
   FILE *file;
   word_t word;
