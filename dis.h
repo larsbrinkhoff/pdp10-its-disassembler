@@ -64,6 +64,8 @@ extern void	sblk_info (FILE *f, word_t word0, int cpu_model);
 extern void     dmp_info (struct pdp10_memory *memory, int cpu_model);
 extern void     usage_symbols_mode (void);
 extern int      parse_symbols_mode (const char *string);
+extern void     usage_machine (void);
+extern int      parse_machine (const char *string, int *machine);
 extern void	dis (struct pdp10_memory *memory, int cpu_model);
 extern void	disassemble_word (struct pdp10_memory *memory, word_t word,
 				  int address, int cpu_model);

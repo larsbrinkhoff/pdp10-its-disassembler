@@ -14,6 +14,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include <stdio.h>
+#include <string.h>
 
 #include "opcode/pdp10.h"
 #include "dis.h"
@@ -488,4 +489,39 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 #endif
 
   printf ("\n");
+}
+
+void
+usage_machine (void)
+{
+  fprintf (stderr, "Valid machines are: 166, KA10, KI10, KL10, and KS10.\n");
+  fprintf (stderr, "For KA/KL/KS, append ITS to get the MIT instructions.\n");
+}
+
+int
+parse_machine (const char *string, int *machine)
+{
+  int its = 0;
+
+  /* Do some lax matching to find CPU and variants. */
+
+  if (strcasestr (string, "ITS"))
+    its = 1;
+
+  if (strcasestr (string, "166"))
+    *machine = PDP6_166;
+  else if (strcasestr (string, "pdp6"))
+    *machine = PDP6_166;
+  else if (strcasestr (string, "KA"))
+    *machine = its ? PDP10_KA10_ITS : PDP10_KA10;
+  else if (strcasestr (string, "KI"))
+    *machine = PDP10_KI10;
+  else if (strcasestr (string, "KL"))
+    *machine = its ? PDP10_KL10_ITS : (PDP10_KL10|PDP10_KL10_271);
+  else if (strcasestr (string, "KS"))
+    *machine = its ? PDP10_KS10_ITS : PDP10_KS10;
+  else
+    return -1;
+
+  return 0;
 }
