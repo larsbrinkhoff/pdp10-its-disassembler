@@ -26,16 +26,16 @@
 static char *tape_type (int n)
 {
   if (n == 0)
-    return "Random";
+    return "RANDOM";
   else if ((n & 0700000) == 0700000)
-    return "Incremental";
+    return "INCREMENTAL";
   else
-    return "Full";
+    return "FULL";
 }
 
 static void read_tape_header (FILE *f)
 {
-  word_t word;
+  word_t word, word2;
   int count;
   char str[7];
 
@@ -48,15 +48,13 @@ static void read_tape_header (FILE *f)
     printf ("Count: %d\n", count);
 
   word = get_word (f);
-  printf ("Tape: %lld\n", (word >> 18) & 0777777);
-  printf ("Reel: %lld\n", word & 0777777);
-
+  word2 = get_word (f);
+  printf ("TAPE NO %6lld ", (word >> 18) & 0777777);
+  sixbit_to_ascii (word2, str);
+  printf ("CREATION DATE  %s\n", str);
+  printf ("REEL NO %6lld ", word & 0777777);
   word = get_word (f);
-  sixbit_to_ascii (word, str);
-  printf ("Date: %s\n", str);
-  
-  word = get_word (f);
-  printf ("Type: %s (%llo)\n", tape_type (word), word);
+  printf ("OF %s DUMP\n", tape_type (word));
 
   word = get_word (f);
   printf ("Word: %llo\n", word);
