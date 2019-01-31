@@ -110,7 +110,10 @@ static void read_directory (FILE *f, word_t old)
           sixbit_to_ascii (fn2, str);
           printf (" %s ", str);
           //word &= 0177777777777LL;
-          print_datime (stdout, word);
+          if (word == 0777777777777LL || word == 0400000000000LL)
+            printf ("-");
+          else
+            print_datime (stdout, word);
           putchar ('\n');
         }
 
