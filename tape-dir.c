@@ -33,7 +33,7 @@ static char *tape_type (int n)
     return "FULL";
 }
 
-static void read_tape_header (FILE *f)
+static word_t read_tape_header (FILE *f)
 {
   word_t word, word2;
   int count;
@@ -59,7 +59,11 @@ static void read_tape_header (FILE *f)
   word = get_word (f);
   printf ("Word: %llo\n", word);
   word = get_word (f);
-  printf ("Word: %llo\n", word);
+  if (word)
+    printf ("Old format tape database.\n");
+  else
+    printf ("New format tape database.\n");
+  return word;
 }
 
 static int not_dir_name (word_t fn1, word_t fn2)
@@ -71,14 +75,21 @@ static int not_dir_name (word_t fn1, word_t fn2)
   return 1;
 }
 
-static void read_directory (FILE *f)
+static void read_directory (FILE *f, word_t old)
 {
   word_t fn1, fn2, word;
   char ufd[7];
   char str[7];
 
-  word = get_word (f);
-  sixbit_to_ascii (word, ufd);
+  if (!old)
+    {
+      word = get_word (f);
+      sixbit_to_ascii (word, ufd);
+    }
+  else
+    {
+      sixbit_to_ascii (old, ufd);
+    }
 
   for (;;)
     {
@@ -90,6 +101,8 @@ static void read_directory (FILE *f)
 
       fn2 = get_word (f);
       word = get_word (f);
+      if (old)
+        word = get_word (f);
       if (not_dir_name (fn1, fn2))
         {
           sixbit_to_ascii (fn1, str);
@@ -100,20 +113,26 @@ static void read_directory (FILE *f)
           print_datime (stdout, word);
           putchar ('\n');
         }
+
+      if (old)
+        {
+          word = get_word (f);
+          sixbit_to_ascii (word, ufd);
+        }
     }
 }
 
 static void read_info (FILE *f)
 {
-  read_tape_header (f);
+  word_t old = read_tape_header (f);
   for (;;)
-    read_directory (f);
+    read_directory (f, old);
 }
 
 static void
 usage (const char *x)
 {
-  fprintf (stderr, "Usage: %s -x|-t <file>\n", x);
+  fprintf (stderr, "Usage: %s -o|-n <file>\n", x);
   exit (1);
 }
 
@@ -122,24 +141,10 @@ main (int argc, char **argv)
 {
   FILE *f;
 
-  if (argc != 3)
+  if (argc != 2)
     usage (argv[0]);
 
-  if (argv[1][0] != '-')
-    usage (argv[0]);
-
-  switch (argv[1][1])
-    {
-    case 't':
-      break;
-    case 'x':
-      break;
-    default:
-      usage (argv[0]);
-      break;
-    }
-
-  f = fopen (argv[2], "rb");
+  f = fopen (argv[1], "rb");
   if (f == NULL)
     {
       fprintf (stderr, "error\n");
