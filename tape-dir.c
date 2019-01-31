@@ -23,6 +23,10 @@
 #define FILE2_OCT  0164651544516LL /* .FILE. */
 #define DIR_OCT    0104451621100LL /* (DIR) */
 
+static word_t year;
+static int month;
+static int day;
+
 static char *tape_type (int n)
 {
   if (n == 0)
@@ -31,6 +35,26 @@ static char *tape_type (int n)
     return "INCREMENTAL";
   else
     return "FULL";
+}
+
+static void print_timestamp (word_t word)
+{
+  int date, y, m, d;
+
+  if ((word >> 27) < 2)
+    word |= (year&0776) << 27;
+
+  date = (word >> 18);
+  d = (date & 037);
+  m = (date & 0740) >> 5;
+  y = (date & 0777000) >> 9;
+
+  if (y > year || m > month || (m == month && d > day))
+    y-= 2;
+
+  printf ("%u-%02u-%02u", y + 1900, m, d);
+  fputc (' ', stdout);
+  print_time (stdout, word);
 }
 
 static word_t read_tape_header (FILE *f)
@@ -51,6 +75,10 @@ static word_t read_tape_header (FILE *f)
   word2 = get_word (f);
   printf ("TAPE NO %6lld ", (word >> 18) & 0777777);
   sixbit_to_ascii (word2, str);
+  year = 10*((word2>>30)-020) + ((word2>>24)&077)-020;
+  month = 10*(((word2>>18)&077)-020) + ((word2>>12)&077)-020;
+  day = 10*(((word2>>6)&077)-020) + (word2&077)-020;
+
   printf ("CREATION DATE  %s\n", str);
   printf ("REEL NO %6lld ", word & 0777777);
   word = get_word (f);
@@ -113,7 +141,7 @@ static void read_directory (FILE *f, word_t old)
           if (word == 0777777777777LL || word == 0400000000000LL)
             printf ("-");
           else
-            print_datime (stdout, word);
+            print_timestamp (word);
           putchar ('\n');
         }
 

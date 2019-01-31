@@ -113,7 +113,7 @@ print_date (FILE *f, word_t t)
 }
 
 void
-print_datime (FILE *f, word_t t)
+print_time (FILE *f, word_t t)
 {
   /* The right half of this word is the time of day since midnight in
      half-seconds. */
@@ -122,8 +122,15 @@ print_datime (FILE *f, word_t t)
   int minutes = (seconds / 60);
   int hours = (minutes / 60);
 
+  fprintf (f, "%02u:%02u:%02u", hours, (minutes % 60), (seconds % 60));
+}
+
+void
+print_datime (FILE *f, word_t t)
+{
   print_date (f, t);
-  fprintf (f, " %02u:%02u:%02u", hours, (minutes % 60), (seconds % 60));
+  fputc (' ', f);
+  print_time (f, t);
 }
 
 static void
