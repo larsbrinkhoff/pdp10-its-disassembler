@@ -25,7 +25,7 @@
 static void
 usage (char **argv)
 {
-  fprintf (stderr, "Usage: %s [-6] [-r] [-S<symbol mode>] [-W<word format>] <file>\n\n", argv[0]);
+  fprintf (stderr, "Usage: %s [-6] [-r] [-S<symbol mode>] [-W<word format>] [-D<DDT address>] <file>\n\n", argv[0]);
   usage_word_format ();
   usage_symbols_mode ();
   usage_machine ();
@@ -40,9 +40,10 @@ main (int argc, char **argv)
   FILE *file;
   word_t word;
   int opt;
+  int ddt = 0;
   reader_t read_func = NULL;
 
-  while ((opt = getopt (argc, argv, "6rS:W:m:")) != -1)
+  while ((opt = getopt (argc, argv, "6rS:W:m:D:")) != -1)
     {
       switch (opt)
 	{
@@ -63,6 +64,9 @@ main (int argc, char **argv)
 	case 'W':
 	  if (parse_word_format (optarg))
 	    usage (argv);
+	  break;
+	case 'D':
+	  ddt = strtol (optarg, NULL, 8);
 	  break;
 	default:
 	  usage (argv);
@@ -95,6 +99,9 @@ main (int argc, char **argv)
 
   while ((word = get_word (file)) != -1)
     printf ("(extra word: %012llo)\n", word);
+
+  if (ddt)
+    ntsddt_info (&memory, ddt);
 
   printf ("\nDisassembly:\n\n");
   dis (&memory, cpu_model);

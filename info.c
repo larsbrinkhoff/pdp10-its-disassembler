@@ -1,4 +1,5 @@
-/* Copyright (C) 2013 Lars Brinkhoff <lars@nocrew.org>
+/* Copyright (C) 2013, 2019 Lars Brinkhoff <lars@nocrew.org>
+   Copyright (C) 2018 Adam Sampson <ats@offog.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -372,5 +373,46 @@ byte_size (int code, int *leftovers)
     {
       *leftovers = (code & 077);
       return (code - 0400) >> 6;
+    }
+}
+
+void
+ntsddt_info (struct pdp10_memory *memory, int ddt)
+{
+  extern word_t get_word_at ();
+  char name[7];
+  word_t a, w, v;
+  int i, syms;
+
+  a = get_word_at (memory, ddt - 1);
+  if (a == -1LL)
+    {
+      fprintf (stderr, "No DDT symbol table.\n");
+      return;
+    }
+
+  /* The word at DDT-1 points to an AOBJ pointer. */
+
+  a = get_word_at (memory, a);
+  syms = a >> 18;
+  if (syms & 0400000)
+    syms |= -1 << 18;
+  syms = -syms;
+  a &= 0777777;
+
+  printf ("Symbol table:\n");
+
+  for (i = 0; i < syms; i += 2)
+    {
+      w = get_word_at (memory, a);
+      v = get_word_at (memory, a + 1);
+      if (w >> 32)
+	print_symbol (w, v);
+      else
+	{
+	  squoze_to_ascii (w, name);
+	  printf ("  Header: %s (%012llo)\n", name, v);
+	}
+      a += 2;
     }
 }
