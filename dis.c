@@ -488,6 +488,12 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
     }
 #endif
 
+#if 0
+  /* Print word as six SQUOZE characters. */
+  squoze_to_ascii (word, ch);
+  printf (" \"%s\"", ch);
+#endif
+
   printf ("\n");
 }
 
