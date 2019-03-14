@@ -62,6 +62,7 @@ extern void	read_raw_at (FILE *f, struct pdp10_memory *memory,
 			     int address);
 extern void	sblk_info (FILE *f, word_t word0, int cpu_model);
 extern void     dmp_info (struct pdp10_memory *memory, int cpu_model);
+extern void	ntsddt_info (struct pdp10_memory *memory, int);
 extern void     usage_symbols_mode (void);
 extern int      parse_symbols_mode (const char *string);
 extern void     usage_machine (void);

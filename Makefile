@@ -73,7 +73,7 @@ test/test_write: test/test_write.o $(OBJS)
 test/test_read: test/test_read.o $(OBJS)
 	$(CC) $^ -o $@
 
-check: ts.obs.dasm ts.ksfedr.dasm ts.name.dasm ts.srccom.dasm atsign.tcp.dasm arc.code.list macro.low.dasm pt.rim.dasm visib1.bin.dasm visib2.bin.dasm visib3.bin.dasm
+check: ts.obs.dasm ts.ksfedr.dasm ts.name.dasm ts.srccom.dasm atsign.tcp.dasm arc.code.list macro.low.dasm pt.rim.dasm visib1.bin.dasm visib2.bin.dasm visib3.bin.dasm @.midas.dasm
 
 samples/ts.obs = -Wits
 samples/ts.ksfedr = -Wits
@@ -85,6 +85,7 @@ samples/pt.rim = -r -Wpt
 samples/visib1.bin = -Wits -Sddt
 samples/visib2.bin = -Wits -Sddt
 samples/visib3.bin = -Wits -Sall
+samples/@.midas = -D774000 -Sall
 
 %.dasm: samples/% dis10 test/%.dasm
 	./dis10 $($<) $< > $@
