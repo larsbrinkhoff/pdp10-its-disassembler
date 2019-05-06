@@ -7,7 +7,7 @@ OBJS =	pdp10-opc.o info.o word.o sblk.o pdump.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o $(WORDS)
 
 UTILS =	bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
-	macdmp saildart macro-tapes tape-dir harscntopbm palx
+	macdmp saildart macro-tapes tape-dir harscntopbm palx its2ascii
 
 all: dis10 $(UTILS) check
 
@@ -36,6 +36,9 @@ its2bin: its2bin.o word.o $(WORDS)
 
 its2rim: its2rim.o word.o $(WORDS)
 	$(CC) $^ -o its2rim
+
+its2ascii: its2ascii.o word.o $(WORDS)
+	$(CC) $^ -o $@
 
 dskdmp: dskdmp.c $(OBJS)
 	$(CC) $^ -o $@
