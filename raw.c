@@ -33,7 +33,7 @@ read_raw_at (FILE *f, struct pdp10_memory *memory, int address)
 	  exit (1);
 	}
 
-      data[0] = (word >> 32) & 0x0f;
+      data[0] = (word >> 32) & 0x3f;
       data[1] = (word >> 24) & 0xff;
       data[2] = (word >> 16) & 0xff;
       data[3] = (word >>  8) & 0xff;

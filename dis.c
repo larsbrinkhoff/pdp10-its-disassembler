@@ -238,11 +238,18 @@ calc_e (struct pdp10_memory *memory, word_t word)
 void
 dis (struct pdp10_memory *memory, int cpu_model)
 {
+  word_t mask = 0777777777777LL;
   word_t word;
 
   set_address (memory, -1);
   while ((word = get_next_word (memory)) != -1)
-    disassemble_word (memory, word, get_address (memory), cpu_model);
+    {
+      if (word & START_FILE)
+	printf ("Start of file.\n");
+      else if (word & START_RECORD)
+	printf ("Start of record.\n");
+      disassemble_word (memory, word & mask, get_address (memory), cpu_model);
+    }
 }
 
 int
