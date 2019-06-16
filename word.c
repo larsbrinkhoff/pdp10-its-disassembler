@@ -55,6 +55,8 @@ parse_word_format (const char *string)
     file_36bit_format = FORMAT_ITS;
   else if (strcmp (string, "pt") == 0)
     file_36bit_format = FORMAT_PT;
+  else if (strcmp (string, "tape") == 0)
+    file_36bit_format = FORMAT_TAPE;
   else
     return -1;
 
@@ -73,6 +75,7 @@ get_word (FILE *f)
     case FORMAT_AA:	return get_aa_word (f);
     case FORMAT_PT:	return get_pt_word (f);
     case FORMAT_CORE:   return get_core_word (f);
+    case FORMAT_TAPE:   return get_tape_word (f);
     }
 
   return -1;
@@ -114,5 +117,6 @@ rewind_word (FILE *f)
     case FORMAT_AA:	return rewind_aa_word (f);
     case FORMAT_PT:	return rewind_pt_word (f);
     case FORMAT_CORE:	return rewind_core_word (f);
+    case FORMAT_TAPE:	return rewind_tape_word (f);
     }
 }
