@@ -365,6 +365,12 @@ main (int argc, char **argv)
       nblks = 011610;
       nsecsc = 10 * 20;
       break;
+    case 19522:
+      type = "RP04";
+      ntutbl = 2;
+      nblks = 045212;
+      nsecsc = 19 * 20;
+      break;
     case 38580:
       type = "RP06";
       ntutbl = 4;
