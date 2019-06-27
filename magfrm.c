@@ -24,6 +24,7 @@ extern word_t ascii_to_sixbit (char *);
 
 static int write_reclen (FILE *f, int reclen)
 {
+  /* A SIMH tape image record length is 32-bit little endian. */
   fputc ( reclen        & 0xFF, f);
   fputc ((reclen >>  8) & 0xFF, f);
   fputc ((reclen >> 16) & 0xFF, f);
@@ -35,15 +36,24 @@ static int write_record (FILE *f, int reclen, void *buffer)
   word_t *x = buffer;
   int i;
 
+  /* To write a tape record in the SIMH tape image format, first write
+     a 32-bit record length, then data frames, then the length again.
+     For PDP-10 36-bit data, the data words are written in the "core
+     dump" format.  One word is written as five 8-bit frames, with
+     four bits unused in the last frame. */
+
   fprintf (stderr, "Record, %d words\n", reclen);
   write_reclen (f, 5 * reclen);
 
   for (i = 0; i < reclen; i++)
     write_core_word (f, *x++);
 
+  /* Pad out to make the record data an even number of octets. */
   if ((reclen * 5) & 1)
     fputc (0, f);
 
+  /* A record of length zero is a tape mark, and the length is only
+     written once. */
   if (reclen > 0)
     write_reclen (f, 5 * reclen);
 }
@@ -54,6 +64,10 @@ static void
 write_header (FILE *f, char *name)
 {
   char *fn1, *fn2;
+
+  /* The MAGDMP header is three words of SIXBIT text:
+     file name 1, file name 2, and version.  Use the input
+     file name split on "." and version 001 for all files. */
 
   fprintf (stderr, "File %s -> ", name);
 
@@ -92,8 +106,10 @@ write_file (FILE *f, char *name)
     }
   n = 0;
 
+  /* One record with the file name, and then a tape mark. */
   write_header (f, name);
 
+  /* Then file data in 1024 word records, terminated by a tape mark. */
   for (;;)
     {
       word_t word = get_its_word (in);
@@ -106,6 +122,8 @@ write_file (FILE *f, char *name)
 
       if (n == 1024 || word == -1)
 	{
+          /* If we have a full record, or no more data in the input
+             file, write a record. */
 	  if (n > 0)
 	    write_record (f, n, buffer);
 	  x = buffer;
@@ -116,6 +134,7 @@ write_file (FILE *f, char *name)
 	break;
     }
 
+  /* Tape mark. */
   write_record (f, 0, buffer);
 }
 
@@ -127,9 +146,21 @@ main (int argc, char **argv)
   int i;
   int eof = 0;
 
-  f = fopen (argv[1], "rb");
+  if (argc < 2)
+    {
+      fprintf (stderr, "Usage: %s <magdmp> <files...>\n\n", argv[0]);
+      fprintf (stderr, "Writes a MAGDMP bootable tape image file in SIMH format.\n");
+      fprintf (stderr, "The first argument specifies the MAGDMP program.\n");
+      fprintf (stderr, "The following arguments specify files put on the tape.\n");
+      fprintf (stderr, "The inputs must be in ITS evacuate format.\n");
+      fprintf (stderr, "The output is written to stdout.\n");
+      exit (1);
+    }
 
   memset (buffer, 0, sizeof buffer);
+
+  /* The first tape record should be MAGDMP, ended by a tape mark.
+     Just a placeholder for now. */
   write_record (stdout, 2, buffer);
   write_record (stdout, 0, buffer);
 
