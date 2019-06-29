@@ -1,4 +1,4 @@
-CC = gcc
+
 CFLAGS = -g -W -Wall
 
 WORDS =  bin-word.o its-word.o x-word.o dta-word.o aa-word.o pt-word.o core-word.o tape-word.o
@@ -8,7 +8,7 @@ OBJS =	pdp10-opc.o info.o word.o sblk.o pdump.o dis.o symbols.o \
 
 UTILS =	bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
 	macdmp saildart macro-tapes tape-dir harscntopbm palx its2ascii \
-	tracks ipak kldcp
+	tracks ipak kldcp klfedr
 
 all: dis10 $(UTILS) check
 
@@ -81,6 +81,9 @@ palx: palx.o libwords.a
 	$(CC) -g $^ -o $@
 
 kldcp: kldcp.o $(OBJS) das.o libwords.a
+	$(CC) -g $^ -o $@
+
+klfedr: klfedr.o $(OBJS) libwords.a
 	$(CC) -g $^ -o $@
 
 test/test_write: test/test_write.o $(OBJS)
