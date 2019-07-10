@@ -845,18 +845,20 @@ const struct pdp10_device pdp10_device[] =
   { "pi",	0004,	PDP10_KA10_to_KL10 },	/* Priority interrupt */
   { "pag",	0010,	PDP10_KI10_to_KL10 },	/* Pager */
   { "cca",	0014,	PDP10_KL10any },	/* Cache */
+#if 0
+  { "dsdev",	0020,	PDP10_KA10_ITS },    	/* Deselection device */
+  { "?",	0024,	PDP10_KA10_ITS },       /* ? */
+#endif
   { "tim",	0020,	PDP10_KL10any },	/* Timer */
   { "mtr",	0024,	PDP10_KL10any },	/* Meters */
-#if 0
-  { "dlb",	0060,	PDP10_ITS },		/* DL10 base */
-  { "dlc",	0064,	PDP10_ITS },		/* DL10 control */
-  { "stk",	0070,	PDP10_ITS },		/* Stanford keyboard */
-  { "ptp",	0100,	PDP10_KA10_ITS },	/* Paper tape punch */
-#endif
+  { "dlb",	0060,	PDP10_KA10_to_KL10 },	/* DL10 base */
+  { "dlc",	0064,	PDP10_KA10_to_KL10 },	/* DL10 control */
+  { "stk",	0070,	PDP10_KA10_ITS },	/* Stanford keyboard */
+  { "ptp",	0100,	PDP10_KA10 },   	/* Paper tape punch */
   { "ptr",	0104,	PDP10_KI10 },		/* Paper tape reader */
+  { "tty",	0120,	PDP10_KA10 },   	/* Console TTY */
 #if 0
-  { "tty",	0120,	PDP10_KA10_ITS },	/* Console TTY */
-  { "olptp",	0124,	PDP10_ITS },		/* Line printer */
+  { "olpt",	0124,	PDP10_ITS },		/* Line printer */
   { "dis",	0130,	PDP10_KA10_ITS },	/* 340 display */
   { "dpc",	0250,	PDP10_ITS },		/* RP10 disk control */
   { "dsk",	0270,	PDP10_ITS },		/* RH10 disk control */
@@ -868,7 +870,7 @@ const struct pdp10_device pdp10_device[] =
   { "fi",	0424,	PDP10_ITS },		/* IMP hardware */
   { "imp",	0460,	PDP10_KA10_ITS |
 			PDP10_KL10_ITS },	/* IMP interface */
-  { "nlptp",	0464,	PDP10_ITS },		/* Line printer */
+  { "nlpt",	0464,	PDP10_ITS },		/* Line printer */
   { "pdclk",	0500,	PDP10_ITS },		/* De-Coriolis clock */
   { "tipdev",	0504,	PDP10_ITS },		/* TIP break device */
   { "rbtcon",	0514,	PDP10_ITS },		/* Robot console */
