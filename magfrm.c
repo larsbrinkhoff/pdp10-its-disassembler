@@ -19,7 +19,6 @@
 #include "dis.h"
 
 extern word_t get_its_word (FILE *f);
-extern void write_core_word (FILE *f, word_t);
 extern word_t ascii_to_sixbit (char *);
 
 word_t mthri[] =
@@ -42,42 +41,7 @@ word_t mthri[] =
   0254000000002  /* JRST 2 */
 };
 
-static int write_reclen (FILE *f, int reclen)
-{
-  /* A SIMH tape image record length is 32-bit little endian. */
-  fputc ( reclen        & 0xFF, f);
-  fputc ((reclen >>  8) & 0xFF, f);
-  fputc ((reclen >> 16) & 0xFF, f);
-  fputc ((reclen >> 24) & 0xFF, f);
-}
-
-static int write_record (FILE *f, int reclen, void *buffer)
-{
-  word_t *x = buffer;
-  int i;
-
-  /* To write a tape record in the SIMH tape image format, first write
-     a 32-bit record length, then data frames, then the length again.
-     For PDP-10 36-bit data, the data words are written in the "core
-     dump" format.  One word is written as five 8-bit frames, with
-     four bits unused in the last frame. */
-
-  fprintf (stderr, "Record, %d words\n", reclen);
-  write_reclen (f, 5 * reclen);
-
-  for (i = 0; i < reclen; i++)
-    write_core_word (f, *x++);
-
-  /* Pad out to make the record data an even number of octets. */
-  if ((reclen * 5) & 1)
-    fputc (0, f);
-
-  /* A record of length zero is a tape mark, and the length is only
-     written once. */
-  if (reclen > 0)
-    write_reclen (f, 5 * reclen);
-}
-
+static void (*write_record) (FILE *f, word_t *buffer, int);
 word_t buffer[5 * 1024];
 
 static void
@@ -107,8 +71,8 @@ write_header (FILE *f, char *name)
   buffer[0] = ascii_to_sixbit (fn1);
   buffer[1] = ascii_to_sixbit (fn2);
   buffer[2] = ascii_to_sixbit ("001");
-  write_record (f, 3, buffer);
-  write_record (f, 0, buffer);
+  write_record (f, buffer, 3);
+  write_record (f, buffer, 0);
 }
 
 static void
@@ -145,7 +109,7 @@ write_file (FILE *f, char *name)
           /* If we have a full record, or no more data in the input
              file, write a record. */
 	  if (n > 0)
-	    write_record (f, n, buffer);
+	    write_record (f, buffer, n);
 	  x = buffer;
 	  n = 0;
 	}
@@ -155,7 +119,7 @@ write_file (FILE *f, char *name)
     }
 
   /* Tape mark. */
-  write_record (f, 0, buffer);
+  write_record (f, buffer, 0);
 }
 
 static void
@@ -187,8 +151,20 @@ write_hri (FILE *f, const char *file)
       *p++ = word;
     }
 
-  write_record (stdout, p - buffer, buffer);
-  write_record (stdout, 0, buffer);
+  write_record (stdout, buffer, p - buffer);
+  write_record (stdout, buffer, 0);
+}
+
+static void
+seven_tracks (void)
+{
+  write_record = write_7track_record;
+}
+
+static void
+nine_tracks (void)
+{
+  write_record = write_9track_record;
 }
 
 int
@@ -196,12 +172,15 @@ main (int argc, char **argv)
 {
   word_t word;
   FILE *f;
-  int i;
+  int i = 1;
   int eof = 0;
+
+  /* Default to 9-track tape. */
+  nine_tracks ();
 
   if (argc < 2)
     {
-      fprintf (stderr, "Usage: %s <magdmp> <files...>\n\n", argv[0]);
+      fprintf (stderr, "Usage: %s [-7|-9] <magdmp> <files...>\n\n", argv[0]);
       fprintf (stderr, "Writes a MAGDMP bootable tape image file in SIMH format.\n");
       fprintf (stderr, "The first argument specifies the MAGDMP program.\n");
       fprintf (stderr, "The following arguments specify files put on the tape.\n");
@@ -210,13 +189,25 @@ main (int argc, char **argv)
       exit (1);
     }
 
+  if (strcmp (argv[i], "-7") == 0)
+    {
+      seven_tracks();
+      i++;
+    }
+  else if (strcmp (argv[i], "-9") == 0)
+    {
+      nine_tracks();
+      i++;
+    }
+  
   memset (buffer, 0, sizeof buffer);
 
   /* The first tape record is for hardware read-in, ended by a tape
      mark.  The first 16 words are an SBLK loader, next comes MAGDMP. */
-  write_hri (stdout, argv[1]);
+  write_hri (stdout, argv[i]);
+  i++;
 
-  for (i = 2; i < argc; i++)
+  for (; i < argc; i++)
     write_file (stdout, argv[i]);
 
   return 0;
