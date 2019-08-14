@@ -231,7 +231,7 @@ main (int argc, char **argv)
   flush_word = flush_its_word;
 
   p = buffer;
-  while ((word = get_its_word (f)) != -1)
+  while ((word = get_word (f)) != -1)
     {
       *p++ = word;
     }
