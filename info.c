@@ -295,6 +295,8 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 
     checksum:
       word = get_word (f);
+      if (word == -1LL)
+	return;
       check_checksum (word);
     }
 
