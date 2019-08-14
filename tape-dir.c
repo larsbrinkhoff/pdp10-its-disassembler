@@ -124,7 +124,7 @@ static void read_directory (FILE *f, word_t old)
       fn1 = get_word (f);
       if (fn1 == -1)
         exit (0);
-      else if (fn1 == 0)
+      else if (fn1 == 0 || fn1 == 0777777777777LL)
         return;
 
       fn2 = get_word (f);
