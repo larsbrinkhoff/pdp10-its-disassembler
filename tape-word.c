@@ -26,6 +26,39 @@ get_byte (FILE *f)
   return c == EOF ? 0 : c;
 }
 
+static word_t
+get_7track_word (FILE *f)
+{
+  word_t word;
+
+  if (feof (f))
+    return -1;
+
+  word = (((word_t)get_byte (f) & 077) << 30) |
+         (((word_t)get_byte (f) & 077) << 24) |
+         (((word_t)get_byte (f) & 077) << 18) |
+         (((word_t)get_byte (f) & 077) << 12) |
+         (((word_t)get_byte (f) & 077) <<  6) |
+          ((word_t)get_byte (f) & 077);
+
+  return word;
+}
+
+static void
+write_7track_word (FILE *f, word_t word)
+{
+  int i, c, p;
+  
+  for (i = 0; i < 6; i++)
+    {
+      c = (word >> 30) & 077;
+      p = 0100 ^ (c << 1) ^ (c << 2) ^ (c << 3) ^ (c << 4) ^ (c << 5) ^ (c << 6);
+      c |= p & 0100;
+      fputc (c, f);
+      word <<= 6;
+    }
+}
+
 static int get_reclen (FILE *f)
 {
   return get_byte (f) |
@@ -34,7 +67,15 @@ static int get_reclen (FILE *f)
     (get_byte (f) << 24);
 }
 
-static int get_record (FILE *f, word_t **buffer)
+static void write_reclen (FILE *f, int n)
+{
+  fputc (n & 0377, f);
+  fputc ((n >> 8) & 0377, f);
+  fputc ((n >> 16) & 0377, f);
+  fputc ((n >> 24) & 0377, f);
+}
+
+int get_9track_record (FILE *f, word_t **buffer)
 {
   int i, x, reclen;
   word_t *p;
@@ -78,6 +119,88 @@ static int get_record (FILE *f, word_t **buffer)
   return reclen / 5;
 }
 
+void write_7track_record (FILE *f, word_t *buffer, int n)
+{
+  int i;
+
+  write_reclen (f, 6 * n);
+  if (n == 0)
+    return;
+  
+  for (i = 0; i < n; i++)
+    write_7track_word (f, *buffer++);
+
+  write_reclen (f, 6 * n);
+}
+
+void write_9track_record (FILE *f, word_t *buffer, int n)
+{
+  int i;
+
+  /* To write a tape record in the SIMH tape image format, first write
+     a 32-bit record length, then data frames, then the length again.
+     For PDP-10 36-bit data, the data words are written in the "core
+     dump" format.  One word is written as five 8-bit frames, with
+     four bits unused in the last frame. */
+
+  write_reclen (f, 5 * n);
+
+  /* A record of length zero is a tape mark, and the length is only
+     written once. */
+  if (n == 0)
+    return;
+  
+  for (i = 0; i < n; i++)
+    write_core_word (f, *buffer++);
+
+  /* Pad out to make the record data an even number of octets. */
+  if ((n * 5) & 1)
+    fputc (0, f);
+
+  write_reclen (f, 5 * n);
+}
+
+int get_7track_record (FILE *f, word_t **buffer)
+{
+  int i, x, reclen;
+  word_t *p;
+
+  reclen = get_reclen (f);
+  if (reclen == 0)
+    return 0;
+  if (reclen % 6)
+    {
+      fprintf (stderr, "Not a 7-track tape image.\n"
+	       "reclen = %d\n", reclen);
+      exit (1);
+    }
+  
+  *buffer = malloc (sizeof (word_t) * (reclen/6));
+  if (*buffer == NULL)
+    {
+      fprintf (stderr, "Out of memory.\n");
+      exit (1);
+    }
+
+  for (i = 0, p = *buffer; i < (reclen / 6); i++)
+    *p++ = get_7track_word (f);
+
+  x = get_reclen (f);
+  if (x != reclen)
+    {
+      fprintf (stderr, "Error in tape image format.\n"
+	       "%d != %d\n", reclen, x);
+      exit (1);
+    }
+
+  if (reclen == 0)
+    {
+      free (*buffer);
+    }
+
+  return reclen / 6;
+}
+
 static word_t *buffer = NULL;
 int n, words;
 int end_of_file = 1;
@@ -93,11 +216,17 @@ get_tape_word (FILE *f)
 
   if (buffer == NULL)
     {
-      words = get_record (f, &buffer);
+      if (file_36bit_format == FORMAT_TAPE)
+	words = get_9track_record (f, &buffer);
+      else
+	words = get_7track_record (f, &buffer);
       if (words == 0)
 	{
 	  end_of_file = 1;
-	  words = get_record (f, &buffer);
+	  if (file_36bit_format == FORMAT_TAPE)
+	    words = get_9track_record (f, &buffer);
+	  else
+	    words = get_7track_record (f, &buffer);
 	  if (words == 0)
 	    {
 	      end_of_tape = 1;
