@@ -49,7 +49,7 @@ static void print_timestamp (word_t word)
   m = (date & 0740) >> 5;
   y = (date & 0777000) >> 9;
 
-  if (y > year || m > month || (m == month && d > day))
+  if (y > year || (y == year && m > month) || (y == year && m == month && d > day))
     y-= 2;
 
   printf ("%u-%02u-%02u", y + 1900, m, d);
