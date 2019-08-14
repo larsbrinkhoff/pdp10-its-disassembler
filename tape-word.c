@@ -100,15 +100,20 @@ int get_9track_record (FILE *f, word_t **buffer)
   for (i = 0, p = *buffer; i < (reclen / 5); i++)
     *p++ = get_core_word (f);
 
-  if (reclen & 1)
-    get_byte (f);
-
+  /* First try the E-11 tape format. */
   x = get_reclen (f);
   if (x != reclen)
     {
-      fprintf (stderr, "Error in tape image format.\n"
-	       "%d != %d\n", reclen, x);
-      exit (1);
+      /* Next try the SIMH tape format. */
+      if (reclen & 1)
+	x = (x >> 8) + (get_byte (f) << 24);
+
+      if (x != reclen)
+	{
+	  fprintf (stderr, "Error in tape image format.\n"
+		   "%d != %d\n", reclen, x);
+	  exit (1);
+	}
     }
 
   if (reclen == 0)
