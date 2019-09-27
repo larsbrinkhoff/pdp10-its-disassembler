@@ -306,7 +306,13 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
   op = lookup (word, cpu_model);
   if (op == NULL)
     {
-      /* nothing */;
+      if ((word >> 18) == 0 && Y (word) != 0)
+	{
+	  /* If no opcode found and left half is 0, print as symbol. */
+	  sym = get_symbol_by_value (Y (word));
+	  if (sym != NULL)
+	    n += printf ("%s", sym->name);
+	}
     }
   else if (OPCODE (word) == ITS_OPER)
     {
