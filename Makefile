@@ -4,7 +4,7 @@ CFLAGS = -g -W -Wall
 WORDS =  bin-word.o its-word.o x-word.o dta-word.o aa-word.o pt-word.o core-word.o tape-word.o
 
 OBJS =	pdp10-opc.o info.o word.o sblk.o pdump.o dis.o symbols.o \
-	timing.o timing_ka10.o timing_ki10.o memory.o $(WORDS)
+	timing.o timing_ka10.o timing_ki10.o memory.o
 
 UTILS =	bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
 	macdmp saildart macro-tapes tape-dir harscntopbm palx its2ascii \
@@ -20,8 +20,11 @@ clean:
 	for f in $(UTILS); do rm -f $${f}.o; done
 	rm -f *.dasm *.list
 
-dis10: main.o $(OBJS) dmp.o raw.o
+dis10: main.o $(OBJS) dmp.o raw.o libwords.a
 	gcc $^ -o dis10
+
+libwords.a: word.o $(WORDS)
+	ar -crs $@ $^
 
 bin2ascii: bin2ascii.o
 	$(CC) bin2ascii.o -o bin2ascii
@@ -29,55 +32,55 @@ bin2ascii: bin2ascii.o
 bin2x: bin2x.o
 	$(CC) bin2x.o -o bin2x
 
-its2x: its2x.o word.o $(WORDS)
+its2x: its2x.o libwords.a
 	$(CC) $^ -o its2x
 
-its2bin: its2bin.o word.o $(WORDS)
+its2bin: its2bin.o libwords.a
 	$(CC) $^ -o its2bin
 
-its2rim: its2rim.o word.o $(WORDS)
+its2rim: its2rim.o libwords.a
 	$(CC) $^ -o its2rim
 
-its2ascii: its2ascii.o word.o $(WORDS)
+its2ascii: its2ascii.o libwords.a
 	$(CC) $^ -o $@
 
-dskdmp: dskdmp.c $(OBJS)
+dskdmp: dskdmp.c $(OBJS) libwords.a
 	$(CC) $^ -o $@
 
-macdmp: macdmp.c $(OBJS)
+macdmp: macdmp.c $(OBJS) libwords.a
 	$(CC) $^ -o $@
 
-saildart: saildart.o $(OBJS)
+saildart: saildart.o $(OBJS) libwords.a
 	$(CC) $^ -o $@
 
-magdmp: magdmp.c core-word.o $(OBJS)
+magdmp: magdmp.c core-word.o $(OBJS) libwords.a
 	$(CC) $^ -o $@
 
-magfrm: magfrm.c core-word.o $(OBJS)
+magfrm: magfrm.c core-word.o $(OBJS) libwords.a
 	$(CC) $^ -o $@
 
-itsarc: itsarc.o $(OBJS)
+itsarc: itsarc.o $(OBJS) libwords.a
 	$(CC) $^ -o $@
 
-macro-tapes: macro-tapes.o $(OBJS)
+macro-tapes: macro-tapes.o $(OBJS) libwords.a
 	$(CC) $^ -o $@
 
-tape-dir: tape-dir.o $(OBJS)
+tape-dir: tape-dir.o $(OBJS) libwords.a
 	$(CC) $^ -o $@
 
-tracks: tracks.o $(OBJS)
+tracks: tracks.o $(OBJS) libwords.a
 	$(CC) $^ -o $@
 
-harscntopbm: harscntopbm.o word.o $(WORDS)
+harscntopbm: harscntopbm.o libwords.a
 	$(CC) $^ -o $@
 
-palx: palx.o word.o $(WORDS)
+palx: palx.o libwords.a
 	$(CC) $^ -o $@
 
-test/test_write: test/test_write.o $(OBJS)
+test/test_write: test/test_write.o $(OBJS) libwords.a
 	$(CC) $^ -o $@
 
-test/test_read: test/test_read.o $(OBJS)
+test/test_read: test/test_read.o $(OBJS) libwords.a
 	$(CC) $^ -o $@
 
 check: ts.obs.dasm ts.ksfedr.dasm ts.name.dasm ts.srccom.dasm atsign.tcp.dasm arc.code.list macro.low.dasm pt.rim.dasm visib1.bin.dasm visib2.bin.dasm visib3.bin.dasm @.midas.dasm
