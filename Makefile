@@ -8,7 +8,7 @@ OBJS =	pdp10-opc.o info.o word.o sblk.o pdump.o dis.o symbols.o \
 
 UTILS =	bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
 	macdmp saildart macro-tapes tape-dir harscntopbm palx its2ascii \
-	tracks
+	tracks ipak
 
 all: dis10 $(UTILS) check
 
@@ -57,6 +57,9 @@ magdmp: magdmp.c core-word.o $(OBJS) libwords.a
 	$(CC) $^ -o $@
 
 magfrm: magfrm.c core-word.o $(OBJS) libwords.a
+	$(CC) $^ -o $@
+
+ipak: ipak.o $(OBJS) libwords.a
 	$(CC) $^ -o $@
 
 itsarc: itsarc.o $(OBJS) libwords.a
