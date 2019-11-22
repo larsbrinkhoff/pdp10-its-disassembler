@@ -15,6 +15,7 @@
 
 #include <time.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <sys/time.h>
 
 #include "dis.h"
@@ -114,31 +115,37 @@ main (int argc, char **argv)
   word_t *p;
   word_t key = 0;
   FILE *f;
+  int opt;
   int i;
 
-  if (argc != 3)
-    usage (argv[0]);
+  file_36bit_format = FORMAT_ITS;
 
-  if (argv[1][0] != '-')
-    usage (argv[0]);
-
-  switch (argv[1][1])
+  while ((opt = getopt (argc, argv, "etxW:")) != -1)
     {
-    case 't':
-      extract = 0;
-      break;
-    case 'x':
-      extract = 1;
-      if (argv[1][2] == 'e')
-        key = MASK;
-      break;
-    default:
-      usage (argv[0]);
-      break;
+      switch (opt)
+	{
+	case 'e':
+	  key = MASK;
+	  break;
+	case 't':
+	  extract = 0;
+	  break;
+	case 'x':
+	  extract = 1;
+	  break;
+	case 'W':
+	  if (parse_word_format (optarg))
+	    usage (argv[0]);
+	  break;
+	default:
+	  usage (argv[0]);
+	}
     }
 
-  f = fopen (argv[2], "rb");
-  file_36bit_format = FORMAT_ITS;
+  if (optind != argc - 1)
+    usage (argv[0]);
+
+  f = fopen (argv[optind], "rb");
 
   /* Output format. */
   write_word = write_its_word;
@@ -171,6 +178,12 @@ main (int argc, char **argv)
       sixbit_to_ascii (buffer[1] ^ UMASK, string);
       fprintf (stderr, "User: %s\n", string);
       i = 4;
+    }
+  else if (buffer[5] == MAGIC)
+    {
+      sixbit_to_ascii (buffer[1] ^ UMASK, string);
+      fprintf (stderr, "User: %s\n", string);
+      i = 5;
     }
 
   fprintf (stderr, "\nFile name       Words  Timestamp\n");
