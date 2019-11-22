@@ -45,6 +45,8 @@ get_aa_word (FILE *f)
     return -1;
 
   x = get_byte (f); word += (x & 0177) << 29;
+  if (feof (f))
+    return -1;
   x = get_byte (f); word += (x & 0177) << 22;
   x = get_byte (f); word += (x & 0177) << 15;
   x = get_byte (f); word += (x & 0177) <<  8;
