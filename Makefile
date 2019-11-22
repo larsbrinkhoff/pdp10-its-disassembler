@@ -86,7 +86,7 @@ test/test_write: test/test_write.o $(OBJS) libwords.a
 test/test_read: test/test_read.o $(OBJS) libwords.a
 	$(CC) $^ -o $@
 
-check: ts.obs.dasm ts.ksfedr.dasm ts.name.dasm ts.srccom.dasm atsign.tcp.dasm arc.code.list macro.low.dasm pt.rim.dasm visib1.bin.dasm visib2.bin.dasm visib3.bin.dasm @.midas.dasm
+check: ts.obs.dasm ts.ksfedr.dasm ts.name.dasm ts.srccom.dasm atsign.tcp.dasm arc.code.list macro.low.dasm pt.rim.dasm visib1.bin.dasm visib2.bin.dasm visib3.bin.dasm @.midas.dasm stink.-ipak-.ipak
 
 samples/ts.obs = -Wits
 samples/ts.ksfedr = -Wits
@@ -99,6 +99,7 @@ samples/visib1.bin = -Wits -Sddt
 samples/visib2.bin = -Wits -Sddt
 samples/visib3.bin = -Wits -Sall
 samples/@.midas = -D774000 -Sall
+samples/stink.-ipak- = -Wascii
 
 %.dasm: samples/% dis10 test/%.dasm
 	./dis10 $($<) $< > $@
@@ -106,6 +107,10 @@ samples/@.midas = -D774000 -Sall
 
 %.list: samples/% itsarc test/%.list
 	./itsarc -t $< 2> $@
+	cmp $@ test/$@ || rm $@ /no-such-file
+
+%.ipak: samples/% ipak test/%.ipak
+	./ipak -t $($<) $< 2> $@
 	cmp $@ test/$@ || rm $@ /no-such-file
 
 #dependencies

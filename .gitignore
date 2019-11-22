@@ -2,6 +2,7 @@
 *.o
 *.dasm
 *.list
+*.ipak
 bin2ascii
 bin2x
 ipak
