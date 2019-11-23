@@ -21,7 +21,7 @@ clean:
 	rm -f *.dasm *.list
 
 dis10: main.o $(OBJS) dmp.o raw.o libwords.a
-	gcc $^ -o dis10
+	$(CC) $^ -o dis10
 
 libwords.a: word.o $(WORDS)
 	ar -crs $@ $^
