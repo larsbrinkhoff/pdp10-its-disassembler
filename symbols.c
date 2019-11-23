@@ -1,5 +1,5 @@
 /* Copyright (C) 2018 Lars Brinkhoff <lars@nocrew.org>
-   Copyright (C) 2018 Adam Sampson <ats@offog.org>
+   Copyright (C) 2018, 2019 Adam Sampson <ats@offog.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -78,6 +78,7 @@ add_symbol (const char *name, word_t value, int flags)
     *--p = '\0';
 
   symbols[i].value = value;
+  symbols[i].sequence = num_symbols;
   symbols[i].flags = flags;
 
   sorted = SORT_NONE;
@@ -110,8 +111,9 @@ compare_value_search (const void *a, const void *b)
     return 1;
 }
 
-/* When sorting, all the fields are valid; order the symbols so that
-   the one most visible comes first. */
+/* When sorting, all the fields are valid. Order first by the key we're
+   sorting by, then by visibility so the most visible symbols come
+   first, then by their original declaration order. */
 
 static int
 concealment (const struct symbol *s)
@@ -129,7 +131,14 @@ compare_default (const void *a, const void *b)
   const struct symbol *sa = a;
   const struct symbol *sb = b;
 
-  return concealment (sa) - concealment (sb);
+  int r = concealment (sa) - concealment (sb);
+  if (r != 0)
+    return r;
+
+  if (sa->sequence < sb->sequence)
+    return -1;
+  else
+    return 1;
 }
 
 static int
@@ -168,7 +177,7 @@ sort_by (sort_mode_t wanted)
 const struct symbol *
 get_symbol_by_value (word_t value)
 {
-  struct symbol key = { NULL, value, 0 };
+  struct symbol key = { NULL, value, -1, 0 };
   struct symbol *first;
 
   if (symbols_mode == SYMBOLS_NONE)

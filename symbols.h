@@ -1,5 +1,5 @@
 /* Copyright (C) 2018 Lars Brinkhoff <lars@nocrew.org>
-   Copyright (C) 2018 Adam Sampson <ats@offog.org>
+   Copyright (C) 2018, 2019 Adam Sampson <ats@offog.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ struct symbol
 {
   const char *name;
   word_t value;
+  int sequence;
   int flags;
   /* XXX struct symbol *next; for multiple results? */
 };
