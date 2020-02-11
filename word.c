@@ -37,7 +37,7 @@ static word_t checksum;
 void
 usage_word_format (void)
 {
-  fprintf (stderr, "Valid word formats are: ascii, bin, core, dta, its, pt.\n");
+  fprintf (stderr, "Valid word formats are: ascii, bin, core, dta, its, pt, tape, tape7.\n");
 }
 
 int
