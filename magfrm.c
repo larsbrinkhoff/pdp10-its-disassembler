@@ -19,7 +19,6 @@
 #include "dis.h"
 
 extern word_t get_its_word (FILE *f);
-extern word_t ascii_to_sixbit (char *);
 
 word_t mthri[] =
 {

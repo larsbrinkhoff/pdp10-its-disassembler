@@ -79,6 +79,7 @@ extern int      parse_machine (const char *string, int *machine);
 extern void	dis (struct pdp10_memory *memory, int cpu_model);
 extern void	disassemble_word (struct pdp10_memory *memory, word_t word,
 				  int address, int cpu_model);
+extern word_t   ascii_to_sixbit (char *ascii);
 extern void	sixbit_to_ascii (word_t sixbit, char *ascii);
 extern void	print_date (FILE *, word_t t);
 extern void	print_time (FILE *, word_t t);
