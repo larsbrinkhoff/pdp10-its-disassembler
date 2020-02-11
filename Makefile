@@ -86,9 +86,6 @@ kldcp: kldcp.o $(OBJS) das.o libwords.a
 klfedr: klfedr.o $(OBJS) libwords.a
 	$(CC) -g $^ -o $@
 
-test/test_write: test/test_write.o $(OBJS)
-	$(CC) $^ -o $@
-
 test/test_write: test/test_write.o $(OBJS) libwords.a
 	$(CC) $^ -o $@
 
