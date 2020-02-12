@@ -6,7 +6,7 @@ WORDS =  bin-word.o its-word.o x-word.o dta-word.o aa-word.o pt-word.o core-word
 OBJS =	pdp10-opc.o info.o word.o sblk.o pdump.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o
 
-UTILS =	bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
+UTILS =	conv36 bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
 	macdmp saildart macro-tapes tape-dir harscntopbm palx its2ascii \
 	tracks ipak kldcp klfedr scrmbl
 
@@ -25,6 +25,9 @@ dis10: main.o $(OBJS) dmp.o raw.o libwords.a
 
 libwords.a: word.o $(WORDS)
 	ar -crs $@ $^
+
+conv36: conv36.o libwords.a
+	$(CC) -g $^ -o $@
 
 bin2ascii: bin2ascii.o
 	$(CC) bin2ascii.o -o bin2ascii
@@ -132,6 +135,7 @@ samples/stink.-ipak- = -Wascii
 bin-word.o: bin-word.c dis.h
 bin2ascii.o: bin2ascii.c
 bin2x.o: bin2x.c
+conv36.o: dis.h
 dis.o: dis.c opcode/pdp10.h dis.h memory.h timing.h
 info.o: info.c dis.h memory.h
 its-word.o: its-word.c dis.h
