@@ -51,8 +51,10 @@ write_core_word (FILE *f, word_t word)
   fputc ( word        & 0x0F, f);
 }
 
-void
-rewind_core_word (FILE *f)
-{
-  rewind (f);
-}
+struct word_format core_word_format = {
+  "core",
+  get_core_word,
+  NULL,
+  write_core_word,
+  NULL
+};

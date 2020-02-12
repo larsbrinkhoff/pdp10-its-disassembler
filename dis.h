@@ -29,8 +29,13 @@ typedef long long word_t;
 
 #define JRST_1 ((word_t)(0254000000001LL))
 
-enum { FORMAT_BIN, FORMAT_ITS, FORMAT_X, FORMAT_DTA, FORMAT_AA, FORMAT_PT,
-       FORMAT_CORE, FORMAT_TAPE, FORMAT_TAPE7 };
+struct word_format {
+  const char *name;
+  word_t (*get_word) (FILE *);
+  void (*rewind_word) (FILE *);		/* NULL means just rewind (f) */
+  void (*write_word) (FILE *, word_t);
+  void (*flush_word) (FILE *);		/* NULL means do nothing */
+};
 
 enum { SYMBOLS_NONE, SYMBOLS_DDT, SYMBOLS_ALL };
 
@@ -40,25 +45,33 @@ struct FILE;
 struct pdp10_file;
 struct pdp10_memory;
 
-extern int	file_36bit_format;
+extern struct word_format *input_word_format;
+extern struct word_format *output_word_format;
+extern struct word_format aa_word_format;
+extern struct word_format bin_word_format;
+extern struct word_format core_word_format;
+extern struct word_format dta_word_format;
+extern struct word_format its_word_format;
+extern struct word_format pt_word_format;
+extern struct word_format tape_word_format;
+extern struct word_format tape7_word_format;
+extern struct word_format x_word_format;
+
 extern void     usage_word_format (void);
-extern int      parse_word_format (const char *string);
+extern int      parse_input_word_format (const char *);
+extern int      parse_output_word_format (const char *);
 extern word_t	get_word (FILE *f);
 extern word_t	get_checksummed_word (FILE *f);
 extern void	reset_checksum (word_t);
 extern void	check_checksum (word_t);
 extern void	rewind_word (FILE *f);
-extern void	write_its_word (FILE *, word_t);
-extern void	flush_its_word (FILE *);
-extern word_t	get_aa_word (FILE *);
-extern word_t	get_pt_word (FILE *);
-extern void	rewind_aa_word (FILE *);
-extern word_t	get_tape_word (FILE *);
-extern void	rewind_tape_word (FILE *);
+extern void	write_word (FILE *, word_t);
+extern void	flush_word (FILE *);
 extern int      get_7track_record (FILE *f, word_t **buffer);
 extern int      get_9track_record (FILE *f, word_t **buffer);
 extern void     write_7track_record (FILE *f, word_t *buffer, int);
 extern void     write_9track_record (FILE *f, word_t *buffer, int);
+extern word_t	get_core_word (FILE *f);
 extern void	write_core_word (FILE *f, word_t word);
 extern void	dis_pdump (FILE *f, int cpu_model);
 extern void	dis_sblk (FILE *f, int cpu_model);

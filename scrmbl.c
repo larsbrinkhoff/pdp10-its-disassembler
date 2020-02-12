@@ -216,9 +216,8 @@ scramble (int decrypt, word_t password, const word_t *input, word_t *output, int
 static void
 usage (char **argv)
 {
-  fprintf (stderr, "Usage: %s [-d] [-v] [-W<word format>] <password> <input file> <output file>\n\n", argv[0]);
+  fprintf (stderr, "Usage: %s [-d] [-v] [-W<input word format>] [-X<output word format>] <password> <input file> <output file>\n\n", argv[0]);
   usage_word_format ();
-  fprintf (stderr, "Output is always in its word format.\n"); /* FIXME */
   exit (1);
 }
 
@@ -236,7 +235,7 @@ main (int argc, char **argv)
   word_t password;
   word_t word;
 
-  while ((opt = getopt (argc, argv, "dvW:")) != -1)
+  while ((opt = getopt (argc, argv, "dvW:X:")) != -1)
     {
       switch (opt)
         {
@@ -247,7 +246,11 @@ main (int argc, char **argv)
           verbose = 1;
           break;
         case 'W':
-          if (parse_word_format (optarg))
+          if (parse_input_word_format (optarg))
+            usage (argv);
+          break;
+        case 'X':
+          if (parse_output_word_format (optarg))
             usage (argv);
           break;
         default:
@@ -297,8 +300,9 @@ main (int argc, char **argv)
   file = fopen (argv[optind + 2], "wb");
   for (i = 0; i < input_count; i++)
     {
-      write_its_word (file, output[i]);
+      write_word (file, output[i]);
     }
+  flush_word (file);
   fclose (file);
 
   free (input);

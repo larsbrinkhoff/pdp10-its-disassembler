@@ -251,7 +251,7 @@ main (int argc, char **argv)
 {
   FILE *f;
 
-  file_36bit_format = FORMAT_ITS;
+  input_word_format = &its_word_format;
 
   if (argc != 4)
     usage (argv[0]);

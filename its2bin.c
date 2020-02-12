@@ -17,13 +17,13 @@
 
 #include "dis.h"
 
-extern word_t get_its_word (FILE *f);
-
 int
 main (int argc, char **argv)
 {
   word_t word1, word2;
   FILE *f;
+
+  input_word_format = &its_word_format;
 
   if (argc != 2)
     {
@@ -33,14 +33,14 @@ main (int argc, char **argv)
 
   f = fopen (argv[1], "rb");
 
-  while ((word1 = get_its_word (f)) != -1)
+  while ((word1 = get_word (f)) != -1)
     {
       putchar ((word1 >> 28) & 0xff);
       putchar ((word1 >> 20) & 0xff);
       putchar ((word1 >> 12) & 0xff);
       putchar ((word1 >>  4) & 0xff);
 
-      word2 = get_its_word (f);
+      word2 = get_word (f);
       if (word2 == -1)
 	{
 	  putchar ((word1 << 4) & 0xf0);

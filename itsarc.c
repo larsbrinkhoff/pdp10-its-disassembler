@@ -28,8 +28,6 @@
 
 static int old = 0;
 
-extern word_t get_its_word (FILE *f);
-
 /* Just allocate a full moby to hold the file. */
 static word_t buffer[256 * 1024];
 
@@ -38,9 +36,6 @@ static void usage (const char *x)
   fprintf (stderr, "Usage: %s -x|-t <file>\n", x);
   exit (1);
 }
-
-static void (*write_word) (FILE *, word_t);
-static void (*flush_word) (FILE *);
 
 static void
 massage (char *filename)
@@ -204,6 +199,9 @@ main (int argc, char **argv)
   word_t *p;
   FILE *f;
 
+  input_word_format = &its_word_format;
+  output_word_format = &its_word_format;
+
   if (argc != 3)
     usage (argv[0]);
 
@@ -224,11 +222,6 @@ main (int argc, char **argv)
     }
 
   f = fopen (argv[2], "rb");
-  file_36bit_format = FORMAT_ITS;
-
-  /* Output format. */
-  write_word = write_its_word;
-  flush_word = flush_its_word;
 
   p = buffer;
   while ((word = get_word (f)) != -1)

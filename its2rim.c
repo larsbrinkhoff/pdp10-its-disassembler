@@ -17,13 +17,13 @@
 
 #include "dis.h"
 
-extern word_t get_its_word (FILE *f);
-
 int
 main (int argc, char **argv)
 {
   word_t word;
   FILE *f;
+
+  input_word_format = &its_word_format;
 
   if (argc != 2)
     {
@@ -32,9 +32,8 @@ main (int argc, char **argv)
     }
 
   f = fopen (argv[1], "rb");
-  file_36bit_format = FORMAT_ITS;
 
-  while ((word = get_its_word (f)) != -1)
+  while ((word = get_word (f)) != -1)
     {
       int i;
       for (i = 0; i < 6; i++)

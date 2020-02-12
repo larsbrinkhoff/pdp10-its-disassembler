@@ -24,9 +24,9 @@ int main (void)
     {
       word_t word = rand36 ();
       fprintf (stderr, "%012llo\n", word);
-      write_its_word (stdout, word);
+      write_word (stdout, word);
     }
 
-  flush_its_word (stdout);
+  flush_word (stdout);
   return 0;
 }

@@ -26,7 +26,7 @@ get_byte (FILE *f)
   return c == EOF ? 0 : c;
 }
 
-word_t
+static word_t
 get_bin_word (FILE *f)
 {
   unsigned char byte;
@@ -67,9 +67,17 @@ get_bin_word (FILE *f)
   return word;
 }
 
-void
+static void
 rewind_bin_word (FILE *f)
 {
   there_is_some_leftover = 0;
   rewind (f);
 }
+
+struct word_format bin_word_format = {
+  "bin",
+  get_bin_word,
+  rewind_bin_word,
+  NULL,
+  NULL
+};

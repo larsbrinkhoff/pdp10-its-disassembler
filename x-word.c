@@ -24,7 +24,7 @@ get_byte (FILE *f)
   return c == EOF ? 0 : c;
 }
 
-word_t
+static word_t
 get_x_word (FILE *f)
 {
   word_t word;
@@ -49,8 +49,10 @@ get_x_word (FILE *f)
   return word;
 }
 
-void
-rewind_x_word (FILE *f)
-{
-  rewind (f);
-}
+struct word_format x_word_format = {
+  "x",
+  get_x_word,
+  NULL,
+  NULL,
+  NULL
+};

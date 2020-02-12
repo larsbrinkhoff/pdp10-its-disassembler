@@ -52,15 +52,13 @@ get_block (int block)
   return &image[block * 128];
 }
 
-extern word_t get_dta_word (FILE *f);
-
 static int read_block (FILE *f, word_t *buffer)
 {
   int i;
 
   for (i = 0; i < BLOCK_WORDS; i++)
     {
-      buffer[i] = get_dta_word (f);
+      buffer[i] = get_word (f);
       if (buffer[i] == -1)
 	return -1;
     }
@@ -163,26 +161,6 @@ show_blocks (void)
       printf ("%s blocks: %d\n", blocktype[i], blocks[i]);
       empty = 0;
     }
-}
-
-static void (*write_word) (FILE *, word_t);
-static void (*flush_word) (FILE *);
-
-static void
-write_aa_word (FILE *f, word_t word)
-{
-  fputc ((word >> 29) & 0177, f);
-  fputc ((word >> 22) & 0177, f);
-  fputc ((word >> 15) & 0177, f);
-  fputc ((word >>  8) & 0177, f);
-  fputc (((word >> 1) & 0177) +
-	 ((word << 7) & 0200), f);
-}
-
-static void
-flush_aa_word (FILE *f)
-{
-  (void)f;
 }
 
 static void
@@ -305,7 +283,9 @@ main (int argc, char **argv)
   FILE *f;
   int i;
 
-  file_36bit_format = FORMAT_DTA;
+  input_word_format = &dta_word_format;
+  output_word_format = &its_word_format;
+  verbose = 1;
 
   if (argc != 3)
     usage (argv[0]);
@@ -325,12 +305,6 @@ main (int argc, char **argv)
       usage (argv[0]);
       break;
     }
-
-  verbose = 1;
-
-  /* Output format. */
-  write_word = write_its_word;
-  flush_word = flush_its_word;
 
   f = fopen (argv[2], "rb");
   if (f == NULL)
