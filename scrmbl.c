@@ -100,7 +100,7 @@ scramble_step_compare (const void *a, const void *b)
     return -1;
 }
 
-static void
+void
 scramble (int decrypt, word_t password, const word_t *input, word_t *output, int count)
 {
   int i, j;
@@ -221,7 +221,7 @@ usage (char **argv)
   exit (1);
 }
 
-int
+__attribute__((weak)) int
 main (int argc, char **argv)
 {
   int i;
