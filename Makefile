@@ -8,7 +8,7 @@ OBJS =	pdp10-opc.o info.o word.o sblk.o pdump.o dis.o symbols.o \
 
 UTILS =	conv36 bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
 	macdmp saildart macro-tapes tape-dir harscntopbm palx its2ascii \
-	tracks ipak kldcp klfedr scrmbl
+	tracks ipak kldcp klfedr scrmbl unscr
 
 all: dis10 $(UTILS) check
 
@@ -90,6 +90,9 @@ klfedr: klfedr.o $(OBJS) libwords.a
 	$(CC) -g $^ -o $@
 
 scrmbl: scrmbl.o $(OBJS) libwords.a
+	$(CC) -g $^ -o $@
+
+unscr: unscr.o scrmbl.o $(OBJS) libwords.a
 	$(CC) -g $^ -o $@
 
 test/test_write: test/test_write.o $(OBJS) libwords.a
