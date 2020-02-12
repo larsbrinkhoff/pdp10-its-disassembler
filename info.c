@@ -1,5 +1,5 @@
 /* Copyright (C) 2013, 2019 Lars Brinkhoff <lars@nocrew.org>
-   Copyright (C) 2018 Adam Sampson <ats@offog.org>
+   Copyright (C) 2018, 2020 Adam Sampson <ats@offog.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -45,11 +45,17 @@ ascii_to_sixbit (char *ascii)
   w = 0;
   for (i = 0; i < 6; i++)
     {
-      c = *ascii++;
-      if (c == 0)
-	zero = 1;
       if (zero)
 	c = ' ';
+      else
+        {
+          c = *ascii++;
+          if (c == 0)
+            {
+              c = ' ';
+              zero = 1;
+            }
+        }
       w <<= 6;
       if (c >= 'a' && c <= 'z')
 	c -= 32;
