@@ -3,6 +3,8 @@
 *.dasm
 *.list
 *.ipak
+*.scrmbl
+*.unscrm
 bin2ascii
 bin2x
 ipak

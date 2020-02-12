@@ -8,7 +8,7 @@ OBJS =	pdp10-opc.o info.o word.o sblk.o pdump.o dis.o symbols.o \
 
 UTILS =	bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
 	macdmp saildart macro-tapes tape-dir harscntopbm palx its2ascii \
-	tracks ipak kldcp klfedr
+	tracks ipak kldcp klfedr scrmbl
 
 all: dis10 $(UTILS) check
 
@@ -18,7 +18,7 @@ clean:
 	rm -f $(UTILS)
 	rm -f main.o dmp.o raw.o
 	for f in $(UTILS); do rm -f $${f}.o; done
-	rm -f *.dasm *.list
+	rm -f *.dasm *.list *.scrmbl
 
 dis10: main.o $(OBJS) dmp.o raw.o libwords.a
 	$(CC) $^ -o dis10
@@ -86,13 +86,16 @@ kldcp: kldcp.o $(OBJS) das.o libwords.a
 klfedr: klfedr.o $(OBJS) libwords.a
 	$(CC) -g $^ -o $@
 
+scrmbl: scrmbl.o $(OBJS) libwords.a
+	$(CC) -g $^ -o $@
+
 test/test_write: test/test_write.o $(OBJS) libwords.a
 	$(CC) $^ -o $@
 
 test/test_read: test/test_read.o $(OBJS) libwords.a
 	$(CC) $^ -o $@
 
-check: ts.obs.dasm ts.ksfedr.dasm ts.name.dasm ts.srccom.dasm atsign.tcp.dasm arc.code.list macro.low.dasm pt.rim.dasm visib1.bin.dasm visib2.bin.dasm visib3.bin.dasm @.midas.dasm stink.-ipak-.ipak
+check: ts.obs.dasm ts.ksfedr.dasm ts.name.dasm ts.srccom.dasm atsign.tcp.dasm arc.code.list macro.low.dasm pt.rim.dasm visib1.bin.dasm visib2.bin.dasm visib3.bin.dasm @.midas.dasm stink.-ipak-.ipak thirty.scrmbl sixbit.scrmbl pdpten.scrmbl aaaaaa.scrmbl 0s.scrmbl
 
 samples/ts.obs = -Wits
 samples/ts.ksfedr = -Wits
@@ -119,6 +122,12 @@ samples/stink.-ipak- = -Wascii
 	./ipak -t $($<) $< 2> $@
 	cmp $@ test/$@ || rm $@ /no-such-file
 
+%.scrmbl: samples/zeros.%.scrmbl scrmbl its2bin samples/zeros.scrmbl
+	./scrmbl -Wbin $* samples/zeros.scrmbl $@
+	./its2bin $@ | cmp - $< || rm $@ /no-such-file
+	./scrmbl -d -Wits $* $@ $*.unscrm
+	./its2bin $*.unscrm | cmp - samples/zeros.scrmbl || rm $@ /no-such-file
+
 #dependencies
 bin-word.o: bin-word.c dis.h
 bin2ascii.o: bin2ascii.c
@@ -134,6 +143,7 @@ pdp10-opc.o: pdp10-opc.c opcode/pdp10.h
 pdump.o: pdump.c dis.h memory.h
 saildart.o: saildart.c dis.h
 sblk.o: sblk.c dis.h memory.h
+scrmbl.o: scrmbl.c dis.h
 timing.o: timing.c opcode/pdp10.h timing.h dis.h
 timing_ka10.o: timing_ka10.c opcode/pdp10.h dis.h timing.h
 timing_ki10.o: timing_ki10.c opcode/pdp10.h dis.h timing.h
