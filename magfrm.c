@@ -18,8 +18,6 @@
 
 #include "dis.h"
 
-extern word_t get_its_word (FILE *f);
-
 word_t mthri[] =
 {
   0777761000000, /* -17,,0 */
@@ -95,7 +93,7 @@ write_file (FILE *f, char *name)
   /* Then file data in 1024 word records, terminated by a tape mark. */
   for (;;)
     {
-      word_t word = get_its_word (in);
+      word_t word = get_word (in);
 
       if (word != -1)
 	{
@@ -134,7 +132,7 @@ write_hri (FILE *f, const char *file)
   p = buffer + sizeof mthri / sizeof (word_t);
   for (;;)
     {
-      word = get_its_word (in);
+      word = get_word (in);
       if (word == 0254000000001LL)
         break;
       if (word == -1)
@@ -144,7 +142,7 @@ write_hri (FILE *f, const char *file)
   /* Next copy the file to tape. */
   for (;;)
     {
-      word = get_its_word (in);
+      word = get_word (in);
       if (word == -1)
         break;
       *p++ = word;
@@ -173,6 +171,8 @@ main (int argc, char **argv)
   FILE *f;
   int i = 1;
   int eof = 0;
+
+  input_word_format = &its_word_format;
 
   /* Default to 9-track tape. */
   nine_tracks ();

@@ -17,8 +17,6 @@
 
 #include "dis.h"
 
-extern word_t get_core_word (FILE *f);
-
 static int
 get_byte (FILE *f)
 {
@@ -211,7 +209,7 @@ int n, words;
 int end_of_file = 1;
 int end_of_tape = 0;
 
-word_t
+static word_t
 get_tape_word (FILE *f)
 {
   word_t word;
@@ -221,14 +219,14 @@ get_tape_word (FILE *f)
 
   if (buffer == NULL)
     {
-      if (file_36bit_format == FORMAT_TAPE)
+      if (input_word_format == &tape_word_format)
 	words = get_9track_record (f, &buffer);
       else
 	words = get_7track_record (f, &buffer);
       if (words == 0)
 	{
 	  end_of_file = 1;
-	  if (file_36bit_format == FORMAT_TAPE)
+	  if (input_word_format == &tape_word_format)
 	    words = get_9track_record (f, &buffer);
 	  else
 	    words = get_7track_record (f, &buffer);
@@ -260,7 +258,7 @@ get_tape_word (FILE *f)
   return word;
 }
 
-void
+static void
 rewind_tape_word (FILE *f)
 {
   if (buffer != NULL)
@@ -270,3 +268,19 @@ rewind_tape_word (FILE *f)
   buffer = NULL;
   rewind (f);
 }
+
+struct word_format tape_word_format = {
+  "tape",
+  get_tape_word,
+  rewind_tape_word,
+  NULL,
+  NULL
+};
+
+struct word_format tape7_word_format = {
+  "tape7",
+  get_tape_word,
+  rewind_tape_word,
+  NULL,
+  NULL
+};

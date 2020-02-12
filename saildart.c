@@ -31,7 +31,7 @@ void convert (char *line)
       x += (*line++ - '0');
     }
 
-  write_its_word (stdout, x);
+  write_word (stdout, x);
 }
 
 int main (void)
@@ -57,6 +57,7 @@ int main (void)
 	  convert (line);
 	}
     }
-  
+
+  flush_word (stdout);
   return 0;
 }

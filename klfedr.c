@@ -40,14 +40,14 @@ write_empty_dir (FILE *f)
      words, or really, 16 16-bit words. */
   for (i = 0; i < 128; i += 8)
     {
-      write_its_word (f, 0777776777776LL);  /* I see no file here. */
-      write_its_word (f, 0777776000000LL);
-      write_its_word (f, 0);
-      write_its_word (f, 0);
-      write_its_word (f, 0);
-      write_its_word (f, 0);
-      write_its_word (f, 0);
-      write_its_word (f, 0);
+      write_word (f, 0777776777776LL);  /* I see no file here. */
+      write_word (f, 0777776000000LL);
+      write_word (f, 0);
+      write_word (f, 0);
+      write_word (f, 0);
+      write_word (f, 0);
+      write_word (f, 0);
+      write_word (f, 0);
     }
 }
 
@@ -59,7 +59,8 @@ main (int argc, char **argv)
   (void)argc;
   (void)argv;
 
-  file_36bit_format = FORMAT_ITS;
+  input_word_format = &its_word_format;
+  output_word_format = &its_word_format;
 
   /* The KLDCP direcory is 64 sectors. */
   for (i = 0; i < 64; i++)
@@ -67,5 +68,6 @@ main (int argc, char **argv)
       write_empty_dir (stdout);
     }
 
+  flush_word (stdout);
   return 0;
 }

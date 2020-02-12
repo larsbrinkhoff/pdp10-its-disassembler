@@ -32,12 +32,10 @@ static word_t buffer[256 * 1024];
 
 static void usage (const char *x)
 {
-  fprintf (stderr, "Usage: %s -t|-x[e] <file>\n", x);
+  fprintf (stderr, "Usage: %s -t|-x[e] [-W<input word format>] [-X<output word format>] <file>\n", x);
+  usage_word_format ();
   exit (1);
 }
-
-static void (*write_word) (FILE *, word_t);
-static void (*flush_word) (FILE *);
 
 static void
 massage (char *filename)
@@ -118,9 +116,7 @@ main (int argc, char **argv)
   int opt;
   int i;
 
-  file_36bit_format = FORMAT_ITS;
-
-  while ((opt = getopt (argc, argv, "etxW:")) != -1)
+  while ((opt = getopt (argc, argv, "etxW:X:")) != -1)
     {
       switch (opt)
 	{
@@ -134,7 +130,11 @@ main (int argc, char **argv)
 	  extract = 1;
 	  break;
 	case 'W':
-	  if (parse_word_format (optarg))
+	  if (parse_input_word_format (optarg))
+	    usage (argv[0]);
+	  break;
+	case 'X':
+	  if (parse_output_word_format (optarg))
 	    usage (argv[0]);
 	  break;
 	default:
@@ -146,10 +146,6 @@ main (int argc, char **argv)
     usage (argv[0]);
 
   f = fopen (argv[optind], "rb");
-
-  /* Output format. */
-  write_word = write_its_word;
-  flush_word = flush_its_word;
 
   p = buffer;
   while ((word = get_word (f)) != -1)

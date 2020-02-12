@@ -18,70 +18,102 @@
 
 #include "dis.h"
 
-extern word_t get_bin_word (FILE *f);
-extern word_t get_its_word (FILE *f);
-extern word_t get_x_word (FILE *f);
-extern word_t get_dta_word (FILE *f);
-extern word_t get_core_word (FILE *f);
-extern word_t get_pt_word (FILE *f);
-extern void rewind_bin_word (FILE *f);
-extern void rewind_its_word (FILE *f);
-extern void rewind_x_word (FILE *f);
-extern void rewind_dta_word (FILE *f);
-extern void rewind_core_word (FILE *f);
-extern void rewind_pt_word (FILE *f);
+struct word_format *input_word_format = &its_word_format;
+struct word_format *output_word_format = &its_word_format;
 
-int file_36bit_format = FORMAT_ITS;
+static struct word_format *word_formats[] = {
+  &aa_word_format,
+  &bin_word_format,
+  &core_word_format,
+  &dta_word_format,
+  &its_word_format,
+  &pt_word_format,
+  &tape_word_format,
+  &tape7_word_format,
+  &x_word_format,
+  NULL
+};
 static word_t checksum;
 
 void
 usage_word_format (void)
 {
-  fprintf (stderr, "Valid word formats are: ascii, bin, core, dta, its, pt, tape, tape7.\n");
+  int i;
+
+  fprintf (stderr, "Valid word formats are:");
+  for (i = 0; word_formats[i] != NULL; i++)
+    fprintf (stderr, " %s", word_formats[i]->name);
+  fprintf (stderr, "\n");
+}
+
+static int
+parse_word_format (const char *string, struct word_format **word_format)
+{
+  int i;
+
+  for (i = 0; word_formats[i] != NULL; i++)
+    if (strcmp (string, word_formats[i]->name) == 0)
+      {
+        *word_format = word_formats[i];
+        return 0;
+      }
+
+  return -1;
 }
 
 int
-parse_word_format (const char *string)
+parse_input_word_format (const char *string)
 {
-  if (strcmp (string, "ascii") == 0)
-    file_36bit_format = FORMAT_AA;
-  else if (strcmp (string, "bin") == 0)
-    file_36bit_format = FORMAT_BIN;
-  else if (strcmp (string, "core") == 0)
-    file_36bit_format = FORMAT_CORE;
-  else if (strcmp (string, "dta") == 0)
-    file_36bit_format = FORMAT_DTA;
-  else if (strcmp (string, "its") == 0)
-    file_36bit_format = FORMAT_ITS;
-  else if (strcmp (string, "pt") == 0)
-    file_36bit_format = FORMAT_PT;
-  else if (strcmp (string, "tape") == 0)
-    file_36bit_format = FORMAT_TAPE;
-  else if (strcmp (string, "tape7") == 0)
-    file_36bit_format = FORMAT_TAPE7;
-  else
-    return -1;
+  return parse_word_format (string, &input_word_format);
+}
 
-  return 0;
+int
+parse_output_word_format (const char *string)
+{
+  return parse_word_format (string, &output_word_format);
 }
 
 word_t
 get_word (FILE *f)
 {
-  switch (file_36bit_format)
+  if (input_word_format->get_word == NULL)
     {
-    case FORMAT_BIN:	return get_bin_word (f);
-    case FORMAT_ITS:	return get_its_word (f);
-    case FORMAT_X:	return get_x_word (f);
-    case FORMAT_DTA:	return get_dta_word (f);
-    case FORMAT_AA:	return get_aa_word (f);
-    case FORMAT_PT:	return get_pt_word (f);
-    case FORMAT_CORE:   return get_core_word (f);
-    case FORMAT_TAPE:   return get_tape_word (f);
-    case FORMAT_TAPE7:  return get_tape_word (f);
+      fprintf (stderr, "word format \"%s\" not supported for input\n", input_word_format->name);
+      exit (1);
+    }
+  return input_word_format->get_word (f);
+}
+
+void
+rewind_word (FILE *f)
+{
+  if (input_word_format->rewind_word == NULL)
+    {
+      rewind (f);
+      return;
     }
 
-  return -1;
+  input_word_format->rewind_word (f);
+}
+
+void
+write_word (FILE *f, word_t word)
+{
+  if (output_word_format->write_word == NULL)
+    {
+      fprintf (stderr, "word format \"%s\" not supported for output\n", output_word_format->name);
+      exit (1);
+    }
+  output_word_format->write_word (f, word);
+}
+
+void
+flush_word (FILE *f)
+{
+  if (output_word_format->flush_word == NULL)
+    return;
+
+  output_word_format->flush_word (f);
 }
 
 void
@@ -106,21 +138,4 @@ get_checksummed_word (FILE *f)
   checksum &= 0777777777777ULL;
 
   return word;
-}
-
-void
-rewind_word (FILE *f)
-{
-  switch (file_36bit_format)
-    {
-    case FORMAT_BIN:	return rewind_bin_word (f);
-    case FORMAT_ITS:	return rewind_its_word (f);
-    case FORMAT_X:	return rewind_x_word (f);
-    case FORMAT_DTA:	return rewind_dta_word (f);
-    case FORMAT_AA:	return rewind_aa_word (f);
-    case FORMAT_PT:	return rewind_pt_word (f);
-    case FORMAT_CORE:	return rewind_core_word (f);
-    case FORMAT_TAPE:	return rewind_tape_word (f);
-    case FORMAT_TAPE7:	return rewind_tape_word (f);
-    }
 }

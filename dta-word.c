@@ -33,7 +33,7 @@ get_half (FILE *f)
 	  + (get_byte (f) << 24));
 }
 
-word_t
+static word_t
 get_dta_word (FILE *f)
 {
   word_t word, h1, h2;
@@ -52,8 +52,10 @@ get_dta_word (FILE *f)
   return word;
 }
 
-void
-rewind_dta_word (FILE *f)
-{
-  rewind (f);
-}
+struct word_format dta_word_format = {
+  "dta",
+  get_dta_word,
+  NULL,
+  NULL,
+  NULL
+};

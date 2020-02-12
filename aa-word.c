@@ -35,7 +35,7 @@ get_byte (FILE *f)
   return c == EOF ? 0 : c;
 }
 
-word_t
+static word_t
 get_aa_word (FILE *f)
 {
   word_t word = 0;
@@ -56,13 +56,7 @@ get_aa_word (FILE *f)
   return word;
 }
 
-void
-rewind_aa_word (FILE *f)
-{
-  rewind (f);
-}
-
-void
+static void
 write_aa_word (FILE *f, word_t word)
 {
   fputc ((word >> 29) & 0177, f);
@@ -73,8 +67,10 @@ write_aa_word (FILE *f, word_t word)
 	 ((word << 7) & 0200), f);
 }
 
-static void
-flush_aa_word (FILE *f)
-{
-  (void)f;
-}
+struct word_format aa_word_format = {
+  "ascii",
+  get_aa_word,
+  NULL,
+  write_aa_word,
+  NULL
+};

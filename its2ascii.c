@@ -17,13 +17,13 @@
 
 #include "dis.h"
 
-extern word_t get_its_word (FILE *f);
-extern word_t write_aa_word (FILE *f, word_t);
-
 int
 main (int argc, char **argv)
 {
   word_t word;
+
+  input_word_format = &its_word_format;
+  output_word_format = &aa_word_format;
 
   if (argc != 1)
     {
@@ -31,12 +31,11 @@ main (int argc, char **argv)
       exit (1);
     }
 
-  file_36bit_format = FORMAT_ITS;
-
-  while ((word = get_its_word (stdin)) != -1)
+  while ((word = get_word (stdin)) != -1)
     {
-      write_aa_word (stdout, word);
+      write_word (stdout, word);
     }
 
+  flush_word (stdout);
   return 0;
 }

@@ -30,7 +30,7 @@ get_byte (FILE *f)
   return c == EOF ? 0 : c;
 }
 
-word_t
+static word_t
 get_pt_word (FILE *f)
 {
   int i;
@@ -53,7 +53,7 @@ get_pt_word (FILE *f)
   return word;
 }
 
-void
+static void
 write_pt_word (FILE *f, word_t word)
 {
   fputc (((word >> 30) & 0x3F) | 0x80, f);
@@ -64,8 +64,10 @@ write_pt_word (FILE *f, word_t word)
   fputc (( word        & 0x3F) | 0x80, f);
 }
 
-void
-rewind_pt_word (FILE *f)
-{
-  rewind (f);
-}
+struct word_format pt_word_format = {
+  "pt",
+  get_pt_word,
+  NULL,
+  write_pt_word,
+  NULL
+};

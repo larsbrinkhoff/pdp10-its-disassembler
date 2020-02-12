@@ -199,7 +199,7 @@ main (int argc, char **argv)
       switch (opt)
 	{
 	case 'W':
-	  if (parse_word_format (optarg))
+	  if (parse_input_word_format (optarg))
 	    usage (argv);
 	  break;
 	default:

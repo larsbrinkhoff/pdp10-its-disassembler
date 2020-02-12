@@ -117,14 +117,14 @@ main (int argc, char **argv)
 {
   int opt;
 
-  file_36bit_format = FORMAT_ITS;
+  input_word_format = &its_word_format;
 
   while ((opt = getopt (argc, argv, "AIW:")) != -1)
     {
       switch (opt)
 	{
 	case 'W':
-	  if (parse_word_format (optarg))
+	  if (parse_input_word_format (optarg))
 	    usage (argv[0]);
 	  break;
 	case 'A':

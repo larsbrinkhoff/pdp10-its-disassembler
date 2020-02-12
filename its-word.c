@@ -33,7 +33,7 @@ insert (word_t word, unsigned char byte, int *bits)
   return (word << 7) | byte;
 }
 
-word_t
+static word_t
 get_its_word (FILE *f)
 {
   unsigned char byte;
@@ -151,7 +151,7 @@ get_its_word (FILE *f)
   return word;
 }
 
-void
+static void
 rewind_its_word (FILE *f)
 {
   there_is_some_leftover = 0;
@@ -167,7 +167,7 @@ fputc2 (int c1, int c2, FILE *f)
 
 static int previous_octet = -1;
 
-void
+static void
 flush_its_word (FILE *f)
 {
   if (previous_octet == 015)
@@ -249,7 +249,7 @@ ascii_word (FILE *f, word_t word)
     }
 }
 
-void
+static void
 write_its_word (FILE *f, word_t word)
 {
   if (word & 1)
@@ -257,3 +257,11 @@ write_its_word (FILE *f, word_t word)
   else
     ascii_word (f, word);
 }
+
+struct word_format its_word_format = {
+  "its",
+  get_its_word,
+  rewind_its_word,
+  write_its_word,
+  flush_its_word
+};
