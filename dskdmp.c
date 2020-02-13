@@ -163,7 +163,7 @@ static int
 show_blocks (word_t *ufd, int undscp, int end_words, int print)
 {
   word_t *d;
-  int i, o, b, n, n2, n3;
+  int o, b, n, n2, n3;
   int count = 0;
   int start = -1, end;
 
@@ -334,7 +334,6 @@ main (int argc, char **argv)
 {
   word_t *buffer;
   FILE *f;
-  int i;
 
   if (argc != 2)
     {
