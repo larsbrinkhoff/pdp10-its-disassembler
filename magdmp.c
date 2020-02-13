@@ -21,7 +21,6 @@ int
 main (int argc, char **argv)
 {
   word_t *buffer;
-  word_t word;
   FILE *f;
   int eof = 0;
   int files = 0;

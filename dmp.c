@@ -22,9 +22,6 @@
 void
 read_dmp (FILE *f, struct pdp10_memory *memory, int cpu_model)
 {
-  int address;
-  word_t word;
-
   printf ("DMP format\n");
 
   read_raw_at (f, memory, 074);

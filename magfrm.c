@@ -167,10 +167,7 @@ nine_tracks (void)
 int
 main (int argc, char **argv)
 {
-  word_t word;
-  FILE *f;
   int i = 1;
-  int eof = 0;
 
   input_word_format = &its_word_format;
 

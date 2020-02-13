@@ -281,7 +281,6 @@ main (int argc, char **argv)
 {
   word_t *buffer;
   FILE *f;
-  int i;
 
   input_word_format = &dta_word_format;
   output_word_format = &its_word_format;
