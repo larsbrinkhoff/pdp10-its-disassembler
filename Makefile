@@ -21,85 +21,85 @@ clean:
 	rm -f *.dasm *.list *.scrmbl
 
 dis10: main.o $(OBJS) dmp.o raw.o libwords.a
-	$(CC) $^ -o dis10
+	$(CC) $(CFLAGS) $^ -o $@
 
 libwords.a: word.o $(WORDS)
 	ar -crs $@ $^
 
 conv36: conv36.o libwords.a
-	$(CC) -g $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 bin2ascii: bin2ascii.o
-	$(CC) bin2ascii.o -o bin2ascii
+	$(CC) $(CFLAGS) $^ -o $@
 
 bin2x: bin2x.o
-	$(CC) bin2x.o -o bin2x
+	$(CC) $(CFLAGS) $^ -o $@
 
 its2x: its2x.o libwords.a
-	$(CC) $^ -o its2x
+	$(CC) $(CFLAGS) $^ -o $@
 
 its2bin: its2bin.o libwords.a
-	$(CC) $^ -o its2bin
+	$(CC) $(CFLAGS) $^ -o $@
 
 its2rim: its2rim.o libwords.a
-	$(CC) $^ -o its2rim
+	$(CC) $(CFLAGS) $^ -o $@
 
 its2ascii: its2ascii.o libwords.a
-	$(CC) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 dskdmp: dskdmp.c $(OBJS) libwords.a
-	$(CC) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 macdmp: macdmp.c $(OBJS) libwords.a
-	$(CC) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 saildart: saildart.o $(OBJS) libwords.a
-	$(CC) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 magdmp: magdmp.c core-word.o $(OBJS) libwords.a
-	$(CC) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 magfrm: magfrm.c core-word.o $(OBJS) libwords.a
-	$(CC) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 ipak: ipak.o $(OBJS) libwords.a
-	$(CC) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 itsarc: itsarc.o $(OBJS) libwords.a
-	$(CC) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 macro-tapes: macro-tapes.o $(OBJS) libwords.a
-	$(CC) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 tape-dir: tape-dir.o $(OBJS) libwords.a
-	$(CC) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 tracks: tracks.o $(OBJS) libwords.a
-	$(CC) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 harscntopbm: harscntopbm.o libwords.a
-	$(CC) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 palx: palx.o libwords.a
-	$(CC) -g $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 kldcp: kldcp.o $(OBJS) das.o libwords.a
-	$(CC) -g $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 klfedr: klfedr.o $(OBJS) libwords.a
-	$(CC) -g $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 scrmbl: scrmbl.o $(OBJS) libwords.a
-	$(CC) -g $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 unscr: unscr.o scrmbl.o $(OBJS) libwords.a
-	$(CC) -g $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 test/test_write: test/test_write.o $(OBJS) libwords.a
-	$(CC) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 test/test_read: test/test_read.o $(OBJS) libwords.a
-	$(CC) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 check: ts.obs.dasm ts.ksfedr.dasm ts.name.dasm ts.srccom.dasm atsign.tcp.dasm arc.code.list macro.low.dasm pt.rim.dasm visib1.bin.dasm visib2.bin.dasm visib3.bin.dasm @.midas.dasm stink.-ipak-.ipak thirty.scrmbl sixbit.scrmbl pdpten.scrmbl aaaaaa.scrmbl 0s.scrmbl
 
