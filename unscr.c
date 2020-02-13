@@ -88,16 +88,13 @@ accepted (word_t *output, int n)
   return 1;
 } 
 
-extern void scramble (int decrypt, word_t password, const word_t *input,
-		      word_t *output, int count);
-
 static void
 decrypt (word_t key, int n)
 {
   static word_t output[100];
   int i;
 
-  scramble (1, key, buffer, output, n);
+  scramble (1, 0, key, buffer, output, n);
 
   if (accepted(output, n))
     {
