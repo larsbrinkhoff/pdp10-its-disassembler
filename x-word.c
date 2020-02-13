@@ -49,10 +49,20 @@ get_x_word (FILE *f)
   return word;
 }
 
+static void
+write_x_word (FILE *f, word_t word)
+{
+  fputc ((word >> 32) & 0x0f, f);
+  fputc ((word >> 24) & 0xff, f);
+  fputc ((word >> 16) & 0xff, f);
+  fputc ((word >>  8) & 0xff, f);
+  fputc ((word >>  0) & 0xff, f);
+}
+
 struct word_format x_word_format = {
   "x",
   get_x_word,
   NULL,
-  NULL,
+  write_x_word,
   NULL
 };
