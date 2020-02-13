@@ -89,10 +89,10 @@ kldcp: kldcp.o $(OBJS) das.o libwords.a
 klfedr: klfedr.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
-scrmbl: scrmbl.o $(OBJS) libwords.a
+scrmbl: scrmbl.o crypt.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
-unscr: unscr.o scrmbl.o $(OBJS) libwords.a
+unscr: unscr.o crypt.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
 test/test_write: test/test_write.o $(OBJS) libwords.a

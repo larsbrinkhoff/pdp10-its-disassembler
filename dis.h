@@ -98,5 +98,7 @@ extern void	print_date (FILE *, word_t t);
 extern void	print_time (FILE *, word_t t);
 extern void	print_datime (FILE *, word_t t);
 extern int	byte_size (int, int *);
+extern void	scramble (int decrypt, int verbose, word_t password,
+		          const word_t *input, word_t *output, int count);
 
 #endif /* DIS_H */
