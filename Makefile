@@ -18,7 +18,7 @@ clean:
 	rm -f $(UTILS)
 	rm -f main.o dmp.o raw.o
 	for f in $(UTILS); do rm -f $${f}.o; done
-	rm -f *.dasm *.list *.scrmbl
+	rm -f out/*
 
 dis10: main.o $(OBJS) dmp.o raw.o libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
@@ -101,7 +101,14 @@ test/test_write: test/test_write.o $(OBJS) libwords.a
 test/test_read: test/test_read.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
-check: ts.obs.dasm ts.ksfedr.dasm ts.name.dasm ts.srccom.dasm atsign.tcp.dasm arc.code.list macro.low.dasm pt.rim.dasm visib1.bin.dasm visib2.bin.dasm visib3.bin.dasm @.midas.dasm stink.-ipak-.ipak thirty.scrmbl sixbit.scrmbl pdpten.scrmbl aaaaaa.scrmbl 0s.scrmbl
+check: \
+	out/ts.obs.dasm out/ts.ksfedr.dasm out/ts.name.dasm \
+	out/ts.srccom.dasm out/atsign.tcp.dasm out/arc.code.list \
+	out/macro.low.dasm out/pt.rim.dasm out/visib1.bin.dasm \
+	out/visib2.bin.dasm out/visib3.bin.dasm out/@.midas.dasm \
+	out/stink.-ipak-.ipak \
+	out/thirty.scrmbl out/sixbit.scrmbl out/pdpten.scrmbl \
+	out/aaaaaa.scrmbl out/0s.scrmbl
 
 samples/ts.obs = -Wits
 samples/ts.ksfedr = -Wits
@@ -116,23 +123,24 @@ samples/visib3.bin = -Wits -Sall
 samples/@.midas = -D774000 -Sall
 samples/stink.-ipak- = -Wascii
 
-%.dasm: samples/% dis10 test/%.dasm
+out/%.dasm: samples/% dis10 test/%.dasm
 	./dis10 $($<) $< > $@
-	cmp $@ test/$@ || rm $@ /no-such-file
+	cmp $@ test/$*.dasm || rm $@ /no-such-file
 
-%.list: samples/% itsarc test/%.list
+out/%.list: samples/% itsarc test/%.list
 	./itsarc -t $< 2> $@
-	cmp $@ test/$@ || rm $@ /no-such-file
+	cmp $@ test/$*.list || rm $@ /no-such-file
 
-%.ipak: samples/% ipak test/%.ipak
+out/%.ipak: samples/% ipak test/%.ipak
 	./ipak -t $($<) $< 2> $@
-	cmp $@ test/$@ || rm $@ /no-such-file
+	cmp $@ test/$*.ipak || rm $@ /no-such-file
 
-%.scrmbl: samples/zeros.%.scrmbl scrmbl its2bin samples/zeros.scrmbl
+out/%.scrmbl: samples/zeros.%.scrmbl scrmbl its2bin samples/zeros.scrmbl
 	./scrmbl -Wbin $* samples/zeros.scrmbl $@
 	./its2bin $@ | cmp - $< || rm $@ /no-such-file
-	./scrmbl -d -Wits $* $@ $*.unscrm
-	./its2bin $*.unscrm | cmp - samples/zeros.scrmbl || rm $@ /no-such-file
+	./scrmbl -d -Wits $* $@ out/$*.unscrm
+	./its2bin out/$*.unscrm | cmp - samples/zeros.scrmbl \
+		|| rm $@ /no-such-file
 
 #dependencies
 bin-word.o: bin-word.c dis.h
