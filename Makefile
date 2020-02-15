@@ -13,10 +13,10 @@ UTILS =	conv36 bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp
 all: dis10 $(UTILS) check
 
 clean:
-	rm -f $(OBJS)
+	rm -f $(OBJS) $(WORDS) libwords.a
 	rm -f dis10 core
 	rm -f $(UTILS)
-	rm -f main.o dmp.o raw.o
+	rm -f main.o dmp.o raw.o das.o crypt.o
 	for f in $(UTILS); do rm -f $${f}.o; done
 	rm -f out/*
 
