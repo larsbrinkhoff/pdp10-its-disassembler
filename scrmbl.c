@@ -21,7 +21,6 @@
 #include <unistd.h>
 
 #include "dis.h"
-#include "crypt.h"
 
 static void
 usage (char **argv)
