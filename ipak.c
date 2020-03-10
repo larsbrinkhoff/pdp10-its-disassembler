@@ -38,28 +38,6 @@ static void usage (const char *x)
 }
 
 static void
-massage (char *filename)
-{
-  char *x;
-
-  filename[6] = ' ';
-  x = filename + 12;
-  while (*x == ' ')
-    {
-      *x = 0;
-      x--;
-    }
-
-  x = filename;
-  while (*x)
-    {
-      if (*x == '/')
-	*x = '|';
-      x++;
-    }
-}
-
-static void
 unix_time (struct timeval *tv, word_t t)
 {
   struct tm tm;
@@ -186,7 +164,7 @@ main (int argc, char **argv)
 
   while (i < ipak_size)
     {
-      char filename[14];
+      char filename[50];
       word_t timestamp;
 
       if (buffer[i] != MAGIC)
@@ -194,10 +172,11 @@ main (int argc, char **argv)
 
       sixbit_to_ascii(buffer[i+1], filename);
       fprintf (stderr, "%s ", filename);
-      sixbit_to_ascii(buffer[i+2], filename + 7);
-      fprintf (stderr, "%s  ", filename + 7);
+      sixbit_to_ascii(buffer[i+2], filename);
+      fprintf (stderr, "%s  ", filename);
 
-      massage (filename);
+      /* File name for extraction. */
+      weenixpath (filename, -1LL, buffer[i+1], buffer[i+2]);
 
       timestamp = buffer[i+3];
       word_t length = buffer[i+4];

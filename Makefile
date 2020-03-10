@@ -4,7 +4,7 @@ CFLAGS = -g -W -Wall
 WORDS =  bin-word.o its-word.o x-word.o dta-word.o aa-word.o pt-word.o core-word.o tape-word.o
 
 OBJS =	pdp10-opc.o info.o word.o sblk.o pdump.o dis.o symbols.o \
-	timing.o timing_ka10.o timing_ki10.o memory.o
+	timing.o timing_ka10.o timing_ki10.o memory.o weenix.o
 
 UTILS =	conv36 bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
 	macdmp saildart macro-tapes tape-dir harscntopbm palx its2ascii \

@@ -35,7 +35,6 @@ int extract;
 int verbose;
 
 word_t directory[027][2];
-char filename[027][14];
 int mode[027];
 int extension[027];
 
@@ -70,7 +69,6 @@ static void
 process (void)
 {
   word_t *dir = get_block (0100);
-  char fn1[7], fn2[7];
   int i;
 
   memset (extension, 0, sizeof extension);
@@ -79,9 +77,6 @@ process (void)
     {
       directory[i][0] = dir[0];
       directory[i][1] = dir[1];
-      sixbit_to_ascii (dir[0], fn1);
-      sixbit_to_ascii (dir[1], fn2);
-      sprintf (filename[i], "%s %s", fn1, fn2);
       dir += 2;
 
       if (directory[i][0] == 0)
@@ -229,30 +224,10 @@ extract_file (int i, char *name)
 }
 
 static void
-massage (char *filename)
-{
-  char *x;
-
-  filename[6] = ' ';
-  x = filename + 12;
-  while (*x == ' ')
-    {
-      *x = 0;
-      x--;
-    }
-
-  x = filename;
-  while (*x)
-    {
-      if (*x == '/')
-	*x = '|';
-      x++;
-    }
-}
-
-static void
 show_files ()
 {
+  char filename[50];
+  char fn1[7], fn2[7];
   int i;
 
   for (i = 0; i < 027; i++)
@@ -260,9 +235,11 @@ show_files ()
       if (directory[i][0] == 0)
 	continue;
 
-      printf ("%2d. %s  %c", i+1, filename[i], type[mode[i]]);
-      massage (filename[i]);
-      extract_file (i+1, filename[i]);
+      sixbit_to_ascii (directory[i][0], fn1);
+      sixbit_to_ascii (directory[i][1], fn2);
+      printf ("%2d. %s %s  %c", i+1, fn1, fn2, type[mode[i]]);
+      weenixpath (filename, -1LL, directory[i][0], directory[i][1]);
+      extract_file (i+1, filename);
       printf ("   %4d\n", blocks);
     }
 

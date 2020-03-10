@@ -101,4 +101,7 @@ extern int	byte_size (int, int *);
 extern void	scramble (int decrypt, int verbose, word_t password,
 		          const word_t *input, word_t *output, int count);
 
+extern void weenixname (char *);
+extern void weenixpath (char *, word_t, word_t, word_t);
+
 #endif /* DIS_H */
