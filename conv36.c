@@ -25,7 +25,7 @@
 static void
 usage (char **argv)
 {
-  fprintf (stderr, "Usage: %s [-W<input word format>] [-X<output word format>] [<input file>]\n\n", argv[0]);
+  fprintf (stderr, "Usage: %s [-b] [-t] [-W<input word format>] [-X<output word format>] [<input file>]\n\n", argv[0]);
   usage_word_format ();
   exit (1);
 }
@@ -74,13 +74,22 @@ main (int argc, char **argv)
   FILE *file;
   int opt;
   word_t word;
+  word_t mask = WORDMASK;
 
   default_formats (argv[0]);
 
-  while ((opt = getopt (argc, argv, "W:X:")) != -1)
+  while ((opt = getopt (argc, argv, "btW:X:")) != -1)
     {
       switch (opt)
         {
+        case 'b':
+          /* Strip bottom bit */
+          mask &= ~1LL;
+          break;
+        case 't':
+          /* Strip top bit */
+          mask &= ~(1LL << 35);
+          break;
         case 'W':
           if (parse_input_word_format (optarg))
             usage (argv);
@@ -110,7 +119,7 @@ main (int argc, char **argv)
     usage (argv);
 
   while ((word = get_word (file)) != -1)
-    write_word (stdout, word);
+    write_word (stdout, word & mask);
   flush_word (stdout);
 
   if (file != stdin)
