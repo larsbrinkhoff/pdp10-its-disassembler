@@ -52,10 +52,26 @@ get_dta_word (FILE *f)
   return word;
 }
 
+static void
+write_half (FILE *f, int word)
+{
+  fputc (word & 0377, f);
+  fputc ((word >> 8) & 0377, f);
+  fputc ((word >> 16) & 0377, f);
+  fputc ((word >> 24) & 0377, f);
+}
+
+void
+write_dta_word (FILE *f, word_t word)
+{
+  write_half (f, (word >> 18) & 0777777);
+  write_half (f, word & 0777777);
+}
+
 struct word_format dta_word_format = {
   "dta",
   get_dta_word,
   NULL,
-  NULL,
+  write_dta_word,
   NULL
 };
