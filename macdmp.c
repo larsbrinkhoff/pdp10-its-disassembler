@@ -31,6 +31,8 @@ int verbose;
 int mode[TAPE_FILES];
 int extension[TAPE_FILES];
 int block_area[TAPE_BLOCKS + 1];
+int block_ptr;
+int direction;
 
 /* Mode 0 = ASCII, written by TECO.
  * Mode 1 = DUMP, written by MACDMP.
@@ -51,14 +53,15 @@ get_dir (int i)
   return get_block (DIRECTORY_BLOCK) + 2 * i;
 }
 
-static int read_block (FILE *f, word_t *buffer)
+static int
+read_block (FILE *f, word_t *buffer)
 {
   int i;
 
   for (i = 0; i < BLOCK_WORDS; i++)
     {
       buffer[i] = get_word (f);
-      if (buffer[i] == -1)
+      if (buffer[i] == -1 && i == 0)
 	return -1;
     }
 
@@ -117,6 +120,26 @@ process (void)
 	  printf (" %02o", block_area[i]);
 	}
       printf ("\n");
+    }
+}
+
+static void
+unprocess (void)
+{
+  word_t *dir = get_block (DIRECTORY_BLOCK);
+  int i, j;
+
+  block_ptr = 1;
+  for (i = 2*TAPE_FILES; i < BLOCK_WORDS; i++)
+    {
+      word_t x = 0;
+      for (j = 0; j < 7; j++)
+	{
+	  x <<= 5;
+	  x |= block_area[block_ptr];
+	  block_ptr++;
+	}
+      dir[i] = x << 1;
     }
 }
 
@@ -262,25 +285,106 @@ show_files ()
   extract_file (0, "free-blocks");
 }
 
+static int
+allocate_dir (word_t fn1, word_t fn2)
+{
+  char s1[7], s2[7];
+  int i;
+  for (i = 0; i < TAPE_FILES; i++)
+    {
+      if (get_dir (i)[0] == 0 && get_dir (i)[1] == 0)
+	{
+	  get_dir (i)[0] = fn1;
+	  get_dir (i)[1] = fn2;
+	  return i + 1;
+	}
+    }
+
+  sixbit_to_ascii (fn1, s1);  
+  sixbit_to_ascii (fn2, s2);  
+  fprintf (stderr, "Directory full: %s %s doesn't fit.\n", s1, s2);
+  exit (1);
+}
+
+static int
+allocate_block (int *i)
+{
+  while (block_ptr > 0 && block_ptr < 01070)
+    {
+      if (block_area[block_ptr] == 0)
+	{
+	  block_area[block_ptr] = *i;
+	  return block_ptr;
+	}
+      block_ptr += direction;
+    }
+
+  *i = allocate_dir (0, *i);
+  direction = -direction;
+  block_ptr += direction;
+  return allocate_block (i);
+}
+
+static void
+read_file (FILE *f, int i)
+{
+  word_t buf[BLOCK_WORDS];
+  int n;
+
+  while (!feof (f))
+    {
+      if (read_block (f, buf) == -1)
+	return;
+      n = allocate_block (&i);
+      memcpy (get_block (n), buf, BLOCK_WORDS * sizeof (word_t));
+    }
+}
+
+static void
+create_file (char **name, int n)
+{
+  word_t fn1, fn2;
+  FILE *f;
+  int i;
+
+  if (n == 0)
+    return;
+
+  f = fopen (*name, "rb");
+  if (f == NULL)
+    {
+      fprintf (stderr, "Error opening file %s.\n", *name);
+      exit (1);
+    }
+
+  block_ptr = 1;
+  direction = 1;
+
+  winningname (&fn1, &fn2, *name);
+  i = allocate_dir (fn1, fn2);
+  read_file (f, i);
+  fclose (f);
+
+  create_file (name + 1, n - 1);
+}
+
 static void
 usage (const char *x)
 {
-  fprintf (stderr, "Usage: %s -x|-t <file>\n", x);
+  fprintf (stderr, "Usage: %s -x|-t <file>, or -c <file> <files...>\n", x);
   exit (1);
 }
 
 int
 main (int argc, char **argv)
 {
+  int i, create = 0;
   word_t *buffer;
   FILE *f;
 
   input_word_format = &dta_word_format;
   output_word_format = &its_word_format;
   verbose = 1;
-
-  if (argc != 3)
-    usage (argv[0]);
 
   if (argv[1][0] != '-')
     usage (argv[0]);
@@ -293,16 +397,57 @@ main (int argc, char **argv)
     case 'x':
       extract = 1;
       break;
+    case 'c':
+      input_word_format = &its_word_format;
+      output_word_format = &dta_word_format;
+      create = 1;
+      break;
     default:
       usage (argv[0]);
       break;
     }
 
-  f = fopen (argv[2], "rb");
+  if (!create && argc != 3)
+    usage (argv[0]);
+
+  f = fopen (argv[2], create ? "wb" : "rb");
   if (f == NULL)
     {
       fprintf (stderr, "error\n");
       exit (1);
+    }
+
+  if (create)
+    {
+      memset (image, 0, sizeof image);
+      memset (block_area, 0, sizeof block_area);
+      memset (get_block (DIRECTORY_BLOCK), 0, sizeof (word_t) * BLOCK_WORDS);
+      memset (extension, 0, sizeof extension);
+      memset (mode, 0, sizeof mode);
+
+      block_area[1] = 036;
+      block_area[2] = 036;
+      block_area[3] = 036;
+      block_area[4] = 036;
+      block_area[5] = 036;
+      block_area[6] = 036;
+      block_area[7] = 036;
+      block_area[DIRECTORY_BLOCK] = 033;
+      block_area[01070] = 037;
+      block_area[01071] = 037;
+      block_area[01072] = 037;
+      block_area[01073] = 037;
+      block_area[01074] = 037;
+      block_area[01075] = 037;
+      block_area[01076] = 037;
+      block_area[01077] = 037;
+
+      create_file (argv + 3, argc - 3);
+      unprocess ();
+      for (i = 0; i < TAPE_BLOCKS; i++)
+	write_block (f, i);
+
+      return 0;
     }
 
   buffer = image;
