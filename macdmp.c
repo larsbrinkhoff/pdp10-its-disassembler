@@ -224,6 +224,15 @@ extract_file (int i, char *name)
 }
 
 static void
+show_name ()
+{
+  word_t *dir = get_block (0100);
+  char name[7];
+  sixbit_to_ascii (dir[0177] & 0777777, name);
+  printf ("%3s\n", name+3);
+}
+
+static void
 show_files ()
 {
   char filename[50];
@@ -299,6 +308,7 @@ main (int argc, char **argv)
     }
 
   process ();
+  show_name ();
   show_files ();
   show_blocks ();
 
