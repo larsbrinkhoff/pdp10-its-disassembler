@@ -18,7 +18,10 @@
 
 #include "dis.h"
 
+#define TAPE_FILES 027
+#define TAPE_BLOCKS 01100
 #define BLOCK_WORDS 128
+#define DIRECTORY_BLOCK 0100
 
 /* UFD, URNDM */
 #define UNLINK 0000001000000LL
@@ -29,14 +32,14 @@
 #define UNIGFL 0000024000000LL
 #define UNDUMP 0400000000000LL
 
-word_t image[580 * 128];
+word_t image[(TAPE_BLOCKS + 4) * BLOCK_WORDS];
 int blocks;
 int extract;
 int verbose;
 
-word_t directory[027][2];
-int mode[027];
-int extension[027];
+word_t directory[TAPE_FILES][2];
+int mode[TAPE_FILES];
+int extension[TAPE_FILES];
 
 /* Mode 0 = ASCII, written by TECO.
  * Mode 1 = DUMP, written by MACDMP.
@@ -48,7 +51,7 @@ char *type = " !\"#";
 static word_t *
 get_block (int block)
 {
-  return &image[block * 128];
+  return &image[block * BLOCK_WORDS];
 }
 
 static int read_block (FILE *f, word_t *buffer)
@@ -68,12 +71,12 @@ static int read_block (FILE *f, word_t *buffer)
 static void
 process (void)
 {
-  word_t *dir = get_block (0100);
+  word_t *dir = get_block (DIRECTORY_BLOCK);
   int i;
 
   memset (extension, 0, sizeof extension);
 
-  for (i = 0; i < 027; i++)
+  for (i = 0; i < TAPE_FILES; i++)
     {
       directory[i][0] = dir[0];
       directory[i][1] = dir[1];
@@ -82,20 +85,20 @@ process (void)
       if (directory[i][0] == 0)
 	{
 	  int x = directory[i][1];
-	  if (x > 0 && x <= 027)
+	  if (x > 0 && x <= TAPE_FILES)
 	    extension[x] = i+1;
 	}
     }
 
   memset (mode, 0, sizeof mode);
 
-  for (i = 0; i < 027; i++)
+  for (i = 0; i < TAPE_FILES; i++)
     {
       if (*dir & 1)
 	mode[i] |= 1;
       dir++;
     }
-  for (i = 0; i < 027; i++)
+  for (i = 0; i < TAPE_FILES; i++)
     {
       if (*dir & 1)
 	mode[i] |= 2;
@@ -122,7 +125,7 @@ static void
 show_blocks (void)
 {
   int blocks[040];
-  word_t *dir = get_block (0100);
+  word_t *dir = get_block (DIRECTORY_BLOCK);
   int empty = 1;
   int i, j;
 
@@ -131,16 +134,16 @@ show_blocks (void)
 
   memset (blocks, 0, sizeof blocks);
 
-  for (i = 0; i < 128 - 2*027; i++)
+  for (i = 0; i < 128 - 2*TAPE_FILES; i++)
     {
-      word_t x = dir[i + 2*027];
+      word_t x = dir[i + 2*TAPE_FILES];
       for (j = 0; j < 7; j++)
 	blocks[(x >> ((5 * (6-j)) + 1)) & 037]++;
     }
 
   for (i = 0; i < 040; i++)
     {
-      if (i >= 1 && i <= 027)
+      if (i >= 1 && i <= TAPE_FILES)
 	continue;
       if (blocks[i] == 0)
 	continue;
@@ -173,12 +176,12 @@ static void write_file (int, FILE *);
 static void
 write_reverse_file (int n, FILE *f)
 {
-  word_t *dir = get_block (0100);
+  word_t *dir = get_block (DIRECTORY_BLOCK);
   int i, j;
 
   for (i = 127 - 2*027; i >= 0; i--)
     {
-      word_t x = dir[i + 2*027];
+      word_t x = dir[i + 2*TAPE_FILES];
       for (j = 6; j >= 0; j--)
 	{
 	  if (((x >> ((5 * (6-j)) + 1)) & 037) == n)
@@ -193,12 +196,12 @@ write_reverse_file (int n, FILE *f)
 static void
 write_file (int n, FILE *f)
 {
-  word_t *dir = get_block (0100);
+  word_t *dir = get_block (DIRECTORY_BLOCK);
   int i, j;
 
   for (i = 0; i < 128 - 2*027; i++)
     {
-      word_t x = dir[i + 2*027];
+      word_t x = dir[i + 2*TAPE_FILES];
       for (j = 0; j < 7; j++)
 	{
 	  if (((x >> ((5 * (6-j)) + 1)) & 037) == n)
@@ -226,7 +229,7 @@ extract_file (int i, char *name)
 static void
 show_name ()
 {
-  word_t *dir = get_block (0100);
+  word_t *dir = get_block (DIRECTORY_BLOCK);
   char name[7];
   sixbit_to_ascii (dir[0177] & 0777777, name);
   printf ("%3s\n", name+3);
@@ -239,7 +242,7 @@ show_files ()
   char fn1[7], fn2[7];
   int i;
 
-  for (i = 0; i < 027; i++)
+  for (i = 0; i < TAPE_FILES; i++)
     {
       if (directory[i][0] == 0)
 	continue;
