@@ -31,6 +31,7 @@ int verbose;
 word_t directory[TAPE_FILES][2];
 int mode[TAPE_FILES];
 int extension[TAPE_FILES];
+int block_area[TAPE_BLOCKS + 1];
 
 /* Mode 0 = ASCII, written by TECO.
  * Mode 1 = DUMP, written by MACDMP.
@@ -63,7 +64,7 @@ static void
 process (void)
 {
   word_t *dir = get_block (DIRECTORY_BLOCK);
-  int i;
+  int i, j;
 
   memset (extension, 0, sizeof extension);
 
@@ -94,6 +95,26 @@ process (void)
       if (*dir & 1)
 	mode[i] |= 2;
       dir++;
+    }
+
+  dir = get_block (DIRECTORY_BLOCK);
+  for (i = 0; i < 128 - 2*TAPE_FILES; i++)
+    {
+      word_t x = dir[i + 2*TAPE_FILES];
+      for (j = 0; j < 7; j++)
+	block_area[7*i + j + 1] = (x >> ((5 * (6-j)) + 1)) & 037;
+    }
+
+  if (verbose)
+    {
+      printf ("BLOCKS:");
+      for (i = 0; i < TAPE_BLOCKS; i++)
+	{
+	  if ((i & 017) == 0)
+	    printf ("\n %04o: ", i);
+	  printf (" %02o", block_area[i]);
+	}
+      printf ("\n");
     }
 }
 
@@ -167,17 +188,12 @@ static void write_file (int, FILE *);
 static void
 write_reverse_file (int n, FILE *f)
 {
-  word_t *dir = get_block (DIRECTORY_BLOCK);
-  int i, j;
+  int i;
 
-  for (i = 127 - 2*027; i >= 0; i--)
+  for (i = TAPE_BLOCKS-1; i >= 1; i--)
     {
-      word_t x = dir[i + 2*TAPE_FILES];
-      for (j = 6; j >= 0; j--)
-	{
-	  if (((x >> ((5 * (6-j)) + 1)) & 037) == n)
-	    write_block (f, 7*i + j + 1);
-	}
+      if (block_area[i] == n)
+	write_block (f, i);
     }
 
   if (extension[n])
@@ -187,17 +203,12 @@ write_reverse_file (int n, FILE *f)
 static void
 write_file (int n, FILE *f)
 {
-  word_t *dir = get_block (DIRECTORY_BLOCK);
-  int i, j;
+  int i;
 
-  for (i = 0; i < 128 - 2*027; i++)
+  for (i = 1; i < TAPE_BLOCKS; i++)
     {
-      word_t x = dir[i + 2*TAPE_FILES];
-      for (j = 0; j < 7; j++)
-	{
-	  if (((x >> ((5 * (6-j)) + 1)) & 037) == n)
-	    write_block (f, 7*i + j + 1);
-	}
+      if (block_area[i] == n)
+	write_block (f, i);
     }
 
   if (extension[n])
