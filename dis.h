@@ -103,5 +103,6 @@ extern void	scramble (int decrypt, int verbose, word_t password,
 
 extern void weenixname (char *);
 extern void weenixpath (char *, word_t, word_t, word_t);
+extern void winningname (word_t *, word_t *, const char *);
 
 #endif /* DIS_H */
