@@ -63,3 +63,43 @@ weenixpath (char *output, word_t dir, word_t fn1, word_t fn2)
       sprintf (output, "%s/%s.%s", s1, s2, s3);
     }
 }
+
+static  void
+sixbit (char *p)
+{
+  for (; *p != 0; p++)
+    {
+      switch (*p)
+        {
+        case '_': *p = '.'; break;
+        case '{': *p = '/'; break;
+        case '}': *p = '_'; break;
+        case '~': *p = ' '; break;
+        }
+    }
+}
+
+void
+winningname (word_t *fn1p, word_t *fn2p, const char *name)
+{
+  char buf[100];
+  char *fn1, *fn2;
+
+  strcpy (buf, name);
+
+  fn1 = buf;
+  fn2 = strchr (buf, '.');
+  if (fn2)
+    *fn2++ = 0;
+  else
+    {
+      fn2 = fn1;
+      fn1 = "@";
+    }
+
+  sixbit (fn1);
+  sixbit (fn2);
+
+  *fn1p = ascii_to_sixbit (fn1);
+  *fn2p = ascii_to_sixbit (fn2);
+}
