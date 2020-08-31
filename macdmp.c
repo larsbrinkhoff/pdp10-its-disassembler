@@ -28,7 +28,6 @@ int blocks;
 int extract;
 int verbose;
 
-word_t directory[TAPE_FILES][2];
 int mode[TAPE_FILES];
 int extension[TAPE_FILES];
 int block_area[TAPE_BLOCKS + 1];
@@ -44,6 +43,12 @@ static word_t *
 get_block (int block)
 {
   return &image[block * BLOCK_WORDS];
+}
+
+static word_t *
+get_dir (int i)
+{
+  return get_block (DIRECTORY_BLOCK) + 2 * i;
 }
 
 static int read_block (FILE *f, word_t *buffer)
@@ -63,20 +68,16 @@ static int read_block (FILE *f, word_t *buffer)
 static void
 process (void)
 {
-  word_t *dir = get_block (DIRECTORY_BLOCK);
+  word_t *dir;
   int i, j;
 
   memset (extension, 0, sizeof extension);
 
   for (i = 0; i < TAPE_FILES; i++)
     {
-      directory[i][0] = dir[0];
-      directory[i][1] = dir[1];
-      dir += 2;
-
-      if (directory[i][0] == 0)
+      if (get_dir (i)[0] == 0)
 	{
-	  int x = directory[i][1];
+	  int x = get_dir (i)[1];
 	  if (x > 0 && x <= TAPE_FILES)
 	    extension[x] = i+1;
 	}
@@ -84,6 +85,7 @@ process (void)
 
   memset (mode, 0, sizeof mode);
 
+  dir = get_block (DIRECTORY_BLOCK) + 2*TAPE_FILES;
   for (i = 0; i < TAPE_FILES; i++)
     {
       if (*dir & 1)
@@ -246,13 +248,13 @@ show_files ()
 
   for (i = 0; i < TAPE_FILES; i++)
     {
-      if (directory[i][0] == 0)
+      if (get_dir (i)[0] == 0)
 	continue;
 
-      sixbit_to_ascii (directory[i][0], fn1);
-      sixbit_to_ascii (directory[i][1], fn2);
+      sixbit_to_ascii (get_dir (i)[0], fn1);
+      sixbit_to_ascii (get_dir (i)[1], fn2);
       printf ("%2d. %s %s  %c", i+1, fn1, fn2, type[mode[i]]);
-      weenixpath (filename, -1LL, directory[i][0], directory[i][1]);
+      weenixpath (filename, -1LL, get_dir (i)[0], get_dir (i)[1]);
       extract_file (i+1, filename);
       printf ("   %4d\n", blocks);
     }
