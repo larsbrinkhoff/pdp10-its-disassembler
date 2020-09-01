@@ -26,7 +26,7 @@
 
 word_t image[(TAPE_BLOCKS + 4) * BLOCK_WORDS];
 int blocks;
-int extract;
+static void (*extract) (int, char *);
 int verbose;
 
 int mode[TAPE_FILES];
@@ -111,9 +111,9 @@ process (void)
 	block_area[7*i + j + 1] = (x >> ((5 * (6-j)) + 1)) & 037;
     }
 
-  if (verbose)
+  if (verbose >= 2)
     {
-      printf ("BLOCKS:");
+      printf ("BLOCK AREA:");
       for (i = 0; i < TAPE_BLOCKS; i++)
 	{
 	  if ((i & 017) == 0)
@@ -204,6 +204,8 @@ write_block (FILE *f, int n)
 {
   int i;
   blocks++;
+  if (f == NULL)
+    return;
   word_t *x = get_block (n);
   for (i = 0; i < 128; i++)
     write_word (f, *x++);
@@ -244,9 +246,6 @@ write_file (int n, FILE *f)
 static void
 extract_file (int i, char *name)
 {
-  if (!extract)
-    return;
-
   FILE *f = fopen (name, "wb");
   blocks = 0;
   write_file (i, f);
@@ -255,12 +254,23 @@ extract_file (int i, char *name)
 }
 
 static void
+list_file (int i, char *name)
+{
+  (void)name;
+  blocks = 0;
+  write_file (i, NULL);
+}
+
+static void
 show_name ()
 {
   word_t *dir = get_block (DIRECTORY_BLOCK);
   char name[7];
-  sixbit_to_ascii (dir[0177] & 0777777, name);
-  printf ("%3s\n", name+3);
+  if (verbose)
+    {
+      sixbit_to_ascii (dir[0177] & 0777777, name);
+      printf ("%3s\n", name+3);
+    }
 }
 
 static void
@@ -273,17 +283,29 @@ show_files ()
   for (i = 0; i < TAPE_FILES; i++)
     {
       if (get_dir (i)[0] == 0)
-	continue;
+	{
+	  if (get_dir (i)[1] == 0 && verbose >= 2) {
+	    list_file (i+1, NULL);
+	    if (blocks > 0)
+	      printf ("%2d. No file            %4d\n", i+1, blocks);
+	  }
+	  if (get_dir (i)[1] != 0 && verbose >= 2)
+	    printf ("%2d. Extension for file %llo\n", i+1, get_dir (i)[1]);
+	  continue;
+	}
 
-      sixbit_to_ascii (get_dir (i)[0], fn1);
-      sixbit_to_ascii (get_dir (i)[1], fn2);
-      printf ("%2d. %s %s  %c", i+1, fn1, fn2, type[mode[i]]);
       weenixpath (filename, -1LL, get_dir (i)[0], get_dir (i)[1]);
-      extract_file (i+1, filename);
-      printf ("   %4d\n", blocks);
+      extract (i+1, filename);
+      if (verbose)
+	{
+	  sixbit_to_ascii (get_dir (i)[0], fn1);
+	  sixbit_to_ascii (get_dir (i)[1], fn2);
+	  printf ("%2d. %s %s  %c", i+1, fn1, fn2, type[mode[i]]);
+	  printf ("   %4d\n", blocks);
+	}
     }
 
-  extract_file (0, "free-blocks");
+  extract (0, "free-blocks");
 }
 
 static int
@@ -406,13 +428,14 @@ main (int argc, char **argv)
 	case 't':
 	  if (image_file)
 	    usage (argv[0]);
-	  extract = 0;
+	  verbose++;
+	  extract = list_file;
 	  image_file = optarg;
 	  break;
 	case 'x':
 	  if (image_file)
 	    usage (argv[0]);
-	  extract = 1;
+	  extract = extract_file;
 	  image_file = optarg;
 	  break;
 	case 'W':
