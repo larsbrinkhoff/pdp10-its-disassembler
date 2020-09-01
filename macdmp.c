@@ -141,6 +141,8 @@ unprocess (char *name)
 	  block_ptr++;
 	}
       dir[i] = x << 1;
+      if (i == BLOCK_WORDS-1)
+	dir[i] |= 1;
     }
 
   if (name)
