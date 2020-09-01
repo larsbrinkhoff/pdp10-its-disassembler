@@ -14,6 +14,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include <stdio.h>
+#include <unistd.h>
 #include <string.h>
 
 #include "dis.h"
@@ -371,54 +372,75 @@ create_file (char **name, int n)
 static void
 usage (const char *x)
 {
-  fprintf (stderr, "Usage: %s -x|-t <file>, or -c <file> <files...>\n", x);
+  fprintf (stderr, "Usage: %s [-v] [-W<word format>] -x|-t <tape>, or -c <tape> <files...>\n", x);
   exit (1);
 }
 
 int
 main (int argc, char **argv)
 {
+  char *image_file;
   int i, create = 0;
   word_t *buffer;
   FILE *f;
+  int opt;
 
+  image_file = NULL;
   input_word_format = &dta_word_format;
   output_word_format = &its_word_format;
-  verbose = 1;
+  verbose = 0;
 
-  if (argv[1][0] != '-')
-    usage (argv[0]);
-
-  switch (argv[1][1])
+  while ((opt = getopt (argc, argv, "vc:t:x:W:")) != -1)
     {
-    case 't':
-      extract = 0;
-      break;
-    case 'x':
-      extract = 1;
-      break;
-    case 'c':
-      input_word_format = &its_word_format;
-      output_word_format = &dta_word_format;
-      create = 1;
-      break;
-    default:
-      usage (argv[0]);
-      break;
+      switch (opt)
+	{
+	case 'v':
+	  verbose++;
+	  break;
+	case 'c':
+	  if (image_file)
+	    usage (argv[0]);
+	  create = 1;
+	  image_file = optarg;
+	  break;
+	case 't':
+	  if (image_file)
+	    usage (argv[0]);
+	  extract = 0;
+	  image_file = optarg;
+	  break;
+	case 'x':
+	  if (image_file)
+	    usage (argv[0]);
+	  extract = 1;
+	  image_file = optarg;
+	  break;
+	case 'W':
+	  if (parse_output_word_format (optarg))
+	    usage (argv[0]);
+	  break;
+	default:
+	  usage (argv[0]);
+	  break;
+	}
     }
 
-  if (!create && argc != 3)
+  if (!create && optind != argc)
     usage (argv[0]);
 
-  f = fopen (argv[2], create ? "wb" : "rb");
+  f = fopen (image_file, create ? "wb" : "rb");
   if (f == NULL)
     {
-      fprintf (stderr, "error\n");
+      fprintf (stderr, "Error opening tape image file %s\n", image_file);
       exit (1);
     }
 
   if (create)
     {
+      struct word_format *tmp = input_word_format;
+      input_word_format = output_word_format;
+      output_word_format = tmp;
+
       memset (image, 0, sizeof image);
       memset (block_area, 0, sizeof block_area);
       memset (get_block (DIRECTORY_BLOCK), 0, sizeof (word_t) * BLOCK_WORDS);
@@ -442,7 +464,7 @@ main (int argc, char **argv)
       block_area[01076] = 037;
       block_area[01077] = 037;
 
-      create_file (argv + 3, argc - 3);
+      create_file (argv + optind, argc - optind);
       unprocess ();
       for (i = 0; i < TAPE_BLOCKS; i++)
 	write_block (f, i);
