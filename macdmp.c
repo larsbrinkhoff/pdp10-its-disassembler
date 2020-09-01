@@ -125,7 +125,7 @@ process (void)
 }
 
 static void
-unprocess (void)
+unprocess (char *name)
 {
   word_t *dir = get_block (DIRECTORY_BLOCK);
   int i, j;
@@ -141,6 +141,14 @@ unprocess (void)
 	  block_ptr++;
 	}
       dir[i] = x << 1;
+    }
+
+  if (name)
+    {
+      word_t x = dir[BLOCK_WORDS - 1];
+      x &= 0777777000000LL;
+      x |= ascii_to_sixbit (name) >> 18;
+      dir[BLOCK_WORDS - 1] = x;
     }
 }
 
@@ -394,13 +402,15 @@ create_file (char **name, int n)
 static void
 usage (const char *x)
 {
-  fprintf (stderr, "Usage: %s [-v] [-W<word format>] -x|-t <tape>, or -c <tape> <files...>\n", x);
+  fprintf (stderr, "Usage: %s [-v] [-W<word format>] -x|-t <tape>,\n", x);
+  fprintf (stderr, "or [-N<name>] -c <tape> <files...>\n");
   exit (1);
 }
 
 int
 main (int argc, char **argv)
 {
+  char *tape_name = NULL;
   char *image_file;
   int i, create = 0;
   word_t *buffer;
@@ -412,7 +422,7 @@ main (int argc, char **argv)
   output_word_format = &its_word_format;
   verbose = 0;
 
-  while ((opt = getopt (argc, argv, "vc:t:x:W:")) != -1)
+  while ((opt = getopt (argc, argv, "vc:t:x:W:N:")) != -1)
     {
       switch (opt)
 	{
@@ -441,6 +451,9 @@ main (int argc, char **argv)
 	case 'W':
 	  if (parse_output_word_format (optarg))
 	    usage (argv[0]);
+	  break;
+	case 'N':
+	  tape_name = optarg;
 	  break;
 	default:
 	  usage (argv[0]);
@@ -488,7 +501,7 @@ main (int argc, char **argv)
       block_area[01077] = 037;
 
       create_file (argv + optind, argc - optind);
-      unprocess ();
+      unprocess (tape_name);
       for (i = 0; i < TAPE_BLOCKS; i++)
 	write_block (f, i);
 
