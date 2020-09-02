@@ -120,6 +120,7 @@ check: \
 	out/ts.srccom.dasm out/atsign.tcp.dasm out/arc.code.list \
 	out/macro.low.dasm out/pt.rim.dasm out/visib1.bin.dasm \
 	out/visib2.bin.dasm out/visib3.bin.dasm out/@.midas.dasm \
+	out/srccom.exe.dasm \
 	out/stink.-ipak-.ipak \
 	out/thirty.scrmbl out/sixbit.scrmbl out/pdpten.scrmbl \
 	out/aaaaaa.scrmbl out/0s.scrmbl
@@ -136,6 +137,7 @@ samples/visib2.bin = -Wits -Sddt
 samples/visib3.bin = -Wits -Sall
 samples/@.midas = -D774000 -Sall
 samples/stink.-ipak- = -Wascii
+samples/srccom.exe = -Wascii
 
 out/%.dasm: samples/% dis10 test/%.dasm
 	./dis10 $($<) $< > $@
