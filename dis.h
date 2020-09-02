@@ -25,6 +25,9 @@
 /* ITS page size, in words */
 #define ITS_PAGESIZE 1024
 
+/* DEC page size, in words */
+#define DEC_PAGESIZE 512
+
 typedef long long word_t;
 
 #define JRST_1 ((word_t)(0254000000001LL))
@@ -55,6 +58,7 @@ extern struct file_format dmp_file_format;
 extern struct file_format pdump_file_format;
 extern struct file_format raw_file_format;
 extern struct file_format sblk_file_format;
+extern struct file_format shr_file_format;
 
 extern struct word_format *input_word_format;
 extern struct word_format *output_word_format;
@@ -92,6 +96,9 @@ extern void	read_raw_at (FILE *f, struct pdp10_memory *memory,
 			     int address);
 extern void	sblk_info (FILE *f, word_t word0, int cpu_model);
 extern void     dmp_info (struct pdp10_memory *memory, int cpu_model);
+extern void     dec_info (struct pdp10_memory *memory,
+			  word_t entry_vec_len, word_t entry_vec_addr,
+			  int cpu_model);
 extern void	ntsddt_info (struct pdp10_memory *memory, int);
 extern void     usage_symbols_mode (void);
 extern int      parse_symbols_mode (const char *string);

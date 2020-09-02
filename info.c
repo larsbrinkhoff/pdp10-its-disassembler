@@ -359,6 +359,56 @@ dmp_info (struct pdp10_memory *memory, int cpu_model)
     }
 }
 
+void
+dec_info (struct pdp10_memory *memory,
+	  word_t entry_vec_len, word_t entry_vec_addr,
+	  int cpu_model)
+{
+  if (entry_vec_addr == -1 || entry_vec_len == 0254000)
+    {
+      word_t word;
+
+      word = get_word_at (memory, 0120) & 0777777;
+      if (word != 0)
+	printf ("Start address: %06llo\n", word);
+
+      word = get_word_at (memory, 0124) & 0777777;
+      if (word != 0)
+	printf ("Reentry address: %06llo\n", word);
+
+      word = get_word_at (memory, 0137);
+      if (word != 0)
+	printf ("Version: %012llo\n", word);
+    }
+  else
+    {
+      printf ("Entry vector at %06llo length %llo:\n",
+	      entry_vec_addr, entry_vec_len);
+
+      if (entry_vec_len == 1)
+	{
+	  printf ("Start address: %06llo\n", entry_vec_addr);
+	}
+      else if (entry_vec_len == 3)
+	{
+	  int addr;
+
+	  printf ("Start instruction:\n");
+	  addr = entry_vec_addr;
+	  disassemble_word (memory, get_word_at (memory, addr),
+			    addr, cpu_model);
+
+	  printf ("Reentry instruction:\n");
+	  addr = entry_vec_addr + 1;
+	  disassemble_word (memory, get_word_at (memory, addr),
+			    addr, cpu_model);
+
+	  printf ("Version: %012llo\n",
+		  get_word_at (memory, entry_vec_addr + 2));
+	}
+    }
+}
+
 int
 byte_size (int code, int *leftovers)
 {
