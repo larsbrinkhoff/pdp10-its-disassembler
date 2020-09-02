@@ -19,30 +19,17 @@
 #include "dis.h"
 #include "memory.h"
 
-void
-read_raw_at (FILE *f, struct pdp10_memory *memory, int address)
+static void
+read_dmp (FILE *f, struct pdp10_memory *memory, int cpu_model)
 {
-  word_t word;
+  printf ("DMP format\n");
 
-  while ((word = get_word (f)) != -1)
-    {
-      word_t *data = malloc (sizeof *data);
-      if (data == NULL)
-	{
-	  fprintf (stderr, "out of memory\n");
-	  exit (1);
-	}
+  read_raw_at (f, memory, 074);
 
-      data[0] = word;
-
-      add_memory (memory, address++, 1, data);
-    }
+  dmp_info (memory, cpu_model);
 }
 
-void
-read_raw (FILE *f, struct pdp10_memory *memory, int cpu_model)
-{
-  printf ("Raw format\n");
-
-  read_raw_at (f, memory, 0);
-}
+struct file_format dmp_file_format = {
+  "dmp",
+  read_dmp
+};

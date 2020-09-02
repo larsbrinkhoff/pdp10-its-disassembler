@@ -19,7 +19,7 @@
 #include "dis.h"
 #include "memory.h"
 
-void
+static void
 read_sblk (FILE *f, struct pdp10_memory *memory, int cpu_model)
 {
   int address;
@@ -72,3 +72,8 @@ read_sblk (FILE *f, struct pdp10_memory *memory, int cpu_model)
   printf ("\n");
   sblk_info (f, word, cpu_model);
 }
+
+struct file_format sblk_file_format = {
+  "sblk",
+  read_sblk
+};
