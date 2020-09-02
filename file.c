@@ -26,6 +26,7 @@ static struct file_format *file_formats[] = {
   &pdump_file_format,
   &raw_file_format,
   &sblk_file_format,
+  &shr_file_format,
   NULL
 };
 
@@ -61,7 +62,9 @@ guess_input_file_format (FILE *file)
   word_t word = get_word (file);
   rewind_word (file);
 
-  if (word == 0)
+  if ((word >> 18) == 01776)
+    input_file_format = &shr_file_format;
+  else if (word == 0)
     input_file_format = &pdump_file_format;
   else
     input_file_format = &sblk_file_format;
