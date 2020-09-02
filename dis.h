@@ -74,8 +74,6 @@ extern void     write_7track_record (FILE *f, word_t *buffer, int);
 extern void     write_9track_record (FILE *f, word_t *buffer, int);
 extern word_t	get_core_word (FILE *f);
 extern void	write_core_word (FILE *f, word_t word);
-extern void	dis_pdump (FILE *f, int cpu_model);
-extern void	dis_sblk (FILE *f, int cpu_model);
 typedef void    (*reader_t) (FILE *f, struct pdp10_memory *memory, int cpu);
 extern void	read_dmp (FILE *f, struct pdp10_memory *memory, int cpu);
 extern void	read_pdump (FILE *f, struct pdp10_memory *memory, int cpu);
