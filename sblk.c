@@ -44,13 +44,13 @@ read_sblk (FILE *f, struct pdp10_memory *memory, int cpu_model)
       
   while ((word = get_word (f)) & SIGNBIT)
     {
-      char *data, *ptr;
+      word_t *data, *ptr;
 
       reset_checksum (word);
       block_length = -((word >> 18) | ((-1) & ~0777777));
       block_address = word & 0777777;
 
-      data = malloc (5 * block_length);
+      data = malloc (block_length * sizeof *data);
       if (data == NULL)
 	{
 	  fprintf (stderr, "out of memory\n");
@@ -60,12 +60,7 @@ read_sblk (FILE *f, struct pdp10_memory *memory, int cpu_model)
       ptr = data;
       for (i = 0; i < block_length; i++)
 	{
-	  word = get_checksummed_word (f);
-	  *ptr++ = (word >> 32) & 0x0f;
-	  *ptr++ = (word >> 24) & 0xff;
-	  *ptr++ = (word >> 16) & 0xff;
-	  *ptr++ = (word >>  8) & 0xff;
-	  *ptr++ = (word >>  0) & 0xff;
+	  *ptr++ = get_checksummed_word (f);
 	}
 
       add_memory (memory, block_address, block_length, data);
