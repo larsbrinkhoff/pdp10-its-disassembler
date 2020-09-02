@@ -42,7 +42,7 @@ static int read_page (word_t info)
   return (info & (PAGE_READ + PAGE_WRITE)) != 0;
 }
 
-void
+static void
 read_pdump (FILE *f, struct pdp10_memory *memory, int cpu_model)
 {
   word_t page_map[256];
@@ -111,3 +111,8 @@ read_pdump (FILE *f, struct pdp10_memory *memory, int cpu_model)
   word = get_word (f);
   sblk_info (f, word, cpu_model);
 }
+
+struct file_format pdump_file_format = {
+  "pdump",
+  read_pdump
+};

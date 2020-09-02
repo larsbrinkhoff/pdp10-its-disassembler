@@ -25,7 +25,8 @@
 static void
 usage (char **argv)
 {
-  fprintf (stderr, "Usage: %s [-6] [-r] [-S<symbol mode>] [-W<word format>] [-D<DDT address>] <file>\n\n", argv[0]);
+  fprintf (stderr, "Usage: %s [-6] [-r] [-F<file format>] [-S<symbol mode>] [-W<word format>] [-D<DDT address>] <file>\n\n", argv[0]);
+  usage_file_format ();
   usage_word_format ();
   usage_symbols_mode ();
   usage_machine ();
@@ -41,17 +42,20 @@ main (int argc, char **argv)
   word_t word;
   int opt;
   int ddt = 0;
-  reader_t read_func = NULL;
 
-  while ((opt = getopt (argc, argv, "6rS:W:m:D:")) != -1)
+  while ((opt = getopt (argc, argv, "6rF:S:W:m:D:")) != -1)
     {
       switch (opt)
 	{
 	case '6':
-	  read_func = read_dmp;
+	  input_file_format = &dmp_file_format;
 	  break;
 	case 'r':
-	  read_func = read_raw;
+	  input_file_format = &raw_file_format;
+	  break;
+	case 'F':
+	  if (parse_input_file_format (optarg))
+	    usage (argv);
 	  break;
 	case 'm':
 	  if (parse_machine (optarg, &cpu_model))
@@ -86,16 +90,9 @@ main (int argc, char **argv)
 
   init_memory (&memory);
 
-  word = get_word (file);
-  rewind_word (file);
-  if (!read_func)
-    {
-      if (word == 0)
-	read_func = read_pdump;
-      else
-	read_func = read_sblk;
-    }
-  read_func (file, &memory, cpu_model);
+  if (!input_file_format)
+    guess_input_file_format (file);
+  input_file_format->read (file, &memory, cpu_model);
 
   while ((word = get_word (file)) != -1)
     printf ("(extra word: %012llo)\n", word);

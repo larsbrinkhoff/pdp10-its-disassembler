@@ -1,9 +1,11 @@
 
 CFLAGS = -g -W -Wall
 
+FILES =  sblk-file.o pdump-file.o dmp-file.o raw-file.o
+
 WORDS =  bin-word.o its-word.o x-word.o dta-word.o aa-word.o pt-word.o core-word.o tape-word.o cadr-word.o
 
-OBJS =	pdp10-opc.o info.o word.o sblk.o pdump.o dis.o symbols.o \
+OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o weenix.o
 
 UTILS =	conv36 bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
@@ -13,15 +15,18 @@ UTILS =	conv36 bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp
 all: dis10 $(UTILS) check
 
 clean:
-	rm -f $(OBJS) $(WORDS) libwords.a
+	rm -f $(OBJS) $(WORDS) libfiles.a libwords.a
 	rm -f dis10 core
 	rm -f $(UTILS)
 	rm -f main.o dmp.o raw.o das.o crypt.o
 	for f in $(UTILS); do rm -f $${f}.o; done
 	rm -f out/*
 
-dis10: main.o $(OBJS) dmp.o raw.o libwords.a
+dis10: main.o $(OBJS) libfiles.a libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
+
+libfiles.a: file.o $(FILES)
+	ar -crs $@ $^
 
 libwords.a: word.o $(WORDS)
 	ar -crs $@ $^

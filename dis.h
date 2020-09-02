@@ -29,6 +29,15 @@ typedef long long word_t;
 
 #define JRST_1 ((word_t)(0254000000001LL))
 
+struct FILE;
+struct pdp10_file;
+struct pdp10_memory;
+
+struct file_format {
+  const char *name;
+  void (*read) (FILE *f, struct pdp10_memory *memory, int cpu);
+};
+
 struct word_format {
   const char *name;
   word_t (*get_word) (FILE *);
@@ -41,9 +50,11 @@ enum { SYMBOLS_NONE, SYMBOLS_DDT, SYMBOLS_ALL };
 
 enum { START_FILE = 1LL << 36, START_RECORD = 1LL << 37 };
 
-struct FILE;
-struct pdp10_file;
-struct pdp10_memory;
+extern struct file_format *input_file_format;
+extern struct file_format dmp_file_format;
+extern struct file_format pdump_file_format;
+extern struct file_format raw_file_format;
+extern struct file_format sblk_file_format;
 
 extern struct word_format *input_word_format;
 extern struct word_format *output_word_format;
@@ -58,6 +69,9 @@ extern struct word_format tape_word_format;
 extern struct word_format tape7_word_format;
 extern struct word_format x_word_format;
 
+extern void     usage_file_format (void);
+extern int      parse_input_file_format (const char *);
+extern void     guess_input_file_format (FILE *);
 extern void     usage_word_format (void);
 extern int      parse_input_word_format (const char *);
 extern int      parse_output_word_format (const char *);
@@ -74,11 +88,6 @@ extern void     write_7track_record (FILE *f, word_t *buffer, int);
 extern void     write_9track_record (FILE *f, word_t *buffer, int);
 extern word_t	get_core_word (FILE *f);
 extern void	write_core_word (FILE *f, word_t word);
-typedef void    (*reader_t) (FILE *f, struct pdp10_memory *memory, int cpu);
-extern void	read_dmp (FILE *f, struct pdp10_memory *memory, int cpu);
-extern void	read_pdump (FILE *f, struct pdp10_memory *memory, int cpu);
-extern void	read_sblk (FILE *f, struct pdp10_memory *memory, int cpu);
-extern void	read_raw (FILE *f, struct pdp10_memory *memory, int cpu);
 extern void	read_raw_at (FILE *f, struct pdp10_memory *memory,
 			     int address);
 extern void	sblk_info (FILE *f, word_t word0, int cpu_model);
