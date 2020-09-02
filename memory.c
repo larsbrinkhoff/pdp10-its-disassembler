@@ -53,7 +53,7 @@ init_memory (struct pdp10_memory *memory)
 }
 
 int
-add_memory (struct pdp10_memory *memory, int address, int length, void *data)
+add_memory (struct pdp10_memory *memory, int address, int length, word_t *data)
 {
   struct pdp10_area *area;
 
@@ -108,15 +108,7 @@ get_address (struct pdp10_memory *memory)
 static word_t
 getword (struct pdp10_area *area, int address)
 {
-  int offset = 5 * (address - area->start);
-  word_t word;
-
-  word =  (word_t)area->data[offset++] << 32;
-  word |= (word_t)area->data[offset++] << 24;
-  word |= (word_t)area->data[offset++] << 16;
-  word |= (word_t)area->data[offset++] <<  8;
-  word |= (word_t)area->data[offset++] <<  0;
-  return word;
+  return area->data[address - area->start];
 }
 
 word_t

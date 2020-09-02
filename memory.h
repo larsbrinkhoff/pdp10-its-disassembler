@@ -20,9 +20,9 @@
 
 struct pdp10_area
 {
-  int		start;
-  int		end;
-  unsigned char *data;
+  int	  start;
+  int	  end;
+  word_t *data;
 };
 
 struct pdp10_memory
@@ -35,7 +35,7 @@ struct pdp10_memory
 
 extern void	init_memory (struct pdp10_memory *memory);
 extern int	add_memory (struct pdp10_memory *memory,
-			    int address, int length, void *data);
+			    int address, int length, word_t *data);
 extern int	set_address (struct pdp10_memory *memory, int address);
 extern int	get_address (struct pdp10_memory *memory);
 extern word_t	get_next_word (struct pdp10_memory *memory);

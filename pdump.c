@@ -86,12 +86,12 @@ read_pdump (FILE *f, struct pdp10_memory *memory, int cpu_model)
 
   for (i = 0; i < 256; i++)
     {
-      char *data, *ptr;
+      word_t *data, *ptr;
 
       if (!read_page(page_map[i]))
 	continue;
 
-      data = malloc (5 * ITS_PAGESIZE);
+      data = malloc (ITS_PAGESIZE * sizeof *data);
       if (data == NULL)
 	{
 	  fprintf (stderr, "out of memory\n");
@@ -101,12 +101,7 @@ read_pdump (FILE *f, struct pdp10_memory *memory, int cpu_model)
       ptr = data;
       for (j = 0; j < ITS_PAGESIZE; j++)
 	{
-	  word = get_word (f);
-	  *ptr++ = (word >> 32) & 0x0f;
-	  *ptr++ = (word >> 24) & 0xff;
-	  *ptr++ = (word >> 16) & 0xff;
-	  *ptr++ = (word >>  8) & 0xff;
-	  *ptr++ = (word >>  0) & 0xff;
+	  *ptr++ = get_word (f);
 	}
 
       add_memory (memory, ITS_PAGESIZE * i, ITS_PAGESIZE, data);
