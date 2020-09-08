@@ -38,8 +38,10 @@ the Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307
  * to specify the operation.
  *
  * PDP10_A_UNUSED means that A is unused and should be set to zero.
+ * When disassembled, the field will be ignored unless it's non-zero.
  *
  * PDP10_E_UNUSED means that X, I, and Y are unused and should be set to zero.
+ * When disassembled, Y will be ignored unless it's non-zero.
  *
  * PDP10_IO means that the instruction format looks like this:
  *
