@@ -175,7 +175,7 @@ sort_by (sort_mode_t wanted)
 }
 
 const struct symbol *
-get_symbol_by_value (word_t value)
+get_symbol_by_value (word_t value, int hint)
 {
   struct symbol key = { NULL, value, -1, 0 };
   struct symbol *first;
