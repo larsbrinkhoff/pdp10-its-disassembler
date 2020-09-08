@@ -23,6 +23,18 @@
 #define SYMBOL_HALFKILLED   (1 << 1)
 #define SYMBOL_KILLED       (1 << 2)
 
+/* Hints for what kind of symbol is desired. */
+typedef enum {
+  HINT_OPCODE,		/* Opcode field. */
+  HINT_DEVICE,		/* IOT device field. */
+  HINT_ACCUMULATOR,	/* Accumulator or index field. */
+  HINT_CHANNEL,		/* ITS I/O channel. */
+  HINT_NUMBER,		/* Plain number. */
+  HINT_XCTR,		/* XCTR instruction. */
+  HINT_ADDRESS,		/* Address field. */
+  HINT_IMMEDIATE	/* Address as immediate. */
+} hint_t;
+
 struct symbol
 {
   const char *name;
@@ -33,6 +45,6 @@ struct symbol
 };
 
 extern void add_symbol (const char *name, word_t value, int flags);
-extern const struct symbol *get_symbol_by_value (word_t value);
+extern const struct symbol *get_symbol_by_value (word_t value, int hint);
 
 #endif

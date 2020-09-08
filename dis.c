@@ -255,7 +255,7 @@ dis (struct pdp10_memory *memory, int cpu_model)
 }
 
 int
-print_val (const char *format, int field)
+print_val (const char *format, int field, int hint)
 {
   const char *p;
   const struct symbol *sym;
@@ -267,7 +267,7 @@ print_val (const char *format, int field)
 	{
 	  p++; /* assume %o */
 
-	  sym = get_symbol_by_value (field);
+	  sym = get_symbol_by_value (field, hint);
 	  if (sym == NULL)
 	    n += printf ("%o", field);
 	  else
@@ -292,7 +292,7 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
   char ch[5];
   int i, n;
 
-  sym = get_symbol_by_value (address);
+  sym = get_symbol_by_value (address, HINT_ADDRESS);
   if (sym != NULL)
     printf ("%s:\n", sym->name);
 
@@ -311,7 +311,7 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
       if ((word >> 18) == 0 && Y (word) != 0)
 	{
 	  /* If no opcode found and left half is 0, print as symbol. */
-	  sym = get_symbol_by_value (Y (word));
+	  sym = get_symbol_by_value (Y (word), HINT_ADDRESS);
 	  if (sym != NULL)
 	    n += printf ("%s", sym->name);
 	}
@@ -323,7 +323,7 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
       if (oper)
 	{
 	  n += printf ("%-8s ", oper->name);
-	  n += print_val ("%o,", A (word));
+	  n += print_val ("%o,", A (word), 0);
 	}
     }
 #if 1
@@ -339,9 +339,9 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 	{
 	  if (I (word))
 	    n += printf ("@");
-	  n += print_val ("%o", Y (word));
+	  n += print_val ("%o", Y (word), HINT_ADDRESS);
 	  if (X (word))
-	    n += print_val ("(%o)", X (word));
+	    n += print_val ("(%o)", X (word), HINT_ACCUMULATOR);
 	}
       else
 	{
@@ -376,12 +376,12 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 	  if (dev != NULL)
 	    n += printf ("%s, ", dev->name);
 	  else
-	    n += print_val ("%o, ", DEVICE (word));
+	    n += print_val ("%o, ", DEVICE (word), HINT_DEVICE);
 	}
       else if (!(op->type & PDP10_A_OPCODE))
 	{
 	  if (A (word) != 0 || !(op->type & PDP10_A_UNUSED))
-	    n += print_val ("%o, ", A (word));
+	    n += print_val ("%o, ", A (word), HINT_ACCUMULATOR);
 	}
 
       if (E (word) != 0 || !(op->type & PDP10_E_UNUSED))
@@ -391,9 +391,9 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 	  if (Y (word) != 0 ||
 	      (I (word) != 0 && X (word) == 0) ||
 	      (!(op->type & PDP10_E_UNUSED) && X (word) == 0))
-	    n += print_val ("%o", Y (word));
+	    n += print_val ("%o", Y (word), HINT_ADDRESS);
 	  if (X (word))
-	    n += print_val ("(%o)", X (word));
+	    n += print_val ("(%o)", X (word), HINT_ACCUMULATOR);
 	}
     }
 
