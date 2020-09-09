@@ -174,13 +174,76 @@ sort_by (sort_mode_t wanted)
     }
 }
 
+static const struct symbol *
+hint_accumulator (const struct symbol *first, word_t value)
+{
+  const struct symbol *symbol = first;
+
+  /* Look for a single-letter symbol that matches. */
+  do
+    {
+      if (strlen (symbol->name) == 1)
+	return symbol;
+      symbol++;
+    }
+  while (symbol < symbols + num_symbols && symbol->value == value);
+
+  /* Failing that, try two-letter symbols. */
+  symbol = first;
+  do
+    {
+      if (strlen (symbol->name) == 2)
+	return symbol;
+      symbol++;
+    }
+  while (symbol < symbols + num_symbols && symbol->value == value);
+
+  return first;
+}
+
+static const struct symbol *
+hint_address (const struct symbol *first, word_t value)
+{
+  if (value < 020)
+    return hint_accumulator (first, value);
+
+  return first;
+}
+
+static const struct symbol *
+hint_channel (const struct symbol *first, word_t value)
+{
+  const struct symbol *symbol = first;
+
+  /* Look for a symbol containing CH. */
+  do
+    {
+      if (strstr (symbol->name, "ch"))
+	return symbol;
+      symbol++;
+    }
+  while (symbol < symbols + num_symbols && symbol->value == value);
+
+  /* Second try, symbols that end with C. */
+  symbol = first;
+  do
+    {
+      if (symbol->name[strlen (symbol->name) - 1] == 'c')
+	return symbol;
+      symbol++;
+    }
+  while (symbol < symbols + num_symbols && symbol->value == value);
+
+  return first;
+}
+
 const struct symbol *
 get_symbol_by_value (word_t value, int hint)
 {
   struct symbol key = { NULL, value, -1, 0 };
   struct symbol *first;
 
-  if (symbols_mode == SYMBOLS_NONE)
+  if (symbols_mode == SYMBOLS_NONE || hint == HINT_NUMBER)
     return NULL;
 
   sort_by (SORT_VALUE);
@@ -194,9 +257,16 @@ get_symbol_by_value (word_t value, int hint)
   while (first > symbols && (first - 1)->value == value)
     first--;
 
+  switch (hint)
+    {
+    case HINT_ACCUMULATOR: first = hint_accumulator (first, value); break;
+    case HINT_CHANNEL:     first = hint_channel (first, value); break;
+    case HINT_ADDRESS:     first = hint_address (first, value); break;
+    }
+
   if (symbols_mode == SYMBOLS_DDT)
     {
-      if (first->flags & (SYMBOL_KILLED | SYMBOL_HALFKILLED))
+      if (first != NULL && first->flags & (SYMBOL_KILLED | SYMBOL_HALFKILLED))
 	return NULL;
     }
 
