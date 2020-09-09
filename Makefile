@@ -127,7 +127,7 @@ check: \
 
 samples/ts.obs = -Wits
 samples/ts.ksfedr = -Wits
-samples/ts.name = -Wits
+samples/ts.name = -Wits -Sall
 samples/ts.srccom = -Wits
 samples/atsign.tcp = -Wits
 samples/macro.low = -r -Wascii
