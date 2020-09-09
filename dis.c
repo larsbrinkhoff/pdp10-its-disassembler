@@ -81,7 +81,7 @@ static struct its_oper opers[] =
   { ".dword",	0000030 },
   { ".dstep",	0000031 },
 #else
-  { ".rd760",	0000030 },
+  { ".rd760",	0000030 }, /* Also .mspace. */
   { ".wr760",	0000031 },
 #endif
   { ".gensym",	0000032 },
@@ -115,8 +115,13 @@ static struct its_oper opers[] =
   { ".iotlsr",	0000051 },
   { ".rsysi",	0000052 },
   { ".supset",	0000053 },
+#if 1
   { ".pdtime",	0000054 },
   { ".armrs",	0000055 },
+#else
+  { ".orgi",	0000054 },
+  { ".orgo",	0000055 },
+#endif
   { ".ublat",	0000056 },
   { ".iopdl",	0000057 },
   { ".ityic",	0000060 },
