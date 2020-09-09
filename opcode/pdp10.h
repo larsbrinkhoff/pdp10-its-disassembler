@@ -120,6 +120,7 @@ struct pdp10_instruction
   int opcode;
   int type;
   int model;
+  int hint;
 };
 
 struct pdp10_device

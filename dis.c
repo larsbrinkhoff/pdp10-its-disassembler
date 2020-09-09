@@ -294,7 +294,7 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 {
   const struct symbol *sym;
   const struct pdp10_instruction *op;
-  int printable;
+  int printable, hint;
   char ch[5];
   int i, n;
 
@@ -388,7 +388,10 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
       else if (!(op->type & PDP10_A_OPCODE))
 	{
 	  if (A (word) != 0 || !(op->type & PDP10_A_UNUSED))
-	    n += print_val ("%o, ", A (word), HINT_ACCUMULATOR);
+	    {
+	      hint = op->hint ? op->hint : HINT_ACCUMULATOR;
+	      n += print_val ("%o, ", A (word), hint);
+	    }
 	}
 
       if (E (word) != 0 || !(op->type & PDP10_E_UNUSED))
