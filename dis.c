@@ -42,120 +42,121 @@ struct its_oper
 {
   const char *name;
   int opcode;
+  int hint;
 };
 
 static struct its_oper opers[] =
 {
-  { ".ityi",	0000001 },
-  { ".listen",	0000002 },
-  { ".sleep",	0000003 },
-  { ".setmsk",	0000004 },
-  { ".setm2",	0000005 },
+  { ".ityi",	0000001, HINT_ACCUMULATOR },
+  { ".listen",	0000002, HINT_ACCUMULATOR },
+  { ".sleep",	0000003, HINT_ACCUMULATOR },
+  { ".setmsk",	0000004, HINT_ACCUMULATOR },
+  { ".setm2",	0000005, HINT_ACCUMULATOR },
 #if 1
-  { ".demon",	0000006 },
+  { ".demon",	0000006, HINT_ACCUMULATOR },
 #else
-  { ".login",	0000006 },
+  { ".login",	0000006, HINT_ACCUMULATOR },
 #endif
-  { ".close",	0000007 },
-  { ".uclose",	0000010 },
-  { ".atty",	0000011 },
-  { ".dtty",	0000012 },
-  { ".iopush",	0000013 },
-  { ".iopop",	0000014 },
-  { ".dclose",	0000015 },
-  { ".dstop",	0000016 },
-  { ".rdtime",	0000017 },
-  { ".rdsw",	0000020 },
-  { ".gun",	0000021 },
-  { ".udismt",	0000022 },
-  { ".getsys",	0000023 },
+  { ".close",	0000007, HINT_CHANNEL },
+  { ".uclose",	0000010, HINT_CHANNEL },
+  { ".atty",	0000011, HINT_CHANNEL },
+  { ".dtty",	0000012, HINT_ACCUMULATOR },
+  { ".iopush",	0000013, HINT_ACCUMULATOR },
+  { ".iopop",	0000014, HINT_CHANNEL },
+  { ".dclose",	0000015, HINT_ACCUMULATOR },
+  { ".dstop",	0000016, HINT_ACCUMULATOR },
+  { ".rdtime",	0000017, HINT_ACCUMULATOR },
+  { ".rdsw",	0000020, HINT_ACCUMULATOR },
+  { ".gun",	0000021, HINT_ACCUMULATOR },
+  { ".udismt",	0000022, HINT_ACCUMULATOR },
+  { ".getsys",	0000023, HINT_ACCUMULATOR },
 #if 1
-  { ".ipdp",	0000024 },
+  { ".ipdp",	0000024, HINT_CHANNEL },
 #else
-  { ".rd500",	0000024 },
+  { ".rd500",	0000024, HINT_ACCUMULATOR },
 #endif
-  { ".getloc",	0000025 },
-  { ".setloc",	0000026 },
-  { ".disown",	0000027 },
+  { ".getloc",	0000025, HINT_ACCUMULATOR },
+  { ".setloc",	0000026, HINT_ACCUMULATOR },
+  { ".disown",	0000027, HINT_CHANNEL },
 #if 1
-  { ".dword",	0000030 },
-  { ".dstep",	0000031 },
+  { ".dword",	0000030, HINT_ACCUMULATOR },
+  { ".dstep",	0000031, HINT_ACCUMULATOR },
 #else
-  { ".rd760",	0000030 }, /* Also .mspace. */
-  { ".wr760",	0000031 },
+  { ".rd760",	0000030, HINT_ACCUMULATOR }, /* Also .mspace. */
+  { ".wr760",	0000031, HINT_ACCUMULATOR },
 #endif
-  { ".gensym",	0000032 },
-  { ".logout",	0000033 },
+  { ".gensym",	0000032, HINT_ACCUMULATOR },
+  { ".logout",	0000033, HINT_NUMBER },
 #if 1
-  { ".realt",	0000034 },
+  { ".realt",	0000034, HINT_ACCUMULATOR },
 #else
-  { ".gsnam",	0000034 },
+  { ".gsnam",	0000034, HINT_ACCUMULATOR },
 #endif
-  { ".wsname",	0000035 },
-  { ".upiset",	0000036 },
-  { ".reset",	0000037 },
-  { ".armove",	0000040 },
+  { ".wsname",	0000035, HINT_ACCUMULATOR },
+  { ".upiset",	0000036, HINT_ACCUMULATOR },
+  { ".reset",	0000037, HINT_CHANNEL },
+  { ".armove",	0000040, HINT_ACCUMULATOR },
 #if 1
-  { ".dcontin",	0000041 },
-  { ".cblk",	0000042 },
+  { ".dcontin",	0000041, HINT_ACCUMULATOR },
+  { ".cblk",	0000042, HINT_ACCUMULATOR },
 #else
-  { ".wmar",	0000041 },
-  { ".rrtim",	0000042 },
+  { ".wmar",	0000041, HINT_ACCUMULATOR },
+  { ".rrtim",	0000042, HINT_ACCUMULATOR },
 #endif
-  { ".assign",	0000043 },
-  { ".design",	0000044 },
-  { ".rtime",	0000045 },
-  { ".rdate",	0000046 },
+  { ".assign",	0000043, HINT_ACCUMULATOR },
+  { ".design",	0000044, HINT_ACCUMULATOR },
+  { ".rtime",	0000045, HINT_ACCUMULATOR },
+  { ".rdate",	0000046, HINT_ACCUMULATOR },
 #if 1
-  { ".hang",	0000047 },
+  { ".hang",	0000047, HINT_ACCUMULATOR },
 #else
-  { ".rd710",	0000047 },
+  { ".rd710",	0000047, HINT_ACCUMULATOR },
 #endif
-  { ".eofc",	0000050 },
-  { ".iotlsr",	0000051 },
-  { ".rsysi",	0000052 },
-  { ".supset",	0000053 },
+  { ".eofc",	0000050, HINT_ACCUMULATOR },
+  { ".iotlsr",	0000051, HINT_ACCUMULATOR },
+  { ".rsysi",	0000052, HINT_ACCUMULATOR },
+  { ".supset",	0000053, HINT_ACCUMULATOR },
 #if 1
-  { ".pdtime",	0000054 },
-  { ".armrs",	0000055 },
+  { ".pdtime",	0000054, HINT_ACCUMULATOR },
+  { ".armrs",	0000055, HINT_ACCUMULATOR },
 #else
-  { ".orgi",	0000054 },
-  { ".orgo",	0000055 },
+  { ".orgi",	0000054, HINT_ACCUMULATOR },
+  { ".orgo",	0000055, HINT_ACCUMULATOR },
 #endif
-  { ".ublat",	0000056 },
-  { ".iopdl",	0000057 },
-  { ".ityic",	0000060 },
-  { ".master",	0000061 },
-  { ".vstst",	0000062 },
+  { ".ublat",	0000056, HINT_ACCUMULATOR },
+  { ".iopdl",	0000057, HINT_ACCUMULATOR },
+  { ".ityic",	0000060, HINT_ACCUMULATOR },
+  { ".master",	0000061, HINT_ACCUMULATOR },
+  { ".vstst",	0000062, HINT_ACCUMULATOR },
 #if 1
-  { ".netac",	0000063 },
-  { ".nets",	0000064 },
-  { ".revive",	0000065 },
+  { ".netac",	0000063, HINT_CHANNEL },
+  { ".nets",	0000064, HINT_CHANNEL },
+  { ".revive",	0000065, HINT_ACCUMULATOR },
 #else
-  { ".dial",	0000063 },
-  { ".dialw",	0000064 },
-  { ".hangu",	0000065 },
+  { ".dial",	0000063, HINT_ACCUMULATOR },
+  { ".dialw",	0000064, HINT_NUMBER },
+  { ".hangu",	0000065, HINT_NUMBER },
 #endif
-  { ".dietim",	0000066 },
-  { ".shutdn",	0000067 },
-  { ".armoff",	0000070 },
-  { ".ndis",	0000071 },
-  { ".feed",	0000072 },
-  { ".eval",	0000073 },
-  { ".redef",	0000074 },
-  { ".ifset",	0000075 },
-  { ".utnam",	0000076 },
-  { ".uinit",	0000077 },
-  { ".ryear",	0000100 },
-  { ".rlpdtm",	0000101 },
-  { ".rdatim",	0000102 },
-  { ".rchst",	0000103 },
-  { ".rbtc",	0000104 },
-  { ".dmpch",	0000105 },
-  { ".swap",	0000106 },
-  { ".mtape",	0000107 },
-  { ".gennum",	0000110 },
-  { ".netint",	0000111 },
+  { ".dietim",	0000066, HINT_ACCUMULATOR },
+  { ".shutdn",	0000067, HINT_ACCUMULATOR },
+  { ".armoff",	0000070, HINT_ACCUMULATOR },
+  { ".ndis",	0000071, HINT_ACCUMULATOR },
+  { ".feed",	0000072, HINT_CHANNEL },
+  { ".eval",	0000073, HINT_ACCUMULATOR },
+  { ".redef",	0000074, HINT_ACCUMULATOR },
+  { ".ifset",	0000075, HINT_ACCUMULATOR },
+  { ".utnam",	0000076, HINT_ACCUMULATOR },
+  { ".uinit",	0000077, HINT_ACCUMULATOR },
+  { ".ryear",	0000100, HINT_ACCUMULATOR },
+  { ".rlpdtm",	0000101, HINT_ACCUMULATOR },
+  { ".rdatim",	0000102, HINT_ACCUMULATOR },
+  { ".rchst",	0000103, HINT_ACCUMULATOR },
+  { ".rbtc",	0000104, HINT_ACCUMULATOR },
+  { ".dmpch",	0000105, HINT_ACCUMULATOR },
+  { ".swap",	0000106, HINT_ACCUMULATOR },
+  { ".mtape",	0000107, HINT_ACCUMULATOR },
+  { ".gennum",	0000110, HINT_ACCUMULATOR },
+  { ".netint",	0000111, HINT_CHANNEL },
 };
 
 static int
@@ -328,7 +329,8 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
       if (oper)
 	{
 	  n += printf ("%-8s ", oper->name);
-	  n += print_val ("%o,", A (word), 0);
+	  if (oper->hint == HINT_CHANNEL || A (word) != 0)
+	    n += print_val ("%o,", A (word), oper->hint);
 	}
     }
 #if 1
