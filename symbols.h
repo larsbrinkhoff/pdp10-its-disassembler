@@ -32,6 +32,7 @@ typedef enum {
   HINT_NUMBER,		/* Plain number. */
   HINT_XCTR,		/* XCTR instruction. */
   HINT_ADDRESS,		/* Address field. */
+  HINT_OFFSET,		/* Address used with indexing. */
   HINT_IMMEDIATE	/* Address as immediate. */
 } hint_t;
 

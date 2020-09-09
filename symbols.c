@@ -211,6 +211,23 @@ hint_address (const struct symbol *first, word_t value)
 }
 
 static const struct symbol *
+hint_offset (const struct symbol *first, word_t value)
+{
+  const struct symbol *symbol = first;
+
+  /* Look for a symbol with more than one letter. */
+  do
+    {
+      if (strlen (symbol->name) > 1)
+	return symbol;
+      symbol++;
+    }
+  while (symbol < symbols + num_symbols && symbol->value == value);
+
+  return first;
+}
+
+static const struct symbol *
 hint_channel (const struct symbol *first, word_t value)
 {
   const struct symbol *symbol = first;
@@ -241,7 +258,7 @@ const struct symbol *
 get_symbol_by_value (word_t value, int hint)
 {
   struct symbol key = { NULL, value, -1, 0 };
-  struct symbol *first;
+  const struct symbol *first;
 
   if (symbols_mode == SYMBOLS_NONE || hint == HINT_NUMBER)
     return NULL;
@@ -262,6 +279,7 @@ get_symbol_by_value (word_t value, int hint)
     case HINT_ACCUMULATOR: first = hint_accumulator (first, value); break;
     case HINT_CHANNEL:     first = hint_channel (first, value); break;
     case HINT_ADDRESS:     first = hint_address (first, value); break;
+    case HINT_OFFSET:      first = hint_offset (first, value); break;
     }
 
   if (symbols_mode == SYMBOLS_DDT)
