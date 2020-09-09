@@ -398,7 +398,10 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 	{
 	  if (I (word))
 	    n += printf ("@");
-	  if (Y (word) != 0 ||
+
+	  if (Y (word) != 0 && X (word) != 0)
+	    n += print_val ("%o", Y (word), HINT_OFFSET);
+	  else if (Y (word) != 0 ||
 	      (I (word) != 0 && X (word) == 0) ||
 	      (!(op->type & PDP10_E_UNUSED) && X (word) == 0))
 	    n += print_val ("%o", Y (word), HINT_ADDRESS);
