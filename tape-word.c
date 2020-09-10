@@ -122,6 +122,49 @@ int get_9track_record (FILE *f, word_t **buffer)
   return reclen / 5;
 }
 
+int get_9track_rec (FILE *f, char **buffer)
+{
+  int i, x, reclen;
+  char *p;
+
+  reclen = get_reclen (f);
+  if (reclen == 0)
+    return 0;
+  
+  *buffer = malloc (reclen);
+  if (*buffer == NULL)
+    {
+      fprintf (stderr, "Out of memory.\n");
+      exit (1);
+    }
+
+  for (i = 0, p = *buffer; i < reclen; i++)
+    *p++ = get_byte (f);
+
+  /* First try the E-11 tape format. */
+  x = get_reclen (f);
+  if (x != reclen)
+    {
+      /* Next try the SIMH tape format. */
+      if (reclen & 1)
+	x = (x >> 8) + (get_byte (f) << 24);
+
+      if (x != reclen)
+	{
+	  fprintf (stderr, "Error in tape image format.\n"
+		   "%d != %d\n", reclen, x);
+	  exit (1);
+	}
+    }
+
+  if (reclen == 0)
+    {
+      free (*buffer);
+    }
+
+  return reclen;
+}
+
 void write_7track_record (FILE *f, word_t *buffer, int n)
 {
   int i;
