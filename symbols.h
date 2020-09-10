@@ -33,7 +33,8 @@ typedef enum {
   HINT_XCTR,		/* XCTR instruction. */
   HINT_ADDRESS,		/* Address field. */
   HINT_OFFSET,		/* Address used with indexing. */
-  HINT_IMMEDIATE	/* Address as immediate. */
+  HINT_IMMEDIATE,	/* Address as immediate. */
+  HINT_FLOAT		/* Address as immediate float. */
 } hint_t;
 
 struct symbol

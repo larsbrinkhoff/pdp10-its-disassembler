@@ -288,6 +288,35 @@ print_val (const char *format, int field, int hint)
   return n;
 }
 
+static double immediate_float (word_t x)
+{
+  int sign = x >> 17;
+  int exponent, fraction;
+  double exp = 1.0, y = 2.0;
+  int i;
+
+  if (sign)
+    {
+      x = -(x << 18);
+      x = (x >> 18) & 0777777LL;
+    }
+
+  exponent = (x >> 9) & 0377;
+  fraction = x & 0777;
+
+  exponent -= 0211;
+  if (exponent < 0)
+    {
+      exponent = -exponent;
+      y = 0.5;
+    }
+
+  for (i = 0; i < exponent; i++)
+    exp *= y;
+
+  return (sign ? -1.0 : 1.0) * (double)fraction * exp;
+}
+
 void
 disassemble_word (struct pdp10_memory *memory, word_t word,
 		  int address, int cpu_model)
@@ -399,7 +428,15 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 	  if (I (word))
 	    n += printf ("@");
 
-	  if (Y (word) != 0 && X (word) != 0)
+	  if (op->addr_hint == HINT_FLOAT && X (word) == 0)
+	    {
+	      const struct symbol *sym = get_symbol_by_value (Y (word), hint);
+	      if (sym == NULL)
+		n += printf ("(%f)", immediate_float (Y (word)));
+	      else
+		n += printf ("%s", sym->name);
+	    }
+	  else if (Y (word) != 0 && X (word) != 0)
 	    n += print_val ("%o", Y (word), HINT_OFFSET);
 	  else if (op->addr_hint != 0 && X (word) == 0)
 	    n += print_val ("%o", Y (word), op->addr_hint);
