@@ -280,6 +280,7 @@ get_symbol_by_value (word_t value, int hint)
     case HINT_CHANNEL:     first = hint_channel (first, value); break;
     case HINT_ADDRESS:     first = hint_address (first, value); break;
     case HINT_OFFSET:      first = hint_offset (first, value); break;
+    case HINT_IMMEDIATE:   first = hint_offset (first, value); break;
     }
 
   if (symbols_mode == SYMBOLS_DDT)

@@ -389,7 +389,7 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 	{
 	  if (A (word) != 0 || !(op->type & PDP10_A_UNUSED))
 	    {
-	      hint = op->hint ? op->hint : HINT_ACCUMULATOR;
+	      hint = op->ac_hint ? op->ac_hint : HINT_ACCUMULATOR;
 	      n += print_val ("%o, ", A (word), hint);
 	    }
 	}
@@ -401,10 +401,13 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 
 	  if (Y (word) != 0 && X (word) != 0)
 	    n += print_val ("%o", Y (word), HINT_OFFSET);
+	  else if (op->addr_hint != 0 && X (word) == 0)
+	    n += print_val ("%o", Y (word), op->addr_hint);
 	  else if (Y (word) != 0 ||
-	      (I (word) != 0 && X (word) == 0) ||
-	      (!(op->type & PDP10_E_UNUSED) && X (word) == 0))
+		   (I (word) != 0 && X (word) == 0) ||
+		   (!(op->type & PDP10_E_UNUSED) && X (word) == 0))
 	    n += print_val ("%o", Y (word), HINT_ADDRESS);
+
 	  if (X (word))
 	    n += print_val ("(%o)", X (word), HINT_ACCUMULATOR);
 	}
