@@ -148,8 +148,8 @@ write_hri (FILE *f, const char *file)
       *p++ = word;
     }
 
-  write_record (stdout, buffer, p - buffer);
-  write_record (stdout, buffer, 0);
+  write_record (f, buffer, p - buffer);
+  write_record (f, buffer, 0);
 }
 
 static void
