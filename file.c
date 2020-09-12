@@ -23,6 +23,7 @@ struct file_format *input_file_format = NULL;
 
 static struct file_format *file_formats[] = {
   &dmp_file_format,
+  &mdl_file_format,
   &pdump_file_format,
   &raw_file_format,
   &sblk_file_format,

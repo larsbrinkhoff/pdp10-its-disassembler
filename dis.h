@@ -55,6 +55,7 @@ enum { START_FILE = 1LL << 36, START_RECORD = 1LL << 37 };
 
 extern struct file_format *input_file_format;
 extern struct file_format dmp_file_format;
+extern struct file_format mdl_file_format;
 extern struct file_format pdump_file_format;
 extern struct file_format raw_file_format;
 extern struct file_format sblk_file_format;
