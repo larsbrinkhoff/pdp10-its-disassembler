@@ -1,7 +1,8 @@
 
 CFLAGS = -g -W -Wall
 
-FILES =  sblk-file.o pdump-file.o dmp-file.o raw-file.o shr-file.o
+FILES =  sblk-file.o pdump-file.o dmp-file.o raw-file.o shr-file.o \
+	 mdl-file.o
 
 WORDS =  bin-word.o its-word.o x-word.o dta-word.o aa-word.o pt-word.o core-word.o tape-word.o cadr-word.o
 
