@@ -334,7 +334,6 @@ dmp_info (struct pdp10_memory *memory, int cpu_model)
   p = jbsym & 0777777;
   if (jbsym != -1 && p != 0 && get_word_at (memory, p) != -1)
     {
-      char str[7];
       int i;
       int length = -((jbsym >> 18) | ((-1) & ~0777777));
 
@@ -342,19 +341,9 @@ dmp_info (struct pdp10_memory *memory, int cpu_model)
 
       for (i = 0; i < length / 2; i++)
 	{
-	  word_t x = get_word_at (memory, p++);
-	  squoze_to_ascii (x, str);
-	  printf ("    Symbol %s = ", str);
-	  printf ("%llo   (", get_word_at (memory, p++));
-	  if (x & SYHKL)
-	    printf (" halfkilled");
-	  if (x & SYKIL)
-	    printf (" killed");
-	  if (x & SYLCL)
-	    printf (" local");
-	  if (x & SYGBL)
-	    printf (" global");
-	  printf (")\n");
+	  word_t word1 = get_word_at (memory, p++);
+	  word_t word2 = get_word_at (memory, p++);
+	  print_symbol (word1, word2);
 	}
     }
 }
