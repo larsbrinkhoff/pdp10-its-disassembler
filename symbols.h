@@ -1,5 +1,5 @@
-/* Copyright (C) 2018 Lars Brinkhoff <lars@nocrew.org>
-   Copyright (C) 2018, 2019 Adam Sampson <ats@offog.org>
+/* Copyright (C) 2018, 2020 Lars Brinkhoff <lars@nocrew.org>
+   Copyright (C) 2018, 2019, 2020 Adam Sampson <ats@offog.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -47,6 +47,8 @@ struct symbol
 };
 
 extern void add_symbol (const char *name, word_t value, int flags);
+extern const struct symbol *get_symbol_by_name (const char *name);
 extern const struct symbol *get_symbol_by_value (word_t value, int hint);
+extern word_t get_symbol_value (const char *name);
 
 #endif

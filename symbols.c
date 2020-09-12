@@ -1,5 +1,5 @@
-/* Copyright (C) 2018 Lars Brinkhoff <lars@nocrew.org>
-   Copyright (C) 2018, 2019 Adam Sampson <ats@offog.org>
+/* Copyright (C) 2018, 2020 Lars Brinkhoff <lars@nocrew.org>
+   Copyright (C) 2018, 2019, 2020 Adam Sampson <ats@offog.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -290,4 +290,34 @@ get_symbol_by_value (word_t value, int hint)
     }
 
   return first;
+}
+
+const struct symbol *
+get_symbol_by_name (const char *name)
+{
+  struct symbol key = { name, 0, -1, 0 };
+  const struct symbol *first;
+
+  sort_by (SORT_NAME);
+  first = bsearch (&key, symbols, num_symbols, sizeof *symbols,
+		   compare_name_search);
+
+  if (first == NULL)
+    return NULL;
+
+  /* Wind the pointer back to find the first symbol that matches. */
+  while (first > symbols && strcmp ((first - 1)->name, name) == 0)
+    first--;
+
+  return first;
+}
+
+word_t
+get_symbol_value (const char *name)
+{
+  const struct symbol *symbol = get_symbol_by_name (name);
+  if (symbol == NULL)
+    return -1;
+  else
+    return symbol->value;
 }
