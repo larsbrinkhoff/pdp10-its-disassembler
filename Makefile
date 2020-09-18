@@ -107,7 +107,9 @@ lodepng.c: lodepng/lodepng.cpp
 lodepng.h: lodepng/lodepng.h
 	cp $< $@
 
-tvpic: tvpic.o lodepng.h lodepng.o $(OBJS) libwords.a
+tvpic.o: tvpic.c lodepng.h
+
+tvpic: tvpic.o lodepng.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
 test/test_write: test/test_write.o $(OBJS) libwords.a

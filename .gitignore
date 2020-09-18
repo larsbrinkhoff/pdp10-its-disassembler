@@ -26,3 +26,6 @@ libfiles.a
 libwords.a
 scrmbl
 unscr
+tvpic
+lodepng.h
+lodepng.c
