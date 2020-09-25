@@ -272,15 +272,17 @@ main (int argc, char **argv)
       /* word_t flags = buffer[i+2] >> 18; */
       word_t data = buffer[i+2] & RIGHT;
 
+      modified = buffer[i+3];
+      referenced = (buffer[i+4] & LEFT);
+
       word_t length;
-      if (old)
+      if (old) {
 	length = extract_old_file (filename, i, extract);
-      else
+	timestamps (filename, modified, referenced);
+      } else
 	length = buffer[data] - 3;
       fprintf (stderr, "%6lld  ", length);
 
-      modified = buffer[i+3];
-      referenced = (buffer[i+4] & LEFT);
       print_datime (stderr, modified);
       fputc ('(', stderr);
       print_date (stderr, referenced);
