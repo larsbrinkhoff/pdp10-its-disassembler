@@ -253,7 +253,7 @@ main (int argc, char **argv)
       fprintf (stderr, "Dumped: %llo\n", dumped);
     }
 
-  fprintf (stderr, "\nFile name       Words  Modified            Referenced    Byte\n");
+  fprintf (stderr, "\nFile name       Words  Modified             Referenced  Byte\n");
 
   int i;
   for (i = name_beg; i < 02000; i += 5)
@@ -284,9 +284,8 @@ main (int argc, char **argv)
       fprintf (stderr, "%6lld  ", length);
 
       print_datime (stderr, modified);
-      fputc ('(', stderr);
+      fputs ("  ", stderr);
       print_date (stderr, referenced);
-      fputc (')', stderr);
 
       if (!old)
 	{
