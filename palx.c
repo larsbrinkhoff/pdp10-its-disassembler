@@ -24,6 +24,7 @@ int image = 0;
 unsigned char memory[65536];
 int start = 65536, end = -1;
 void (*out_fn) (FILE *, FILE *, int, int, int);
+void (*symtab_fn) (FILE *, FILE *);
 
 static void
 usage (const char *x)
@@ -62,7 +63,7 @@ static void absolute_out (FILE *in, FILE *out, int first,
   pdp11_out (out, address);
 
   if (count == 6)
-    exit (0);
+    symtab_fn (in, stderr);
 
   for (i = 6; i < count; i++)
     {
@@ -85,7 +86,7 @@ static void image_out (FILE *in, FILE *out, int first, int address, int count)
       fprintf (stderr, "Image start: %06o\n", start);
       for (i = start; i < end; i++)
 	fputc (memory[i], out);
-      exit (0);
+      symtab_fn (in, stderr);
     }
 
   if (address < start)
@@ -116,14 +117,60 @@ block (FILE *in, FILE *out)
   out_fn (in, out, first, address, count);
 }
 
+static void
+symtab (FILE *in, FILE *out)
+{
+  char name[7];
+  word_t w;
+
+  /* Checksum of previous block. */
+  w = get_word (in);
+
+  /* Start of symbol table. */
+  w = get_word (in);
+  if (w != 2)
+    {
+      fprintf (stderr, "Bad symbol table.\n");
+      exit (1);
+    }
+
+  for (;;)
+    {
+      w = get_word (in);
+      if (w == -1 || w == 0)
+	exit (0);
+
+      sixbit_to_ascii (w, name);
+      w = get_word (in);
+      fprintf (out, "%06llo %6s (", w & 0777777, name);
+      w >>= 18;
+      if (w & 020000)
+	fprintf (out, "half killed ");
+      if (w & 001000)
+	fprintf (out, "label");
+      else if (w & 004000)
+	fprintf (out, "register");
+      else 
+	fprintf (out, "symbol");
+      fprintf (out, ")\n");
+    }
+}
+
+static void
+no_symtab (FILE *in, FILE *out)
+{
+  exit (0);
+}
+
 int
 main (int argc, char **argv)
 {
   int opt;
 
   input_word_format = &its_word_format;
+  symtab_fn = no_symtab;
 
-  while ((opt = getopt (argc, argv, "AIW:")) != -1)
+  while ((opt = getopt (argc, argv, "AISW:")) != -1)
     {
       switch (opt)
 	{
@@ -137,6 +184,9 @@ main (int argc, char **argv)
 	case 'I':
 	  image = 1;
 	  memset (memory, 0, sizeof memory);
+	  break;
+	case 'S':
+	  symtab_fn = symtab;
 	  break;
 	default:
 	  usage (argv[0]);
