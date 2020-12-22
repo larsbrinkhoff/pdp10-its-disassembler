@@ -21,6 +21,8 @@
 
 int absolute = 0;
 int image = 0;
+unsigned char memory[65536];
+int start = 65536, end = -1;
 void (*out_fn) (FILE *, FILE *, int, int, int);
 
 static void
@@ -74,25 +76,27 @@ static void absolute_out (FILE *in, FILE *out, int first,
 
 static void image_out (FILE *in, FILE *out, int first, int address, int count)
 {
-  static int last = -1;
   int i, c;
   
-  if (count == 6)
-    exit (0);
+  count -= 6;
 
-  if (last != -1)
+  if (count == 0)
     {
-      for (i = last; i < address; i++)
-	pdp11_out (out, 0);
+      fprintf (stderr, "Image start: %06o\n", start);
+      for (i = start; i < end; i++)
+	fputc (memory[i], out);
+      exit (0);
     }
 
-  last = address;
+  if (address < start)
+    start = address;
+  if (address + count > end)
+    end = address + count;
 
-  for (i = 6; i < count; i++)
+  for (i = 0; i < count; i++)
     {
       c = get_word (in);
-      fputc (c & 0377, out);
-      last++;
+      memory[address + i] = c;
     }
 
   c = get_word (in);
@@ -132,6 +136,7 @@ main (int argc, char **argv)
 	  break;
 	case 'I':
 	  image = 1;
+	  memset (memory, 0, sizeof memory);
 	  break;
 	default:
 	  usage (argv[0]);
