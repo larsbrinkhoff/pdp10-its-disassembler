@@ -114,6 +114,9 @@ block (FILE *in, FILE *out)
   count = pdp11_in (in);
   address = pdp11_in (in);
 
+  if (count == 6 && (address & 1) == 0)
+    fprintf (stderr, "Program start: %06o\n", address);
+
   out_fn (in, out, first, address, count);
 }
 
