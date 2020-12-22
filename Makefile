@@ -86,7 +86,7 @@ tracks: tracks.o $(OBJS) libwords.a
 harscntopbm: harscntopbm.o libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
-palx: palx.o libwords.a
+palx: palx.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
 kldcp: kldcp.o $(OBJS) das.o libwords.a
