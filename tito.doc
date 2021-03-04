@@ -1,0 +1,1105 @@
+                          TITO USER'S GUIDE
+                           SEPTEMBER, 1975
+
+                        AUTHOR:  Chuck Younger
+
+TITO USER'S GUIDE; SEPTEMBER 1975                                Page 0
+ENTERING TITO
+
+
+                            ENTERING TITO
+
+          From  Monitor  level  type  "R TITO"  to  execute  the  TITO
+          program.   TITO  asks  for  an initial device assignment and
+          density setting.  (TEX  asked  only  for  a  unit  no.   and
+          required  logical  assignment  of  devices to access devices
+          other than MTAn.)
+
+          The DEVICE NAME may be the name of any magtape device.
+
+          The  DENSITY SETTING   must   be   a   decimal   no.,   e.g.
+          6250,1600,800,556,  or  200 and will be accepted only if the
+          device is capable of using the specified density.
+
+
+          Example:  .R TITO(cr)
+
+                    TITO VERSION 15.0             (Printed by TITO)
+                    SYSTEM C35-P022/F             (Printed by TITO)
+                    DEVICE: MTA0(cr)
+                    TRACKS: 7                     (Printed by TITO)
+                    DENSITY (800,556,200): 800(cr)
+                    *
+                  (TITO is now ready to begin accepting commands)
+TITO USER'S GUIDE; SEPTEMBER 1975                               Page 1
+INITIALIZATION OF TAPES
+
+
+                       INITIALIZATION OF TAPES
+
+          With the exception of the CUT AFTER command, which  requires
+          confirmation, a tape may not be written on until it has been
+          INITIALIZED.    There   are   three   means   provided   for
+          initializing tape.  These are (a) the NEW TAPE command;  (b)
+          the SKIP WRITE n  command;   and  (c)  the  APPEND  command,
+          roughly equivalent to SKIP WRITE E.
+
+          The NEW TAPE command rewinds the tape to load point so  that
+          the  next STORE command will begin with saveset no.  1, file
+          no.  1.
+
+          The  SKIP WRITE n  command  skips  forward  n  savesets,  as
+          SKIP n,   but   in   addition,   the  tape  is  initialized.
+          WARNING:  SKIP WRITE  does  not  rewind  the   tape   before
+          scanning  forward.   A  SKIP WRITE  issued while not at load
+          point may not position to the  intended  saveset.   For  the
+          purpose of writing elsewhere than at the beginning or end of
+          the tape, the CUT command is to be prefered.
+
+          SKIP WRITE E  skips  to  logical  end  of  tape.   The  only
+          deficiency  in this command is the possibility that the tape
+          may be positioned past logical end of tape when the  command
+          is  issued.  The program reads tape in buffered mode and the
+          physical position of the tape is  unknown  to  the  program.
+          The  probable  result  is  that  TITO will print a tape read
+          error, and then skip to some previously defined logical  EOT
+          which is past the actual logical end of tape.  Files written
+          here will disappear the next time the tape is  scanned  from
+          load point, and will eventually be overwritten as more files
+          are added to the tape.
+
+          The APPEND command  does  what  SKIP WRITE E  ought  to  do.
+          Unless  TITO  is  certain  that  the  tape  is positioned at
+          logical end of  tape,  a  REWIND  is  automatically  issued,
+          followed by a SKIP WRITE E.
+TITO USER'S GUIDE; SEPTEMBER 1975                               Page 2
+NEW FEATURES
+
+
+                             NEW FEATURES
+
+          TITO features tape position numbers,  verification  of  file
+          checksums,  indirect  files,  translation of user names, and
+          ability to continue  to  drives  other  than  the  initially
+          assigned  tape  drive.   In  addition,  TITO  is  much  less
+          sensitive to tape format problems  than  TEX,  and  is  more
+          selective in specifying sets of files to be processed in the
+          DIRECTORY, RESTORE, and GET commands.
+
+          1.  TAPE POSITIONS
+
+          Each file on tape contains  a  file  position  number  which
+          defines  the  location  of  the file on tape.  Tape position
+          numbers may be used to further restrict the range  of  files
+          selected on tape by the RESTORE, GET, or DIRECTORY commands.
+          Files not in the range will be ignored, and tape  processing
+          stops  when a file position greater than the end of range is
+          read.
+
+          The first TITO file header record read on a tape will  cause
+          the  program  to ask the operator for a tape position range.
+          Several options exist at this point:  (1) the  operator  can
+          type  "?"  to print a list of options;  (2) a "W" will print
+          the current tape position;  (3) a series  of  tape  position
+          nos.  separated by commas or hyphens (to indicate a range of
+          positions) may be entered;  (4) a  carriage  return  may  be
+          typed  to  default to all possible positions.  an "E" may be
+          used for the end of a range to denote the  highest  possible
+          tape  position.   Carriage  return,  then,  is equivalent to
+          typing "1-E".
+
+          EXAMPLE:  *DIRECTORY ALL(cr)
+                    INPUT TAPE POS. RANGE: W(cr)
+                    LAST KNOWN POS WAS 12
+                    INPUT TAPE POS. RANGE: 1,3-5,11,15-E(cr)
+
+                    THIS IS TAPE NO. 1 RECORDED 12:13 17-JUL-75
+                    SYSTEM C35-P022/P DRIVE MTA0 800 BPI 7 TRACK
+
+                    POSITION    FILE NAME      USER NAME
+                        1  1   TITO  .CMD     YOUNGERC
+                        3  1   USR   .CMD     YOUNGERC
+                        4  1   COM   .MAC     YOUNGERC
+                        5  1   CHR   .MAC     YOUNGERC
+                       11  1   UUO   .MAC     YOUNGERC
+                       15  1   BUG   .MAC     YOUNGERC
+                       16  1   LOOKUP.MAC     YOUNGERC
+                    TOTAL    7 FILES  FOR     YOUNGERC
+TITO USER'S GUIDE; SEPTEMBER 1975                               Page 3
+NEW FEATURES
+
+
+                    TOTAL 7 FILES FOR SAVE SET.
+
+                    LOGICAL EOT--NO SAVE SETS FOLLOW.
+
+                    TOTAL 7 FILES PROCESSED.
+
+                    *
+
+
+          2.  FILE CHECKSUMS
+
+          As each file is written to tape, its  checksum  is  computed
+          and  written  just  past  the  last  data  word in the file.
+          DIRECTORY, RESTORE, and GET  all  read  the  tape  data  and
+          recompute  the  tape checksum.  The new checksum is verified
+          against the last word of data and if a mismatch occurs, TITO
+          prints  "EXPECTED  CHECKSUM" and the expected checksum.  The
+          checksum is also printed in the last six character positions
+          of a directory entry.
+
+          Whenever new files  are  added  to  a  tape,  it  should  be
+          customary  procedure to make a directory of the files added.
+          The checksum printed will verify that the  files  have  been
+          correctly written.
+
+          Making a full tape directory is more expensive that doing  a
+          directory  of  the  last few files written.  If saveset nos.
+          are not desired (these are printed in the directory only  if
+          the  tape  is  at  load  point when the DIRECTORY command is
+          issued).  then a partial directory may be made of the  files
+          written  by  specifying  a partial range of files instead of
+          "1-E" or (cr).
+
+          3.  INDIRECT FILES
+
+          The STORE, RESTORE, GET and DIRECTORY command  are  normally
+          followed  by  one  of the following as the first modifier:  
+          (1) a list of global  account  nos  preceded  by  "G",  e.g.
+          G11447,11550-11600,13464;    (2)   a  list  of  PPN's  ,e.g.
+          [11447,113411],[11447,123046];  (3) a list  of  user  names,
+          e.g.   (KINGHAM),(BURGESST),(SALTYRON),(YOUNGERC)  ;   (4) a
+          list             of             filenames,              e.g.
+          (YOUNGERC)TITO.CMD,USR.CMD,BUG.*,*.REL;   (5)  a  user  name
+          followed by  the  pseudofilename  ALL,  e.g.   (BURGESST)ALL
+          which  matches all filenames for BURGESST;  (6) the modifier
+          ALL, which matches all files in all directories;  (7) a list
+          of  file  position  numbers preceded by a "P" or a poundsign
+          "#",  e.g.   P2,3-5,13  or  #2,3-5,13.   In  addition,  TITO
+          permits a filename immediately preceded by an at-sign "@" to
+          be entered at this point.  This file is called  an  indirect
+TITO USER'S GUIDE; SEPTEMBER 1975                               Page 4
+NEW FEATURES
+
+
+          file,  and  it  may  contain  anything which can normally be
+          typed on the same line as the command verb  STORE,  RESTORE,
+          GET  or  DIRECTORY, with one important difference:  carriage
+          returns in the file are automatically treated as commas.
+
+          Thus, the following are equivalent:
+
+          *STO (YOUNGERC)*.CMD STA W (YOUNGERC)USR.CMD<10><12341,,456453>(cr)
+
+          or
+
+          *STO @FOO STA W (YOUNGERC)USR.CMD<10><12341,,456453>(cr)
+
+          where file FOO.  contains the following
+          line:  (YOUNGERC)*.CMD.
+
+          or
+
+          *STO @FOO (YOUNGERC)USR.CMD<10><12341,,456453>(cr)
+
+          where file FOO. contains the line:  (YOUNGERC)*.CMD STA 
+
+          or
+
+          *STO @FOO(cr)
+
+          where file FOO. contains the line:
+
+          (YOUNGERC)*.CMD STA W (YOUNGERC)USR.CMD<10><12341,,456453>
+
+
+          More typical indirect files might contain the following:
+
+          (multiple users)
+
+          (BURGESST)(cr)
+          (YOUNGERC)(cr)
+          (SALTYRON)(cr)
+
+
+          or
+
+          (multiple files)
+
+          (SALTYRON)DXMP.REL,COM.SAV(cr)
+          RKXXMA.,RKXXMO.(cr)
+          RKFOR.SHR(cr)
+          LOGINN.SHR(cr)
+
+TITO USER'S GUIDE; SEPTEMBER 1975                                      Page 5
+NEW FEATURES
+
+
+          Indirect files may contain no more than about  62  filenames
+          or  125  individual user names.  TITO will print "RAN OUT OF
+          SPACE  FOR  INPUT  STRING"  when  its  command  capacity  is
+          exceeded.
+
+          Indirect files may be specified in another user  by  placing
+          the   user   name   in   parentheses  after  the  "@",  e.g.
+          "@(BURGESST)FIL.CMD".
+
+          WARNING:   Indiscriminate  use  of  indirect  files  can  be
+          hazardous.    Indirect   files  should  not  be  created  in
+          directories other than OPER.  A user may  find  an  indirect
+          file  in his directory and use it to discover user names and
+          filenames  to  which  he  has  no  legitimate  access.   The
+          operator  MUST in all cases examine the indirect file to see
+          if the owner of the indirect file has legitimate  reason  to
+          access the files contained therein.
+
+          4.  TRANSLATION OF USER NAMES
+
+          Frequently it is necessary to restore files  to  a  user  on
+          disc  which  differs from the user on tape.  The GET command
+          accomplishes this for  one  user,  but  if  many  users  are
+          involved,  the  procedure is tedious.  Another case in point
+          is that a tape user is not set up in the LUD on  the  system
+          to receive the files.
+
+          TITO permits  mapping  between  tape  and  disc  user  names
+          through  a  translation  table.  When TITO locates a file on
+          tape, it checks to see if the [tape] user  name  is  in  its
+          translation  table,  and  substitutes  the [disc] PPN in the
+          translation table for the one on tape.  Tape  files  written
+          by TEX, which do not have the username on tape, are skipped.
+
+          The translation table may be  set  up  through  use  of  the
+          TRANSLATE command or by entering disc/tape username pairs in
+          a RESTORE, GET, DIRECTORY, or CUT AFTER command line.
+
+          Disc/tape username pairs may be entered in a command line by
+          typing  the  disc username, an underscore or back arrow "_",
+          and the tape username where normally the  [disc]  user  name
+          would appear in the command:
+
+               *RESTORE (GBLOOD)_(ABLE)TAP.MAC(cr)
+
+               *RESTORE (GBLOOD)_(ABLE),(BURGESST)_(BAKER)(cr)
+
+               *RESTORE (GBLOOD),(GBLOOD)_(ABLE)(cr)
+
+               *CUT AFTER (GBLOOD)_(ABLE)TAP.MAC(cr)
+TITO USER'S GUIDE; SEPTEMBER 1975                                      Page 6
+NEW FEATURES
+
+
+          In the first example, file TAP.MAC from user  name  ABLE  on
+          tape  is  restored  to user GBLOOD.  A file named TAP.MAC on
+          tape in user GBLOOD would be skipped.
+
+          In the second example, all files in users ABLE and BAKER  on
+          tape   are   restored   to   users   GBLOOD   and  BURGESST,
+          respectively.  Users GBLOOD and BURGESST  on  tape  will  be
+          skipped.
+
+          In the third example, files in users GBLOOD and ABLE on tape
+          are  both  restored  to user GBLOOD.  If this had been a GET
+          command, files from ABLE on tape would have been  mapped  to
+          disc  user  GBLOOD,  since  the  GET function is weaker than
+          translation, but files from GBLOOD on tape would  have  been
+          mapped into the directory of the program user.
+
+          In the last example, the cut on tape is performed after file
+          (ABLE)TAP.MAC,  where  ABLE was not in the LUD and could not
+          be entered directly into the command line.
+
+          Note that disc/tape username pairs are meaningful only  when
+          the processing request is for individual usernames or files.
+          The translation table is cleared  after  completion  of  the
+          command.
+
+          The TRANSLATE command can be used  to  build  a  translation
+          table  which  will not be cleared after each command (unless
+          the  command  involves  explicit  translation).   Once   the
+          TRANSLATE  command  has  been  issued,  implicit translation
+          remains in effect until the  translation  table  is  cleared
+          using  the UNTRANSLATE command.  Implicit translation has no
+          effect on processing requests of GANS, individual USERS,  or
+          individual  FILENAMES.   The  translation  table will NOT BE
+          USED  FOR  PERFORMING  TRANSLATIONS  UNLESS  THE  PROCESSING
+          REQUEST IS FOR ALL FILES WITHIN A RANGE OF TAPE POSITIONS.
+
+               *TRANSLATE (ABLE)_(BAKER)(cr)
+
+               *RESTORE #1,5,7-13(cr)
+
+               (files in given positions with name BAKER
+               will be restored to user ABLE on disk.
+               files in given positions with names other
+               than BAKER will be skipped).
+
+               or
+
+               *RESTORE ALL(cr)
+               INPUT TAPE POS. RANGE: 1,5,7-13(cr)
+TITO USER'S GUIDE; SEPTEMBER 1975                                      Page 7
+NEW FEATURES
+
+
+          The TRANSLATE command can be used with an indirect file with
+          a separate disc/tape username pair on each line:
+
+               *TRANSLATE @TRA.CMD(cr)
+
+               where file TRA.CMD contains the following:
+
+               (ABLE)_(BAKER)(cr)
+               (BAKER)_(ABLE)(cr)
+               (CHARLIE)_(DELTA)(cr)
+               (EPSILON)_(GAMMA)(cr)
+
+          Note that when this translation table is  used,  files  from
+          BAKER  are  mapped  into ABLE and files from ABLE are mapped
+          into BAKER.
+
+          5.  MULTIPLE TAPES
+
+          When the files in a saveset will not  fit  on  one  physical
+          tape,  TITO  generates continuation tapes.  The tape no.  in
+          the save set (e.g.  1,2,...) is shown in the  second  column
+          under the heading "POSITION" in the tape directory.
+
+          When physical end of tape is reached, TITO prints one of the
+          following messages which indicate that the current operation
+          (STORE, RESTORE, GET, DIRECTORY):
+
+          (SALTYRON) WILL BE CONTINUED ON THE NEXT TAPE.
+
+          or
+
+          FILE (SALTYRON)SRC.MAC WILL BE CONTINUED ON THE NEXT TAPE
+          STARTING WITH BLOCK 24.  PARTIAL CKSUM: 134256,,7703421
+
+          or (printed by STORE only)
+
+          THE LAST FILE ON THIS TAPE IS (SALTYRON)XRF.TES
+          THE FIRST FILE ON THE NEXT TAPE WILL BE (MARCINJ)HASH.REL
+
+
+          TITO      then      prints       "MOUNT NEXT TAPE"       and
+          "CONTINUE ON DEVICE: ".   Several  options  are available at
+          this point:  (1) The operator can type "?" to print  a  list
+          of  options;   (2)  "U"  OR  "UN"  OR  "UNL" will unload the
+          current tape;  (3)  "N"  or  "NO"  will  abort  the  current
+          operation;   and (4) a magtape device name may be entered to
+          signify that the next tape is ready to go on said device.
+TITO USER'S GUIDE; SEPTEMBER 1975                                      Page 8
+NEW FEATURES
+
+
+          The magtape device specified MUST be capable of  writing  at
+          the  same  density which was set for the preceding tape, and
+          MUST be the same no.   of  tracks.   Otherwise  TITO  prints
+          "CANNOT  CHANGE NO.  OF TRACKS IN PROCESS" or "CANNOT CHANGE
+          DENSITY IN PROCESS" and asks for the device name again.
+
+          EXAMPLE:
+
+          FILE (YOUNGERC)TAP.MAC WILL BE CONTINUED ON THE NEXT TAPE
+          STARTING WITH BLOCK 192.  PARTIAL CKSUM: 14264,,223705
+
+          MOUNT NEXT TAPE
+          CONTINUE ON DEVICE: UNL(cr)
+          CONTINUE ON DEVICE: FTA2(cr)
+          TRACKS: 9                       (This is printed by TITO)
+                                          (No operator input is   )
+                                          (required.              )
+          TAPE NUMBER 2 FOR 15:20 15-JUL-75
+          STARTING WITH BLOCK 192 OF FILE (YOUNGER.MAC.
+
+
+
+          If, for some reason,  it  becomes  necessary  to  restart  a
+          STORE,  RESTORE,  or  DIRECTORY  operation  after  an  abort
+          (operator typed "NO" to continue on device or system crashed
+          in  the middle of an operation) then a tape may be restarted
+          beginning with a particular user, file, and block  within  a
+          file.   The  following  examples  show how to restart an ALL
+          files operation with a (1) user;  (2) file;   (3)  file  and
+          block:
+
+          *STO ALL STA W (MARCINJ)(cr)                            (1)
+
+          *STO ALL STA W (MARCINJ)ERA.SAV(cr)                     (2)
+
+          *STO ALL STA W (MARCINJ)ERA.SAV<200><405231,,37602>(cr) (3)
+
+          In the last example, the file ERA.SAV  is  to  be  continued
+          starting  with block 200 and partial checksum 405231,,37602.
+          It is necessary to enclose the block no.  and  the  checksum
+          in  angle  brackets "< >" and the two halves of the checksum
+          should be  separated  by  two  commas  ",,".   Note  if  the
+          checksum  is  mistyped  on  a STORE then a checksum mismatch
+          will  be  indicated  in  subsequent  RESTORE  or   DIRECTORY
+          operations.
+
+          6.  OTHER
+TITO USER'S GUIDE; SEPTEMBER 1975                                      Page 9
+NEW FEATURES
+
+
+          TITO is much less sensitive to  tape  format  problems  than
+          TEX.   Saveset header records are not needed, and file marks
+          on tapes (except double file mark for logical EOT)  have  no
+          special  meaning.   Data  records  that do not belong to any
+          file are simply ignored.
+
+          TITO does make the following checks on file header  records:
+          (1) the file pos.  no must be one greater than the last file
+          read;  (2) the file must be written at the same  density  as
+          the previous file;  and (3) the date written must be greater
+          than or equal to the date the  previous  file  was  written.
+          TITO   warns  of  such  incompatibilities  and  permits  the
+          operator to abort or to continue.  This  feature  may  prove
+          valuable  in stopping a tape which is missing a file mark at
+          logical end of tape.
+
+          TITO features an expanded tape directory which is 86 columns
+          wide.   In  addition,  each  saveset  header record printout
+          includes the  system  identification,  the  physical  device
+          name, and the density and number of tracks recorded.
+
+          The DIRECTORY format is given below.
+
+          Columns         Contents
+           00-05          File position no. in octal
+           06-08          Tape no. in saveset (1,2,3,...)
+           12-17          Filename
+           19-21          Filename extension
+           27-38          Username
+           41-45          Creation time
+           47-55          Creation date
+           58-62          Time tape written
+           64-72          Date tape written
+           73-77          Allocated size of file in blocks
+           79-84          Checksum
+
+          Column headings are printed for each user, and the  PPN  for
+          the  user is printed in the same line as total user files in
+          columns 41-55.  Total blocks allocated to a user is  printed
+          in columns 72-77 of this same line.
+
+          TITO prints usernames directly from tape  without  accessing
+          the  DUL.   If  a  tape  contains  no  TEX  savesets, a full
+          directory can be made from it on any Tymcom X system.
+TITO USER'S GUIDE; SEPTEMBER 1975                                     Page 10
+NEW COMMANDS
+
+
+                                NEW COMMANDS
+
+          The  following  commands  are  unique  to  TITO:   NEW TAPE,
+          APPEND,  CUT AFTER,  TRANSLATE, UNTRANSLATE, UNLOAD, DEVICE,
+          AND WHERE.  NEW TAPE,  APPEND,  TRANSLATE,  AND  UNTRANSLATE
+          have already been described.
+
+          The CUT AFTER command takes the form CUT AFTER filename  and
+          can  be  used  to redefine logical EOT.  It spaces out after
+          the specified filename and writes a  dummy  saveset  trailer
+          record  and  two  filemarks.   The  tape  is then positioned
+          between the two filemarks with the logical end of tape  flag
+          set,  so  that  an APPEND at this point initializes the tape
+          for writing without moving the tape.
+
+          CUT AFTER will automatically skip any  TEX  formatted  files
+          that  it  finds  on tape.  The tape file specified to become
+          the last tape file must have a tape position no., i.e.  must
+          be a TITO file.
+
+          Example:  *CUT AFTER (YOUNGERC)FOO.MAC(cr)
+                     INPUT TAPE POS. RANGE: 17(cr)
+                     ARE YOU SURE?(cr)
+                     CUT FINISHED--NOW POSITIONED AT LOGICAL END OF
+          TAPE.
+                     *
+
+          There may be a noticeable delay between the time the command
+          is  given  and  the  time the program asks for the tape pos.
+          range.  The delay is the time it takes TITO to locate a file
+          header record on tape.
+
+          The UNLOAD command unloads the current tape without  waiting
+          for completion.
+
+          The DEVICE command can be used to change tape drives  or  to
+          change density settings of the drives.  It has the form
+
+          DEVICE <DEVNAM> <DENSITY>(cr)
+
+          where <DEVNAM> and <DENSITY> are optional.  If  <DEVNAM>  is
+          missing,  the  current  device  is  implied;  if <DEVNAM> is
+          present, TITO attempts to use this device.  If <DENSITY>  is
+          missing, the command merely prints all known characteristics
+          of the device (or interrogates the operator for them if  the
+          DEVICE  is  a  new  one  unknown  to TITO).  If <DENSITY> is
+          present, then TITO will attempt to set that density and  ask
+          for  it  to  be reentered if the device is incapable of this
+          density setting.
+TITO USER'S GUIDE; SEPTEMBER 1975                                     Page 11
+NEW COMMANDS
+
+
+          Example:
+                  (supposing initial device is MTA0)
+                    *DEV MTA1(cr)
+                    TRACKS: 7                     (Printed by TITO)
+                    DENSITY(800,556,200): 800(cr)
+                    *
+                  (we are now using device MTA1)
+                    *DEV MTA0(cr)
+                    MTA0: 800 BPI 7 TRACK
+                    *
+                  (we are now back to MTA0)
+
+          TITO keeps a table of device names and  d  density  settings
+          which  it  uses  so  that  the  density  does not have to be
+          reentered each time the  DEVICE  command  is  used.   It  is
+          possible  to  confuse  TITO  by manipulating the unit select
+          switches on the DEC drives after the device name has already
+          been  entered.   In this case the device name printed in the
+          tape directory may be incorrect.   For  this  reason  it  is
+          urged  that  the unit select switches be left alone, and the
+          DEVICE command be used to  switch  drives.   The  old  habit
+          should  be  forgotten quickly, as more effort is required to
+          change the switches, and the IBM and Calcomp drives  do  not
+          have the switches.
+
+          The WHERE command prints the last tape position  no.   read.
+          The tape will probably be positioned a few records past this
+          position no.  TITO prints "POSITION UNKNOWN" if the  current
+          position no.  is meaningless.
+TITO USER'S GUIDE; SEPTEMBER 1975                                     Page 12
+MIXED FORMAT TAPES
+
+
+                             MIXED FORMAT TAPES
+
+          Files written by TITO have tape  position  nos.   and  other
+          format  changes  which  prevent tapes from being read by the
+          TEX program.  TEX tapes, however, can still be read by TITO.
+          Files  written  by TITO can be appended to TEX tapes, though
+          it is preferable for ease in tape handling  to  rebuild  TEX
+          tapes in the new format.
+
+          Let us suppose that a tape contains old savesets written  by
+          TEX  and  new savesets written by TITO.  Let us also suppose
+          that the savesets are not in chronological order as  far  as
+          the versions are concerned (somehow the operator got hold of
+          an old copy of TEX and appended  to  a  tape  which  already
+          contained  a  TITO saveset).  Suppose the tape contains four
+          savesets written by:  TEX;  TITO;  TEX;   and  TITO.   These
+          savesets  are refered to below as savesets no.  1, 2, 3, and
+          4, respectively.
+
+          Since the DIRECTORY command no longer  issues  a  rewind,  a
+          complete  tape  directory  is  possible  only  if the REWIND
+          command is issued before the DIRECTORY command.  If the tape
+          is  initially  positioned  in  saveset  no.   2 and and file
+          position range 1-E is given, the  tape  directory  will  not
+          report  files in saveset no.  1, since this section contains
+          no file position nos.   Saveset  no.   3  will  be  printed,
+          however,  since  this is scanned before reaching position E.
+          If the tape is positioned somewhere in saveset  no.   4  and
+          file  positions  are selected in saveset no.  2, TITO in all
+          likelihood will be unable to locate these  files.   It  will
+          probably  oscillate between savesets no.  3 and 4, since the
+          file positions in saveset no.  3 are zero.  In this case,  a
+          rewind  should  be issued to permit TITO to locate the start
+          of the file position range.
+
+          The RESTORE command will skip over files in saveset  no.   3
+          if the tape is initially positioned in saveset no.  2.  This
+          prevents files which were restored from saveset no.  2  from
+          being  accidentally  overwritten by the same names appearing
+          in saveset no.  3.  Note that the  DIRECTORY  command  would
+          not  have  skipped  over the files.  (if it had, there would
+          have been no way  to  make  a  full  tape  directory).   The
+          RESTORE will quit when (a) there is nothing to do;  or (b) a
+          file header is read one past the end of the specified range;
+          or (c) logical EOT is read.
+
+          To restore files written by TEX, the tape must be  initially
+          positioned  to  the  beginning of the saveset containing the
+          files.  There is a  saveset  header  record  which  contains
+          information  needed  to do date conversions.  Use REWIND and
+TITO USER'S GUIDE; SEPTEMBER 1975                                     Page 13
+MIXED FORMAT TAPES
+
+
+          SKIP to position the tape.  The RESTORE will quit  when  (a)
+          there  is  nothing to do;  or (b) a saveset trailer is read;
+          or (c) logical EOT is read.
+
+          If the saveset header cannot be found, TEX issues a  warning
+          message and asks if the operator wishes to continue.  If the
+          tape is  a  bad  tape  containing  no  saveset  header,  the
+          operator   should  continue  at  this  point  and  get  date
+          conversions  corresponding  to  MONITORS  P012  and   later.
+          Otherwise,  he should abort, which automatically rewinds the
+          tape so he can SKIP to the beginning of the saveset.
+
+          Savesets written by TITO do not need saveset header  records
+          since  the  required  information is kept in the file header
+          record.
+TITO USER'S GUIDE; SEPTEMBER 1975                                     Page 14
+OPERATING COMMANDS
+
+
+                             OPERATING COMMANDS
+
+          All TITO commands and keyword modifiers may  be  abbreviated
+          to  the  mininum  no.   of  characters  required to make the
+          command unique.  mininum no.  of characters required to make
+          the   command   unique.    For  example,  DIRECTORY  may  be
+          abbreviated "DI" and DEVICE may be abbreviated  "DE".   TITO
+          will  always  inform the operator if the abbreviation is not
+          unique, for example, the ambiguous abbreviation "D".
+
+          The following operating commands  appear  in  both  TEX  and
+          TITO.  They are documented here for completeness.
+
+          COF
+          REWIND
+          RWNW
+          QUIT
+          HELP
+          UPDATE
+          NOUPDATE
+          SKIP
+          STORE
+          RESTORE
+          GET
+          DIRECTORY
+          MODE
+
+          The COF command changes the output file from terminal to the
+          specified  device.   The following devices are valid objects
+          for  the  COF  command:  PRINTER,  TERMINAL,  TELETYPE.   In
+          addition,  a  filename  in the file directory of the program
+          user may be specified.  The  output  file  remains  the  one
+          specified  until  another COF command is issued, or until an
+          altmode (^C in PDP mode) or a fatal error occurs.
+
+          The REWIND command rewinds the tape to load point and  waits
+          for completion before returning to the command dispatcher.
+
+          The RWNW (ReWind No Wait) command rewinds the tape  to  load
+          point  without  waiting for completion.  The command returns
+          immediately to the command dispatcher.
+
+          The QUIT command is used to  exit  the  TITO  program.   Two
+          altmodes  (or  ^C in PDP mode) can be used to accomplish the
+          same.
+
+          The HELP command lists in summary form the program  commands
+          and  the purpose of each.  In addition, HELP may be typed in
+          the middle of a multipart  command  to  obtain  the  options
+          available at that point.
+TITO USER'S GUIDE; SEPTEMBER 1975                                     Page 15
+OPERATING COMMANDS
+
+
+          The UPDATE command sets a switch (which  remains  set  until
+          the user does a QUIT or NOUPDATE) which specifies that files
+          to be RESTORED will be opened in  update  mode.   This  mode
+          uses  the  blocks  already  allocated  to  a file instead of
+          acquiring new ones, so it can be useful when the  system  is
+          low  on disc space and a particularly large file needs to be
+          restored.
+
+          The NOUPDATE command turns off the  UPDATE  mode  switch  so
+          that the normal mode of opening files is reinstated.
+
+          The SKIP command takes as its object the number of  savesets
+          to  skip  on tape.  If there are three savesets on tape, and
+          the tape is positioned at load point, SKIP 2 will cause  the
+          tape to be positioned to the beginning of the third saveset.
+          SKIP E can be used to position to logical end of tape.  Note
+          that  if a tape has n savesets, SKIP n from load point will,
+          in effect, position the tape to logical eot but TITO  cannot
+          print a confirming "NOW POSITIONED AT LOGICAL END OF TAPE".
+
+TITO USER'S GUIDE; SEPTEMBER 1975                                     Page 16
+OPERATING COMMANDS
+
+
+          The next four commands (STORE, RESTORE, GET, and  DIRECTORY)
+          have identical three-part structures.
+
+          1.  The first part of  each  command  is  the  verb  (STORE,
+          RESTORE, GET, DIRECTORY).
+
+               STORE is used to write files on tape and requires  tape
+               initialization.
+
+               RESTORE retrieves files from tape and  places  them  in
+               their original directories.
+
+               GET functions the same as RESTORE, except that the tape
+               files are written to the program user's directory.
+
+               DIRECTORY goes through all of the motions  of  RESTORE,
+               but  files  are not written to disc.  Instead a listing
+               of tape file names and positions is made.
+
+          2.  The second part of each command is the object.  This may
+          be  (1) a list of global account nos.  preceded by "G", e.g.
+          G1-4,6;  (2) a list of  PPN's,  e.g.   [1,1],[1,4]  or  user
+          names  (SYS),(OPER);   (3) a list of filenames preceded by a
+          PPN or user name, e.g.
+          [1,4]A.X,B.X,C.X or (OPER)A.X,B.X,C.X;
+          (4) the directive "ALL" preceded by a username to select all
+          the files belonging to a user, or not preceded by a username
+          to select all files belonging to all users;  (5) a  list  of
+          file position numbers preceded by "P" or poundsign "#", e.g.
+          #1,3-5,14;  or (6) an indirect file preceded by an "@" sign.
+
+          Position numbers, when used, are not  meaningful  to  STORE.
+          When  used  in the command line the effect is the same as if
+          the directive "ALL" was used.
+
+          Filenames, except for that of an indirect file, may  contain
+          wild  card  characters  "#"  or  "?"  to  match any filename
+          character, or an asterisk in the name or  extension  portion
+          of  the  filename (or both) to match all names or extensions
+          (or both).
+
+          3.  The third part of the  command  is  a  modifier  to  the
+          second  part  and a command may have more than one modifier.
+          The  following  modifiers  are  available:  TWICE,   THRICE,
+          CREATED   AFTER,  CHANGED, and STARTING WITH.  All modifiers
+          can  be  used  with  any  command  but  the  TWICE,  THRICE,
+          CREATED AFTER,  and CHANGED modifiers are meaningful only to
+          STORE.
+TITO USER'S GUIDE; SEPTEMBER 1975                                     Page 17
+OPERATING COMMANDS
+
+
+               The TWICE modifier causes TITO to  write  two  savesets
+               instead of one in the STORE command.
+
+               The THRICE modifier causes TITO to write three savesets
+               instead of one in the STORE command.
+
+               The CREATED AFTER modifier takes as its object  a  date
+               expressed  as  HH:MM DD MON YR, where HH:MM is the time
+               in  hours   and   minutes,   and   DD MON YR   is   the
+               day-month-year.   Files  to be STOREd are restricted to
+               those created after the specified time and  date.   The
+               time  and  date  may  be abbreviated:  if only HH:MM is
+               given, the date defaults to the current day-month-year;
+               if  only  HH:MM DD  is  given, the date defaults to the
+               current month-year;  if only HH:MM DD MON is given, the
+               date defaults to the current year.
+
+               THe CHANGED modifier takes no object and specifies that
+               all files which do not have the "file dumped" bit on in
+               the UFD will be written to tape.  Note that  the  "file
+               dumped"    bit   can   be   turned   on   only   by   a
+               "STORE ALL CHANGED"  operation  (backup).    Thus   the
+               CHANGED modifier is specifying files which have changed
+               since the last backup operation.
+
+               The STARTING WITH modifier takes username  or  filename
+               as  an  object and begins the current operation (STORE,
+               RESTORE, GET,  DIRECTORY)  at  the  specified  user  or
+               filename.  In the case of files split between tapes the
+               object is a filename followed by block no.  and partial
+               checksum enclosed in angle brackets "<>".
+
+TITO USER'S GUIDE; SEPTEMBER 1975                                     Page 18
+OPERATING COMMANDS
+
+
+          The MODE command is used to print or change a number of TITO
+          options.   One  set  of options pertains to what information
+          prints at the terminal  during  a  STORE/RESTORE  operation.
+          THe other set of options pertains to what action is demanded
+          of the operator when an attempt is made by TITO to restore a
+          file on top of an existing file.
+
+          MODE is a three part command.  The first part is always MODE
+          and may be followed by a carriage return, in which case TITO
+          prints the prevailing modes.  The second  part  may  be  the
+          name  of  a  file type like OLD or SYS.  OLD files are files
+          which exist on both disc  and  tape  and  are  about  to  be
+          overwritten  by  a  RESTORE or GET operation.  SYS files are
+          files in username (SYS)  which  are  very  critical  to  the
+          system  operation and have a separate mode switch to protect
+          them against being overwritten.
+
+          If the second part is a file type, then the  third  part  of
+          the  command tells what version of the file to use in case a
+          file exists on both disc and tape and  is  to  be  restored.
+          The version types are NEWEST, DISC, TAPE, and CONFIRM.
+
+               NEWEST selects the most recent file, as  determined  by
+               the creation date.
+
+               DISC keeps the disc version of  the  file.   TITO  will
+               print "NOT WRITING OVER FILE ...".
+
+               TAPE replaces the disc version from  the  tape  in  all
+               cases.
+
+               CONFIRM is  the  normal  mode  and  requires  that  the
+               operator confirm writing over the old file.
+
+          The second part of the command may  be  an  operation  type,
+          such  as  STORE  or RESTORE.  In this case the third part of
+          the  command  specifies  what  is  to  be  printed  on   the
+          operator's  terminal  during  the  operation.   The  listing
+          controls are TOTALS, USERS, and FILES.
+
+               TOTALS prints only the grand totals for the  operation,
+               e.g.  "XX  FILES PROCESSED."
+
+               USERS prints totals for  each  user  along  with  grand
+               totals.  This is the normal mode.
+
+               FILES  prints  each  filename  as  it  is  read/written
+               from/to tape, as well as user and grand totals.
+TITO USER'S GUIDE; SEPTEMBER 1975                                     Page 19
+APPENDIX A
+
+
+                                 APPENDIX A
+                                TAPE FORMATS
+
+
+          The tape consists of savesets followed  by  logical  end  of
+          tape  (two consecutive filemarks).  Each saveset consists of
+          a saveset header record, user files, and a  saveset  trailer
+          record.   A filemark separates each user on the tape and can
+          also be found between a  saveset  trailer  and  the  saveset
+          header  of  the next saveset.  No filemark follows a user if
+          the next record is a saveset trailer.
+
+          Each user is written as one physical tape file, and consists
+          of  file  header records and data records.  Each file begins
+          with a file header record which is always a new tape record.
+
+          The  file  header  record  contains  all   extended   lookup
+          information about the file plus tape parameters such as file
+          pos.  no., date written,  etc.   The  balance  of  the  file
+          header record contains file data.  The last data record in a
+          file contains at least 5 tape words.  The file  checksum  is
+          written in the first word past the file data and is repeated
+          if necessary to up the record word count to 5.
+
+          SAVESET HEADER(TRAILER) RECORD
+
+          WORD    BITS    CONTENTS
+             0    0-17    Version No. of TITO that wrote saveset
+                 18-35    Wordcount that follows (=4)
+             1    0-35    Sixbit /*fails/
+             2    0-17    Sixbit /afe/
+                 18-35    Tape sequence no (tape number in saveset)
+                          positive in saveset header
+                          negative in saveset trailer
+             3       0    Continuation tapes follow
+                     1    User continued
+                     2    File continued
+                  3-10    Spare
+                 11-21    Time saveset written
+                 22-35    Date saveset written in days since Jan 1,
+          1964
+             4    0-35    XWD 1,2
+
+          DATA RECORD
+
+          WORD    BITS    CONTENTS
+             0    0-17    Zero
+                 18-35    Wordcount that follows (maximum 777)
+          1-777   0-35    File data
+TITO USER'S GUIDE; SEPTEMBER 1975                                     Page 20
+APPENDIX A
+
+
+          FIRST BLOCK OF USER FILE (FILE HEADER RECORD)
+
+          WORD    BITS    CONTENTS
+             0    0-17    -1
+                 18-35    Wordcount that follows (maximum 777)
+             1    0-17    Sixbit /dsk/
+                 18-35    TITO version no. that wrote tape
+             2    0-17    Zero
+                 18-35    Count for extended lookup (=40)
+          3-42    0-35    Extended lookup information.
+          43-70   0-35    Spare
+          71-72   0-35    72 bits of username in sixbit text
+          73-74   0-35    72 bits of system id from GETTAB table 11
+            75    0-17    Tape density
+                 18-35    No. of tracks
+            76    0-35    Sixbit device name in TITO version 15.  Tape
+          drive
+                          serial no. in bits 18-35 in TITO version 14.
+            77    0-10    Spare
+                 11-21    Time tape written
+                 22-35    Date tape written
+           100    0-17    Tape sequence no. (tape no. in saveset)
+                 18-35    File no. on tape
+          101-777 0-35    File data
+TITO USER'S GUIDE; SEPTEMBER 1975                                     Page 21
+APPENDIX B
+
+
+                                 APPENDIX B
+                               MESSAGE CONTROL
+
+
+          TITO messages are normally directed to  the  terminal.   The
+          COF  command  may  be  used  to  direct output from the next
+          command to the file or device specified by the COF  command.
+          In  the  past this has resulted in the loss of some messages
+          which should have appeared on the terminal.
+
+          TITO directs some messages to the terminal only, some to the
+          COF file only, and some to both.  The following messages are
+          directed to both the terminal and the COF file:
+
+          TAPE NUMBER XX FOR HH:MM DD-MON-YR
+          UNABLE TO DO LOOKUP ON UFD FOR USER ( ).  CONTINUING WITH
+          NEXT USER
+          STORE COMPLETE, XX FILES.
+          UNABLE TO DO LOOKUP ON FILE ( ) . . CONTINUING WITH NEXT
+          FILE.
+          ERROR READING UFD FOR ( )
+          ERROR IN READING FILE: ( ) . .
+          UNABLE TO MARK FILE ( ) .  AS DUMPED.
+          STARTING WITH BLOCK XX OF FILE ( ) . .
+
+          THE LAST FILE ON THIS TAPE IS: ( ) . 
+          THE FIRST FILE ON THE NEXT TAPE WILL BE: ( ) .
+
+          IRRECOVERABLE TAPE WRITE ERROR
+          PHYSICAL DEVICE ERROR
+          UNRECOGNIZABLE TAPE DATA
+          CONTINUING WITH FILE ( ) .
+          CONTINUING WITH NEXT USER.
+          XX TAPE ERRORS READING FILE ( ) .
+          ERROR WRITING TO FILE ( ) . .
+          SKIPPING REMAINDER OF FILE
+          STARTING WITH BLOCK XX OF FILE ( ) . .
+          DATE CONV ERR ON ( ) . .  CONTINUING...
+          NOT RESTORING ( ) . .  IT IS BAD ON TAPE.
+          BYPASSING ( ) . .  NOT ENOUGH DISC SPACE.
+          CANNOT ENTER ( ) . .---(REASON)
+          FILE ( ) .  .RBPOS RESET TO ZERO--PROCEEDING O.K.
+          BYPASSING ( ) . , LOOKUP FAILURE--(REASON)
+          UNABLE TO SET UFD INTERLOCK FOR ( ).
+          UNABLE TO RESET UFD INTERLOCK FOR ( ).
+          ( ) WILL BE CONTINUED ON NEXT TAPE.
+          LOGICAL EOT--NO SAVE SETS FOLLOW.
+          TOTAL XX FILES PROCESSED.
+          BAD HEADER RECORD FOUND.
+TITO USER'S GUIDE; SEPTEMBER 1975                                     Page 22
+APPENDIX B
+
+
+          FILE ( ) .  WILL BE CONTINUED ON NEXT TAPE
+          STARTING WITH BLOCK XXX.  PARTIAL CKSUM:  YYYYY,,ZZZZZ
+
+          FILE ( ) .  HAD TOO LITTLE DATA ON TAPE.
+          FILE ( ) .  HAD TOO MUCH DATA ON TAPE.
+          FILE ( ) .  EXPECTED CHECKSUM AAAAAA
+          TROUBLE TRUNCATING ( ) .  --(REASON)
+          CANNOT TRUNCATE ( ) .  --(REASON)
+          TOTAL XX UFD'S SET UP.
+          FILE SOFTWARE WRITE PROTECTED
+          [DISC] SEARCH ERROR.
+          DISC PARITY ERROR
+          CANNOT ALLOCATE DISC.
+
+          The following messages are  directed  only  to  the  current
+          output file, be it terminal or some other device:
+
+            PPP  (USERNAME)FILE.EXT       (MODE STORE/RESTORE FILES)
+
+          NOT WRITING OVER FILE ( ) . .
+          WRITING OVER FILE ( ) . .
+          TOTAL XX FILES FOR SAVE SET.
+
+          THIS IS SAVE SET NO. XX         (HEADER MESSAGES)
+          TAPE NO. XX RECORDED HH:MM DD-MON-YR
+          SYSTEM C35 DRIVE 145 800 BPI 7 TRACK
+
+          FILE ( ) .  GIVEN LICENSE OOOOOOOO.
+          FILE ( ) .  NOT GIVEN LICENSE OOOOOOOO.
+
+            PPP  FILENM.EXT   USERNAME... (DIRECTORY ENTRY)
+
+          TOTAL XX FILES FOR  USERNAME... (TOTAL USER IN DIRECTORY)
+
+          Output from the HELP command may be directed  to  an  output
+          file.  All other messages, not listed above, are directed to
+          the terminal only.
+TITO USER'S GUIDE; SEPTEMBER 1975                                     Page 23
+INDEX
+
+
+                                    INDEX
+
+
+          Append . . . . . . . . . . . . 1
+          Appendix a . . . . . . . . . . 19
+          Appendix b . . . . . . . . . . 21
+
+          Cof  . . . . . . . . . . . . . 14, 21
+          Cut after  . . . . . . . . . . 10
+
+          Density setting  . . . . . . . 0
+          Device . . . . . . . . . . . . 10
+          Device name  . . . . . . . . . 0
+          Directory  . . . . . . . . . . 9, 16
+
+          Entering tito  . . . . . . . . 0
+
+          File checksums . . . . . . . . 3
+
+          Get  . . . . . . . . . . . . . 16
+
+          Help . . . . . . . . . . . . . 14
+
+          Indirect files . . . . . . . . 3
+          Initialization of tapes  . . . 1
+
+          Message control  . . . . . . . 21
+          Mixed format tapes . . . . . . 12
+          Mode . . . . . . . . . . . . . 18
+          Multiple tapes . . . . . . . . 7
+
+          New commands . . . . . . . . . 10
+          New features . . . . . . . . . 2
+          New tape . . . . . . . . . . . 1
+          Noupdate . . . . . . . . . . . 15
+
+          Operating commands . . . . . . 14
+
+          Quit . . . . . . . . . . . . . 14
+
+          Restore  . . . . . . . . . . . 16
+          Rewind . . . . . . . . . . . . 14
+          Rwnw . . . . . . . . . . . . . 14
+
+          Skip . . . . . . . . . . . . . 15
+          Skip write . . . . . . . . . . 1
+          Store  . . . . . . . . . . . . 16
+
+          Tape formats . . . . . . . . . 19
+          Tape positions . . . . . . . . 2
+          Translate  . . . . . . . . . . 5
+          Translation of user names  . . 5
+
+          Unload . . . . . . . . . . . . 10
+          Untranslate  . . . . . . . . . 6
+          Update . . . . . . . . . . . . 15
+
+          Where  . . . . . . . . . . . . 11
