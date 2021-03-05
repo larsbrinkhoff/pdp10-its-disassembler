@@ -4,7 +4,8 @@ CFLAGS = -g -W -Wall
 FILES =  sblk-file.o pdump-file.o dmp-file.o raw-file.o shr-file.o \
 	 mdl-file.o
 
-WORDS =  bin-word.o its-word.o x-word.o dta-word.o aa-word.o pt-word.o core-word.o tape-word.o cadr-word.o
+WORDS =  aa-word.o bin-word.o cadr-word.o core-word.o dta-word.o its-word.o \
+	 oct-word.o pt-word.o tape-word.o x-word.o
 
 OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o weenix.o
@@ -176,6 +177,7 @@ its2bin.o: its2bin.c dis.h
 its2x.o: its2x.c dis.h
 main.o: main.c dis.h opcode/pdp10.h memory.h
 memory.o: memory.c memory.h dis.h
+oct-word.o: oct-word.c dis.h
 pdp10-opc.o: pdp10-opc.c opcode/pdp10.h
 pdump.o: pdump.c dis.h memory.h
 saildart.o: saildart.c dis.h

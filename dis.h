@@ -69,6 +69,7 @@ extern struct word_format cadr_word_format;
 extern struct word_format core_word_format;
 extern struct word_format dta_word_format;
 extern struct word_format its_word_format;
+extern struct word_format oct_word_format;
 extern struct word_format pt_word_format;
 extern struct word_format tape_word_format;
 extern struct word_format tape7_word_format;
