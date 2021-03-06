@@ -13,6 +13,7 @@
 - Convert files to a RP04 bootable KLDCP disk image.
 - Scramble or unscramble an encrypted file.
 - Make a picture file suitable for displaying on a Knight TV.
+- List or extract files from a TITO tape (Tymeshare TYMCOM-X).
 
 A Linux FUSE implementation of the networking filesystem protocol MLDEV
 is elsewhere: http://github.com/larsbrinkhoff/lmdev
