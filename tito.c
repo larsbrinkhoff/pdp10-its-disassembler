@@ -270,7 +270,9 @@ open_file (char *directory, char *name, char *ext)
 {
   weenixname (directory);
   fprintf (info, "DIRECTORY: %s\n", directory);
-  mkdir (directory, 0777);
+  if (mkdir (directory, 0777) == -1 && errno != EEXIST)
+    fprintf (stderr, "Error creating output directory %s: %s\n",
+	     directory, strerror (errno));
 
   weenixname (name);
   weenixname (ext);
@@ -286,10 +288,8 @@ open_file (char *directory, char *name, char *ext)
   fprintf (info, "FILE: %s\n", file_path);
   output = fopen (file_path, "wb");
   if (output == NULL)
-    {
-      perror ("fopen");
-      exit (1);
-    }
+    fprintf (stderr, "Error opening output file %s: %s\n",
+	     file_path, strerror (errno));
 
   checksum = 0;
 }
@@ -474,19 +474,32 @@ usage (const char *x)
 int
 main (int argc, char **argv)
 {
-  char *file = NULL;
-  FILE *f;
+  FILE *f = NULL;
   int opt;
 
   input_word_format = &tape_word_format;
   output_word_format = &aa_word_format;
 
-  while ((opt = getopt (argc, argv, "tvxf:")) != -1)
+  if (argc == 1)
+    usage (argv[0]);
+
+  while ((opt = getopt (argc, argv, "tvxf:W:")) != -1)
     {
       switch (opt)
 	{
 	case 'f':
-	  file = optarg;
+	  if (f != NULL)
+	    {
+	      fprintf (stderr, "Just one -f allowed.\n");
+	      exit (1);
+	    }
+	  f = fopen (optarg, "rb");
+	  if (f == NULL)
+	    {
+	      fprintf (stderr, "Error opening input %s: %s\n",
+		       optarg, strerror (errno));
+	      exit (1);
+	    }
 	  break;
 	case 't':
 	  verbose++;
@@ -502,11 +515,8 @@ main (int argc, char **argv)
 	}
     }
 
-  if (file)
-    f = fopen (file, "rb");
-  else
+  if (f == NULL)
     f = stdin;
-
 
   list = info = stdout;
   if (verbose == 0)
