@@ -39,7 +39,8 @@ static FILE *info;
 static FILE *output;
 static word_t checksum;
 static char file_path[100];
-struct timeval timestamp[2];
+static struct timeval timestamp[2];
+static int first_file;
 
 static int
 february (int year)
@@ -192,7 +193,8 @@ process_header (FILE *f, word_t word, int trailer)
   else
     expect_file (word);
 
-  fprintf (info, "TITO version: %d\n", left (word));
+  fprintf (list, "%s of saveset, written by TITO v%o.  ",
+	   trailer ? "End" : "Start", left (word));
   count = right (word);
   fprintf (info, "Header words: %d\n", count);
 
@@ -202,7 +204,8 @@ process_header (FILE *f, word_t word, int trailer)
   word = get_word (f);
   if (left (word) != AFE)
     fprintf (stderr, "EXPECTED FAILSAFE MAGIC\n");
-  fprintf (info, "Tape sequence #%d\n", right (word));
+  if (!trailer)
+    fprintf (list, "Tape #%d, ", right (word));
   
   word = get_word (f);
   if (word & 0400000000000LL)
@@ -211,9 +214,11 @@ process_header (FILE *f, word_t word, int trailer)
     fprintf (info, "User continued\n");
   if (word & 0100000000000LL)
     fprintf (info, "File continued\n");
-  fprintf (info, "Saveset written: ");
-  print_timestamp (info, word);
-  fputc ('\n', info);
+  if (!trailer)
+    print_timestamp (list, word);
+  fputc ('\n', list);
+  if (trailer)
+    fputc ('\n', list);
 
   word = get_word (f);
   if (word != 000001000002LL)
@@ -330,6 +335,15 @@ process_file_header (FILE *f, word_t word)
     fprintf (stderr, "EXPECTED 0\n");
   fprintf (info, "Count for extended lookup: %d\n", right (block[2]));
 
+  if (first_file)
+    {
+      fprintf (list, "System: ");
+      print_ascii (list, block[073]);
+      print_ascii (list, block[074]);
+      fprintf (list, ".  Tape: %d bpi, %d tracks.\n",
+	       density, right (block[075]));
+    }
+
   t = (block[5] >> 2) & 030000;
   t |= block[6] & 07777;
   t |= (block[6] << 2) & 0177740000LL;
@@ -363,13 +377,6 @@ process_file_header (FILE *f, word_t word)
       *strchr (directory, ')') = ' ';
     }
 
-  fprintf (info, "System: %s", sixbit);
-  print_ascii (info, block[073]);
-  print_ascii (info, block[074]);
-  fputc ('\n', info);
-
-  fprintf (info, "Tape density: %d\n", density);
-  fprintf (info, "Tape tracks: %d\n", right (block[075]));
   switch (right (block[1]))
     {
     case 14:
@@ -433,6 +440,7 @@ static word_t
 process_file (FILE *f, word_t word)
 {
   word = process_file_header (f, word);
+  first_file = 0;
   while (data_record (word))
     word = process_data (f, word);
   return word;
@@ -456,8 +464,8 @@ process_saveset (FILE *f)
   word_t word = get_word (f);
   if (word == -1)
     exit (0);
-  fprintf (info, "SAVESET\n");
   process_header (f, word, 0);
+  first_file = 1;
   word = get_word (f);
   while (file_record (word))
     word = process_user (f, word);
