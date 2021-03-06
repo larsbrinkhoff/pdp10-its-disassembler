@@ -475,7 +475,8 @@ process_saveset (FILE *f)
 static void
 usage (const char *x)
 {
-  fprintf (stderr, "Usage: %s -t|-x [-v] [-f file]\n", x);
+  fprintf (stderr, "Usage: %s -t|-x [-v] [-7] [-Wformat] [-f file]\n", x);
+  usage_word_format ();
   exit (1);
 }
 
@@ -491,7 +492,7 @@ main (int argc, char **argv)
   if (argc == 1)
     usage (argv[0]);
 
-  while ((opt = getopt (argc, argv, "tvxf:W:")) != -1)
+  while ((opt = getopt (argc, argv, "tvx7f:W:")) != -1)
     {
       switch (opt)
 	{
@@ -517,6 +518,13 @@ main (int argc, char **argv)
 	  break;
 	case 'x':
 	  extract = 1;
+	  break;
+	case '7':
+	  input_word_format = &tape7_word_format;
+	  break;
+	case 'W':
+	  if (parse_output_word_format (optarg))
+	    usage (argv[0]);
 	  break;
 	default:
 	  usage (argv[0]);
