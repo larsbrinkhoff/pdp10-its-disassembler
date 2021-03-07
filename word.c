@@ -26,6 +26,7 @@ static struct word_format *word_formats[] = {
   &bin_word_format,
   &cadr_word_format,
   &core_word_format,
+  &data8_word_format,
   &dta_word_format,
   &its_word_format,
   &oct_word_format,
