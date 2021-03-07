@@ -11,7 +11,7 @@ OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o weenix.o
 
 UTILS =	conv36 bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
-	macdmp saildart macro-tapes tape-dir harscntopbm palx its2ascii \
+	macdmp macro-tapes tape-dir harscntopbm palx its2ascii \
 	tracks ipak kldcp klfedr scrmbl unscr tvpic tito
 
 all: dis10 $(UTILS) check
@@ -58,9 +58,6 @@ dskdmp: dskdmp.c $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
 macdmp: macdmp.c $(OBJS) libwords.a
-	$(CC) $(CFLAGS) $^ -o $@
-
-saildart: saildart.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
 magdmp: magdmp.c core-word.o $(OBJS) libwords.a
@@ -182,7 +179,6 @@ memory.o: memory.c memory.h dis.h
 oct-word.o: oct-word.c dis.h
 pdp10-opc.o: pdp10-opc.c opcode/pdp10.h
 pdump.o: pdump.c dis.h memory.h
-saildart.o: saildart.c dis.h
 sblk.o: sblk.c dis.h memory.h
 scrmbl.o: scrmbl.c dis.h
 timing.o: timing.c opcode/pdp10.h timing.h dis.h
