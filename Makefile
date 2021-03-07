@@ -4,8 +4,8 @@ CFLAGS = -g -W -Wall
 FILES =  sblk-file.o pdump-file.o dmp-file.o raw-file.o shr-file.o \
 	 mdl-file.o
 
-WORDS =  aa-word.o bin-word.o cadr-word.o core-word.o dta-word.o its-word.o \
-	 oct-word.o pt-word.o tape-word.o x-word.o
+WORDS =  aa-word.o bin-word.o cadr-word.o core-word.o data8-word.o \
+	 dta-word.o its-word.o oct-word.o pt-word.o tape-word.o x-word.o
 
 OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o weenix.o
@@ -127,7 +127,7 @@ check: \
 	out/ts.srccom.dasm out/atsign.tcp.dasm out/arc.code.list \
 	out/macro.low.dasm out/pt.rim.dasm out/visib1.bin.dasm \
 	out/visib2.bin.dasm out/visib3.bin.dasm out/@.midas.dasm \
-	out/srccom.exe.dasm \
+	out/srccom.exe.dasm out/dart.dmp.dasm \
 	out/stink.-ipak-.ipak \
 	out/thirty.scrmbl out/sixbit.scrmbl out/pdpten.scrmbl \
 	out/aaaaaa.scrmbl out/0s.scrmbl
@@ -145,6 +145,7 @@ samples/visib3.bin = -Wits -Sall
 samples/@.midas = -D774000 -Sall
 samples/stink.-ipak- = -Wascii
 samples/srccom.exe = -Wascii
+samples/dart.dmp = -6 -Wdata8
 
 out/%.dasm: samples/% dis10 test/%.dasm
 	./dis10 $($<) $< > $@
@@ -170,6 +171,7 @@ bin-word.o: bin-word.c dis.h
 bin2ascii.o: bin2ascii.c
 bin2x.o: bin2x.c
 conv36.o: dis.h
+data8-word.o: data8-word.c dis.h
 dis.o: dis.c opcode/pdp10.h dis.h memory.h timing.h
 info.o: info.c dis.h memory.h
 its-word.o: its-word.c dis.h
