@@ -19,4 +19,4 @@ is elsewhere: http://github.com/larsbrinkhoff/lmdev
 ## Tools for other PDP-10 systems.
 
 - List or extract files from a TITO tape (Tymeshare TYMCOM-X).
-- List or extract files from a DART tape (SAIL WAITS).
+- List, extract, or write files on a DART tape (SAIL WAITS).
