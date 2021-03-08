@@ -17,6 +17,11 @@
 
 #include "dis.h"
 
+/* Buffer for write_word. */
+static word_t record[65536];
+static int reclen = 0;
+static int beginning_of_tape = 1;
+
 static int
 get_byte (FILE *f)
 {
@@ -269,18 +274,70 @@ rewind_tape_word (FILE *f)
   rewind (f);
 }
 
+static void
+write_tape_record (FILE *f, word_t *buffer, int n)
+{
+  if (output_word_format == &tape_word_format)
+    write_9track_record (f, buffer, n);
+  else
+    write_7track_record (f, buffer, n);
+}
+
+void
+write_tape_mark (f)
+{
+  write_tape_record (f, NULL, 0);
+}
+
+void
+write_tape_eot (f)
+{
+  write_tape_mark (f);
+  write_tape_mark (f);
+}
+
+static void
+flush_record (FILE *f)
+{
+  write_tape_record (f, record, reclen);
+  reclen = 0;
+}
+
+static void
+write_tape_word (FILE *f, word_t word)
+{
+  if (!beginning_of_tape)
+    {
+      if (word & (START_RECORD|START_FILE))
+	flush_record (f);
+      if (word & START_FILE)
+	write_tape_mark (f);
+    }
+  beginning_of_tape = 0;
+
+  record[reclen++] = word;
+}
+
+static void
+flush_tape_word (FILE *f)
+{
+  flush_record (f);
+  write_tape_eot (f);
+  beginning_of_tape = 1;
+}
+
 struct word_format tape_word_format = {
   "tape",
   get_tape_word,
   rewind_tape_word,
-  NULL,
-  NULL
+  write_tape_word,
+  flush_tape_word
 };
 
 struct word_format tape7_word_format = {
   "tape7",
   get_tape_word,
   rewind_tape_word,
-  NULL,
-  NULL
+  write_tape_word,
+  flush_tape_word
 };
