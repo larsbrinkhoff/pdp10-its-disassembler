@@ -316,7 +316,7 @@ process_file_header (FILE *f, word_t word)
   char sixbit[7];
   char directory[14];
   char name[7];
-  char ext[4];
+  char ext[7];
   int size;
   word_t t;
 
@@ -369,6 +369,7 @@ process_file_header (FILE *f, word_t word)
     {
       sixbit_to_ascii (block[4], name);
       sixbit_to_ascii (block[5] & 0777777000000LL, ext);
+      ext[3] = '\0';
       strcat (directory, " ");
       *strchr (directory, ' ') = ')';
       fprintf (list, "   (%s %s.%s ", directory, name, ext);
