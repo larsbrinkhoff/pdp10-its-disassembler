@@ -316,7 +316,7 @@ process_file_header (FILE *f, word_t word)
   char sixbit[7];
   char directory[14];
   char name[7];
-  char ext[4];
+  char ext[7];
   int size;
   word_t t;
 
@@ -372,6 +372,7 @@ process_file_header (FILE *f, word_t word)
       strcat (directory, " ");
       *strchr (directory, ' ') = ')';
       fprintf (list, "   (%s %s.%s ", directory, name, ext);
+      ext[3] = '\0';
       print_timestamp (list, t);
       fprintf (list, "   [%o,%o]\n", left (block[3]), right (block[3]));
       *strchr (directory, ')') = ' ';
