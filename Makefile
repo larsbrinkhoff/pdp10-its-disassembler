@@ -130,7 +130,8 @@ check: \
 	out/srccom.exe.dasm out/dart.dmp.dasm \
 	out/stink.-ipak-.ipak \
 	out/thirty.scrmbl out/sixbit.scrmbl out/pdpten.scrmbl \
-	out/aaaaaa.scrmbl out/0s.scrmbl
+	out/aaaaaa.scrmbl out/0s.scrmbl \
+	out/dart.tape.dart
 
 samples/ts.obs = -Wits
 samples/ts.ksfedr = -Wits
@@ -165,6 +166,10 @@ out/%.scrmbl: samples/zeros.%.scrmbl scrmbl its2bin samples/zeros.scrmbl
 	./scrmbl -d -Wits $* $@ out/$*.unscrm
 	./its2bin out/$*.unscrm | cmp - samples/zeros.scrmbl \
 		|| rm $@ /no-such-file
+
+out/%.dart: samples/% dart test/%.dart
+	./dart -t9f $< > $@
+	cmp $@ test/$*.dart || rm $@ /no-such-file
 
 #dependencies
 bin-word.o: bin-word.c dis.h
