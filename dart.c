@@ -213,41 +213,65 @@ mangle (char *string)
   return string;
 }
 
+static int
+check_name (char *string, size_t m)
+{
+  return strlen (string) <= m;
+}
+
+static int
+fix_name (char *string)
+{
+  int n = strlen (string);
+  if (n > 3)
+    return 0;
+  memmove (string - n, string, n);
+  *string = 0;
+  return 1;
+}
+
+static int
+names_ok (int n, char *prj, char *prg, char *nam, char *ext)
+{
+  if (n == 3)
+    return check_name (nam, 6) &&
+      fix_name (prg) &&
+      fix_name (prj);
+  if (n == 4)
+    return check_name (nam, 6) &&
+      check_name (ext, 3) &&
+      fix_name (prg) &&
+      fix_name (prj);
+  return 0;
+}
+
 static void
 unmangle (char *name, char *nam, char *ext, char *prj, char *prg)
 {
-  char *p, *q;
+  int n;
 
-  memset (nam, 0, 7);
-  memset (ext, 0, 7);
-  memset (prj, 0, 7);
-  memset (prg, 0, 7);
-
-  q = strchr (name, '/');
-  if (q == NULL || q - name > 3)
+  if (strlen (name) > 18)
     {
-      fprintf (stderr, "\nBad input file name: %s", name);
+      fprintf (stderr, "\nInput file name too long: %s", name);
       exit (1);
     }
-  strncpy (prg, "   ", 3 - (q - name));
-  strncat (prg, name, q - name);
 
-  p = q + 1;
-  q = strchr (p, '/');
-  if (q == NULL || q - p > 3)
-    {
-      fprintf (stderr, "\nBad input file name: %s", name);
-      exit (1);
-    }
-  strncpy (prj, "   ", 3 - (q - p));
-  strncat (prj, p, q - p);
+  strcpy (prj, "   ");
+  strcpy (prg, "   ");
+  prj += 3;
+  prg += 3;
+  *ext = 0;
 
-  p = q + 1;
-  q = strchr (p, '.');
-  if (q != NULL)
-    strcpy (ext, q + 1);
+  n = sscanf (name, "%[^/]/%[^/]/%[^.].%s", prg, prj, nam, ext);
+  if (n > 2 && names_ok (n, prg, prj, nam, ext))
+    return;
 
-  strncpy (nam, p, q - p);
+  n = sscanf (name, "%[^.].%[^/]/%[^.].%s", prg, prj, nam, ext);
+  if (names_ok (n, prg, prj, nam, ext))
+    return;
+
+  fprintf (stderr, "\nBad input file name: %s", name);
+  exit (1);
 }
 
 static void
@@ -593,7 +617,7 @@ write_data (FILE *f, FILE *input, int offset, word_t start)
 static void
 write_file (FILE *f, char *name)
 {
-  char nam[7], ext[7], prj[7], prg[7];
+  char nam[18], ext[18], prj[18], prg[18];
   word_t timestamp;
   struct stat st;
   int offset = 021;
