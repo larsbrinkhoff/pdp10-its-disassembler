@@ -50,6 +50,9 @@ static int iover = 2;
 static int trailer;
 static int file_argc;
 static char** file_argv;
+static int tape_frames;
+static int tape_bpw; /* Tape frames per word. */
+static int tape_bpi;
 
 static void
 compute_date (word_t date, int *year, int *month, int *day)
@@ -607,22 +610,39 @@ read_tape (FILE *f)
     word = read_record (f, word);
 }
 
+static word_t
+tape_feet (void)
+{
+  return tape_frames / tape_bpi / 12;
+}
+
 static void
 write_header (FILE *f, word_t type)
 {
+  int length = iover < 3 ? 5 : 013;
   time_t now = waits_timestamp (time (NULL));
   if (dart < 5)
     now &= 037777777LL;
 
-  write_word (f, dart << 18 | 5 | START_FILE);
-  write_word (f, DART);
-  write_word (f, type);
-  write_word (f, now);
-  write_word (f, ascii_to_sixbit ("DMPSYS"));
-  write_word (f, 0 | 0);
+  checksum = 0;
+  write_word (f, dart << 18 | length | START_FILE);
+  write_word (f, rotchk (DART));
+  write_word (f, rotchk (type));
+  write_word (f, rotchk (now));
+  write_word (f, rotchk (ascii_to_sixbit ("DMPSYS")));
+  write_word (f, rotchk (0 | 0));
+
+  tape_frames += tape_bpw * (length + 1);
 
   if (iover < 3)
     return;
+
+  write_word (f, rotchk (1 << 18 | 1));
+  write_word (f, rotchk (tape_feet ()));
+  write_word (f, rotchk (0));
+  write_word (f, rotchk (0777777777777LL));
+  write_word (f, rotchk (0));
+  write_word (f, checksum);
 }
 
 static int
@@ -631,20 +651,15 @@ read_block (FILE *f, word_t *data, int offset)
   int i, max, size = 0;
   word_t word;
 
-  max = iover < 3 ? 1280 : 10240;
-  max -= 2;
+  max = iover < 3 ? 1280 : 10240 - 030;
+  max -= 2; /* Leave room for length and checksum words. */
 
-  for (i = 0; i < offset; i++)
-    checksum ^= data[i];
-
-  data += offset;
   for (i = offset; i < max; i++)
     {
       word = get_word (f);
       if (word == -1)
 	return size;
-      checksum ^= word;
-      *data++ = word;
+      data[i] = word;
       size++;
     }
   
@@ -655,13 +670,27 @@ static void
 write_data (FILE *f, FILE *input, int offset, word_t start)
 {
   int i, length;
-  checksum = 0;
   length = read_block (input, block, offset);
   length += offset;
+  if (iover >= 3)
+    {
+      block[027] = tape_feet ();
+      memset (block + length, 0, 030 * sizeof (word_t));
+      length += 030;
+      block[length - 1] = PRMEND;
+    }
   write_word (f, length | start);
+  checksum = 0;
   for (i = 0; i < length; i++)
-    write_word (f, block[i]);
+    {
+      write_word (f, block[i]);
+      checksum ^= block[i];
+    }
   write_word (f, checksum);
+  if (iover >= 3)
+    block[033] -= length - offset; /* Update file words left. */
+  tape_frames += tape_bpw * (length + 2);
+  tape_frames += 3 * tape_bpi / 5;
 }
 
 static void
@@ -710,22 +739,22 @@ write_file (FILE *f, char *name)
 
   if (iover >= 3)
     {
-      //block[021] = DART;
-      //block[022] = ascii_to_sixbit ("*FILE*");
-      //block[023] = time,date
-      //if (dart >= 5) block[024] |= bits 0-2
-      //block[024] = ppn of dumper
-      //block[025] = class,,tapno
-      //block[026] = relative,,absolute dump
-      //block[027] = tape position
+      block[021] = DART;
+      block[022] = ascii_to_sixbit ("*FILE*");
+      block[023] = waits_timestamp (time (NULL));
+      block[024] = ascii_to_sixbit ("DMPSYS");
+      block[025] = 0 | 0;
+      block[026] = 1 << 18 | 1;
+      block[027] = 0;
       block[030] = 0;
-      block[031] = 0777777777777;
+      block[031] = 0777777777777LL;
       block[032] = 0;
-      //block[033] = file words left
+      block[033] = block[006];
       memset (block + 034, 0, 7 * sizeof (word_t));
       offset = 043;
     }
 
+  tape_frames += 3 * tape_bpi; /* Tape mark. */
   write_data (f, input, offset, (01000000 - iover) << 18 | START_FILE);
   if (iover >= 3)
     block[022] = ascii_to_sixbit ("CON   ") | iover;
@@ -748,9 +777,11 @@ write_tape (FILE *f)
     f = stdout;
 
   dart = 5;
+  tape_frames = 0;
   write_header (f, HEAD);
   for (i = 0; i < file_argc; i++)
     write_file (f, file_argv[i]);
+  tape_frames += 3 * tape_bpi; /* Tape mark. */
   write_header (f, TAIL);
   flush_word (f);
 }
@@ -779,10 +810,11 @@ main (int argc, char **argv)
   FILE *f;
   int opt;
 
+  tape_bpi = 800;
   input_word_format = &tape7_word_format;
   output_word_format = &aa_word_format;
 
-  while ((opt = getopt (argc, argv, "ctvx789f:W:C:")) != -1)
+  while ((opt = getopt (argc, argv, "ctvx123789f:W:C:")) != -1)
     {
       switch (opt)
 	{
@@ -831,21 +863,21 @@ main (int argc, char **argv)
 	case '3':
 	  iover = opt - '0';
 	  dart = iover + 3;
-	  if (iover >= 3)
-	    {
-	      fprintf (stderr, "Writing IOVER%d tapes is not yet supported.\n",
-		       iover);
-	      exit (1);
-	    }
 	  break;
 	case '7':
 	  input_word_format = &tape7_word_format;
+	  tape_bpw = 6;
+	  tape_bpi = 800;
 	  break;
 	case '8':
 	  input_word_format = &data8_word_format;
+	  tape_bpw = 5;
+	  tape_bpi = 6250;
 	  break;
 	case '9':
 	  input_word_format = &tape_word_format;
+	  tape_bpw = 5;
+	  tape_bpi = 6250;
 	  break;
 	case 'W':
 	  if (parse_output_word_format (optarg))
