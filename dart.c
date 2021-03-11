@@ -470,7 +470,8 @@ read_header (FILE *f, word_t word)
   prg[3] = 0;
   fprintf (list, "\nRECORDED ");
   date = block[3] & 07777;
-  date |= (block[3] >> 21) & 070000;
+  if (dart >= 5)
+    date |= (block[3] >> 21) & 070000;
   minutes = (block[3] >> 12) & 03777;
   print_timestamp (list, date, minutes);
   fprintf (list, ",  BY [%s,%s] %s CLASS",
@@ -561,7 +562,7 @@ static void
 write_header (FILE *f, word_t type)
 {
   time_t now = waits_timestamp (time (NULL));
-  if (dart < 6)
+  if (dart < 5)
     now &= 037777777LL;
 
   write_word (f, dart << 18 | 5 | START_FILE);
