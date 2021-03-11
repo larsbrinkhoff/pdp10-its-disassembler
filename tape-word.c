@@ -284,13 +284,13 @@ write_tape_record (FILE *f, word_t *buffer, int n)
 }
 
 void
-write_tape_mark (f)
+write_tape_mark (FILE *f)
 {
   write_tape_record (f, NULL, 0);
 }
 
 void
-write_tape_eot (f)
+write_tape_eot (FILE *f)
 {
   write_tape_mark (f);
   write_tape_mark (f);
