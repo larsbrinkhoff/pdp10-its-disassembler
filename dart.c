@@ -93,6 +93,18 @@ waits_timestamp (time_t t)
   return (days & 07777LL) | minutes << 12 | ((word_t)days & 070000) << 21;
 }
 
+static int
+right (word_t word)
+{
+  return word & 0777777LL;
+}
+
+static int
+left (word_t word)
+{
+  return right (word >> 18);
+}
+
 static void
 print_rib (FILE *f, word_t *rib)
 {
@@ -119,10 +131,31 @@ print_rib (FILE *f, word_t *rib)
 static void
 print_ext (FILE *f, word_t *data, word_t type)
 {
+  word_t date, minutes;
+  char string[7], prj[4], prg[4];
+
   if (data[000] != DART)
     fprintf (stderr, "\nEXPECTED DART");
   if (data[001] != type)
     fprintf (stderr, "\nEXPECTED *FILE* or CON,,IOVER");
+
+  fprintf (f, "\n     Dumped: ");
+  date = data[2] & 07777;
+  if (dart >= 5)
+    date |= (data[2] >> 21) & 070000;
+  minutes = (data[2] >> 12) & 03777;
+  print_timestamp (f, date, minutes);
+
+  sixbit_to_ascii (data[3], string);
+  strncpy (prj, string, 3);
+  prj[3] = 0;
+  strncpy (prg, string + 3, 3);
+  prg[3] = 0;
+  fprintf (f, " [%s,%s]", prj, prg);
+  fprintf (f, " %d,,%d", left (data[4]), right (data[4]));
+  fprintf (f, " %d/%d", left (data[5]), right (data[5]));
+  fprintf (f, " %lld feet", data[6]);
+  fprintf (f, " %lld words left", data[012]);
 }
 
 static void
@@ -146,18 +179,6 @@ print_mederr (FILE *f, word_t *mederr)
       fprintf (f, " %012llo", mederr[i]);
     }
 }  
-
-static int
-right (word_t word)
-{
-  return word & 0777777LL;
-}
-
-static int
-left (word_t word)
-{
-  return right (word >> 18);
-}
 
 static void
 get_block (FILE *f, word_t *buffer, int words)
@@ -330,6 +351,15 @@ file_size (char *name)
   return size;
 }
 
+static word_t
+rotchk (word_t x)
+{
+  checksum = (checksum << 1) | (checksum >> 35);
+  checksum += x;
+  checksum &= 0777777777777LL;
+  return x;
+}
+
 static void
 write_block (word_t *data, int size)
 {
@@ -444,7 +474,7 @@ read_data (FILE *f, int length)
 static void
 read_header (FILE *f, word_t word)
 {
-  int length;
+  int length, i;
   char string[7];
   char prj[4], prg[4];
   word_t date, minutes;
@@ -479,7 +509,26 @@ read_header (FILE *f, word_t word)
   if (left (block[5]))
     fprintf (list, " TAPE #%d", right (block[5]));
   if (block[2] == TAIL)
-    fputc ('\n', list);
+    {
+      fputc ('\n', list);
+      return;
+    }
+
+  if (length <= 5)
+    return;
+  if (length != 013)
+    fprintf (stderr, "\nEXPECTED 13 WORD HEADER");
+  fprintf (info, "\n     Tape %d/%d, position %lld",
+	   left (block[6]), right (block[6]), block[7]);
+
+  checksum = 0;
+  for (i = 1; i < length; i++)
+    rotchk (block[i]);
+  if (block[013] != checksum)
+    fprintf (stderr, "\nBad checksum: %012llo != %012llo",
+	     block[013], checksum);
+  else
+    fprintf (debug, "\nGood checksum: %012llo", checksum);
 }
 
 static word_t
