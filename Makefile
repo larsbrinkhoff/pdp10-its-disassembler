@@ -167,8 +167,12 @@ out/%.scrmbl: samples/zeros.%.scrmbl scrmbl its2bin samples/zeros.scrmbl
 	./its2bin out/$*.unscrm | cmp - samples/zeros.scrmbl \
 		|| rm $@ /no-such-file
 
+FIX_TIME=sed 's/RECORDED ....-..-.. ..:..,/RECORDED XXXX-XX-XX XX:XX/'
+
 out/%.dart: samples/% dart test/%.dart
-	./dart -t9f $< > $@
+	./dart -x9f $< -C.tmp.
+	(cd .tmp.; ../dart -c7 reg/1/*) | ./dart -t7 | $(FIX_TIME) > $@
+	rm -rf .tmp.
 	cmp $@ test/$*.dart || rm $@ /no-such-file
 
 #dependencies
