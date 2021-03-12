@@ -1,4 +1,4 @@
-/* Copyright (C) 2013 Lars Brinkhoff <lars@nocrew.org>
+/* Copyright (C) 2013, 2021 Lars Brinkhoff <lars@nocrew.org>
    Copyright (C) 2020 Adam Sampson <ats@offog.org>
 
     This program is free software: you can redistribute it and/or modify
@@ -75,6 +75,7 @@ main (int argc, char **argv)
   int opt;
   word_t word;
   word_t mask = WORDMASK;
+  word_t tape;
 
   default_formats (argv[0]);
 
@@ -119,7 +120,10 @@ main (int argc, char **argv)
     usage (argv);
 
   while ((word = get_word (file)) != -1)
-    write_word (stdout, word & mask);
+    {
+      tape = word & (START_FILE | START_RECORD);
+      write_word (stdout, (word & mask) | tape);
+    }
   flush_word (stdout);
 
   if (file != stdin)
