@@ -1,4 +1,4 @@
-/* Copyright (C) 2009 Lars Brinkhoff <lars@nocrew.org>
+/* Copyright (C) 2009, 2021 Lars Brinkhoff <lars@nocrew.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -210,49 +210,51 @@ int get_7track_record (FILE *f, word_t **buffer)
 }
 
 static word_t *buffer = NULL;
-int n, words;
-int end_of_file = 1;
-int end_of_tape = 0;
+static int n, words;
+static word_t tape_bits = START_FILE;
+
+static int
+get_tape_record (FILE *f, word_t **buffer)
+{
+  if (input_word_format == &tape_word_format)
+    return get_9track_record (f, buffer);
+  else
+    return get_7track_record (f, buffer);
+}
 
 static word_t
 get_tape_word (FILE *f)
 {
   word_t word;
 
-  if (end_of_tape)
-    return -1;
-
   if (buffer == NULL)
     {
-      if (input_word_format == &tape_word_format)
-	words = get_9track_record (f, &buffer);
-      else
-	words = get_7track_record (f, &buffer);
+      words = get_tape_record (f, &buffer);
       if (words == 0)
 	{
-	  end_of_file = 1;
-	  if (input_word_format == &tape_word_format)
-	    words = get_9track_record (f, &buffer);
-	  else
-	    words = get_7track_record (f, &buffer);
+	  /* Seen one tape mark.  Is this EOF or EOT? */
+	  words = get_tape_record (f, &buffer);
 	  if (words == 0)
 	    {
-	      end_of_tape = 1;
-	      return -1;
+	      /* Seen two tape marks.  Is this pysical or logical EOT? */
+	      words = get_tape_record (f, &buffer);
+	      if (feof (f))
+		/* End of input file means physical end of tape. */
+		return -1;
+	      /* More data in input file; it was logical end of tape. */
+	      tape_bits = START_TAPE;
 	    }
+	  else
+	    tape_bits = START_FILE;
 	}
+      else
+	tape_bits = START_RECORD;
       n = 0;
     }
 
   word = buffer[n++];
-
-  if (end_of_file)
-    {
-      word |= START_FILE;
-      end_of_file = 0;
-    }
-  else if (n == 1)
-    word |= START_RECORD;
+  word |= tape_bits;
+  tape_bits = 0;
 
   if (n == words)
     {
@@ -268,8 +270,7 @@ rewind_tape_word (FILE *f)
 {
   if (buffer != NULL)
     free (buffer);
-  end_of_file = 1;
-  end_of_tape = 0;
+  tape_bits = START_FILE;
   buffer = NULL;
   rewind (f);
 }
@@ -308,9 +309,11 @@ write_tape_word (FILE *f, word_t word)
 {
   if (!beginning_of_tape)
     {
-      if (word & (START_RECORD|START_FILE))
+      if (word & (START_RECORD|START_FILE|START_TAPE))
 	flush_record (f);
-      if (word & START_FILE)
+      if (word & (START_FILE|START_TAPE))
+	write_tape_mark (f);
+      if (word & START_TAPE)
 	write_tape_mark (f);
     }
   beginning_of_tape = 0;

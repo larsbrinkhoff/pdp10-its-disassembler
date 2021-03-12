@@ -203,7 +203,7 @@ get_block (FILE *f, word_t *buffer, int words)
 	  fprintf (stderr, "\nUNEXPECTED END OF TAPE");
 	  exit (1);
 	}
-      if (buffer[i] & (START_FILE|START_RECORD))
+      if (buffer[i] & (START_RECORD|START_FILE|START_TAPE))
 	{
 	  fprintf (stderr, "\nRecord too short.");
 	  exit (1);

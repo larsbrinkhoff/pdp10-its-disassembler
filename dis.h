@@ -1,4 +1,4 @@
-/* Copyright (C) 2013 Lars Brinkhoff <lars@nocrew.org>
+/* Copyright (C) 2013, 2021 Lars Brinkhoff <lars@nocrew.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -51,7 +51,11 @@ struct word_format {
 
 enum { SYMBOLS_NONE, SYMBOLS_DDT, SYMBOLS_ALL };
 
-enum { START_FILE = 1LL << 36, START_RECORD = 1LL << 37 };
+enum {
+  START_FILE = 1LL << 36,
+  START_RECORD = 1LL << 37,
+  START_TAPE = 1LL << 38
+};
 
 extern struct file_format *input_file_format;
 extern struct file_format dmp_file_format;

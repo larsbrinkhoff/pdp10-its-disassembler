@@ -98,7 +98,7 @@ convert (char *argv0, char *file)
   while ((word = get_word (f)) != -1)
     {
       if (block == 0) /* If -B was supplied, ignore input tape structure. */
-        tape |= word & (START_FILE | START_RECORD);
+        tape |= word & (START_FILE | START_RECORD | START_TAPE);
       write_word (stdout, (word & mask) | tape);
       count++;
       tape = !block || (count % block) ? 0 : START_RECORD;
