@@ -22,10 +22,12 @@
 
 #include "dis.h"
 
+static word_t mask = WORDMASK;
+
 static void
 usage (char **argv)
 {
-  fprintf (stderr, "Usage: %s [-b] [-t] [-W<input word format>] [-X<output word format>] [<input file>]\n\n", argv[0]);
+  fprintf (stderr, "Usage: %s [-b] [-t] [-W<input word format>] [-X<output word format>] [<input files...>]\n\n", argv[0]);
   usage_word_format ();
   exit (1);
 }
@@ -68,14 +70,43 @@ default_formats (const char *argv0)
     }
 }
 
+static void
+convert (char *argv0, char *file)
+{
+  word_t word, tape;
+  FILE *f;
+
+  if (file == NULL)
+    f = stdin;
+  else
+    {
+      f = fopen (file, "rb");
+      if (f == NULL)
+        {
+          fprintf (stderr, "%s: Error opening %s: %s\n",
+                   argv0, file, strerror (errno));
+          exit (1);
+        }
+    }
+
+  /* Put tape marks between input files. */
+  tape = START_FILE;
+
+  while ((word = get_word (f)) != -1)
+    {
+      tape |= word & (START_FILE | START_RECORD);
+      write_word (stdout, (word & mask) | tape);
+      tape = 0;
+    }
+
+  if (f != stdin)
+    fclose (f);
+}
+
 int
 main (int argc, char **argv)
 {
-  FILE *file;
   int opt;
-  word_t word;
-  word_t mask = WORDMASK;
-  word_t tape;
 
   default_formats (argv[0]);
 
@@ -105,29 +136,11 @@ main (int argc, char **argv)
     }
 
   if (optind == argc)
-    file = stdin;
-  else if (optind == argc - 1)
-    {
-      file = fopen (argv[optind], "rb");
-      if (file == NULL)
-        {
-          fprintf (stderr, "%s: Error opening %s: %s\n",
-                   argv[0], argv[optind], strerror (errno));
-          return 1;
-        }
-    }
-  else
-    usage (argv);
+    convert (argv[0], NULL);
 
-  while ((word = get_word (file)) != -1)
-    {
-      tape = word & (START_FILE | START_RECORD);
-      write_word (stdout, (word & mask) | tape);
-    }
+  for (; optind < argc; optind++)
+    convert (argv[0], argv[optind]);
+
   flush_word (stdout);
-
-  if (file != stdin)
-    fclose (file);
-
   return 0;
 }
