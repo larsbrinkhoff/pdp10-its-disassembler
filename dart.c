@@ -709,7 +709,8 @@ write_tape (FILE *f)
 static void
 usage (const char *x)
 {
-  fprintf (stderr, "Usage: %s -c|-t|-x [-v789] [-Wformat] [-f file]\n", x);
+  fprintf (stderr,
+	   "Usage: %s -c|-t|-x [-v789] [-Wformat] [-Cdir] [-f file]\n", x);
   usage_word_format ();
   exit (1);
 }
@@ -725,13 +726,14 @@ main (int argc, char **argv)
 {
   void (*process_tape) (FILE *) = NULL;
   char *tape_name = NULL, *mode;
+  char *directory = NULL;
   FILE *f;
   int opt;
 
   input_word_format = &tape7_word_format;
   output_word_format = &aa_word_format;
 
-  while ((opt = getopt (argc, argv, "ctvx789f:W:")) != -1)
+  while ((opt = getopt (argc, argv, "ctvx789f:W:C:")) != -1)
     {
       switch (opt)
 	{
@@ -800,6 +802,15 @@ main (int argc, char **argv)
 	  if (parse_output_word_format (optarg))
 	    usage (argv[0]);
 	  break;
+	case 'C':
+	  if (mkdir (optarg, 0777) == -1 && errno != EEXIST)
+	    {
+	      fprintf (stderr, "\nError creating directory %s: %s",
+		       optarg, strerror (errno));
+	      exit (1);
+	    }
+	  directory = optarg;
+	  break;
 	default:
 	  usage (argv[0]);
 	}
@@ -820,6 +831,13 @@ main (int argc, char **argv)
     {
       fprintf (stderr, "Error opening input %s: %s\n",
 	       optarg, strerror (errno));
+      exit (1);
+    }
+
+  if (directory && chdir (directory) == -1)
+    {
+      fprintf (stderr, "\nError entering directory %s: %s",
+	       directory, strerror (errno));
       exit (1);
     }
 
