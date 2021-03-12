@@ -22,6 +22,7 @@
 
 #include "dis.h"
 
+static size_t block = 0;
 static word_t mask = WORDMASK;
 
 static void
@@ -74,6 +75,7 @@ static void
 convert (char *argv0, char *file)
 {
   word_t word, tape;
+  size_t count;
   FILE *f;
 
   if (file == NULL)
@@ -91,12 +93,15 @@ convert (char *argv0, char *file)
 
   /* Put tape marks between input files. */
   tape = START_FILE;
+  count = 0;
 
   while ((word = get_word (f)) != -1)
     {
-      tape |= word & (START_FILE | START_RECORD);
+      if (block == 0) /* If -B was supplied, ignore input tape structure. */
+        tape |= word & (START_FILE | START_RECORD);
       write_word (stdout, (word & mask) | tape);
-      tape = 0;
+      count++;
+      tape = !block || (count % block) ? 0 : START_RECORD;
     }
 
   if (f != stdin)
@@ -110,7 +115,7 @@ main (int argc, char **argv)
 
   default_formats (argv[0]);
 
-  while ((opt = getopt (argc, argv, "btW:X:")) != -1)
+  while ((opt = getopt (argc, argv, "btW:X:B:")) != -1)
     {
       switch (opt)
         {
@@ -129,6 +134,9 @@ main (int argc, char **argv)
         case 'X':
           if (parse_output_word_format (optarg))
             usage (argv);
+          break;
+        case 'B':
+          block = atoi (optarg);
           break;
         default:
           usage (argv);
