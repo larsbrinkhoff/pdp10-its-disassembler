@@ -798,7 +798,8 @@ usage (const char *x)
 static void
 newline (void)
 {
-  fputc ('\n', stdout);
+  if (list)
+    fputc ('\n', list);
 }
 
 int
