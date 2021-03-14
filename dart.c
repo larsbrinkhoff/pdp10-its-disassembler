@@ -815,6 +815,11 @@ main (int argc, char **argv)
   input_word_format = &tape7_word_format;
   output_word_format = &aa_word_format;
 
+  /* If you ask for a file listing with -t or -xv, it's considered the
+     output data and written to stdout.  Overriden by -c, see below. */
+  list = stdout;
+  info = debug = stderr;
+
   while ((opt = getopt (argc, argv, "ctvx123789f:W:C:")) != -1)
     {
       switch (opt)
@@ -857,6 +862,9 @@ main (int argc, char **argv)
 	      exit (1);
 	    }
 	  process_tape = write_tape;
+	  /* Do not write file listing to stdout since it may mix with
+	     tape data written to stdout. */
+	  list = stderr;
 	  mode = "wb";
 	  break;
 	case '1':
@@ -901,7 +909,6 @@ main (int argc, char **argv)
   if (process_tape == NULL)
     usage (argv[0]);
 
-  list = info = debug = stdout;
   if (verbose < 1)
     list = fopen ("/dev/null", "w");
   if (verbose < 2)
