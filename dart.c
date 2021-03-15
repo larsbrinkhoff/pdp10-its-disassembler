@@ -48,7 +48,7 @@ static char file_path[100];
 static struct timeval timestamp[2];
 static int dart;
 static int iover = 2;
-static int trailer;
+static char *trailer = " (NO TRAILER)";
 static int file_argc;
 static char** file_argv;
 static int tape_frames;
@@ -500,7 +500,8 @@ read_header (FILE *f, word_t word)
 
   if (block[2] != HEAD && block[2] != TAIL)
     fprintf (stderr, "\nEXPECTED *HEAD* OR *TAIL*");
-  trailer = (block[2] == TAIL);
+  if (block[2] == TAIL)
+    trailer = "";
 
   dart = left (word);
   fprintf (list, "\nDART VERSION %-2d TAPE %s",
@@ -574,11 +575,14 @@ read_record (FILE *f, word_t word)
   int length = right (word);
   if (word == -1)
     {
-      fprintf (list, "\nEND OF TAPE%s",
-	       trailer ? "" : " (NO TRAILER)");
+      fprintf (list, "\nEND OF TAPE%s", trailer);
       exit (0);
     }
-  trailer = 0;
+  else if (word & START_TAPE)
+    {
+      fprintf (list, "\nLOGICAL END OF TAPE%s\n", trailer);
+      trailer = " (NO TRAILER)";
+    }
   switch (left (word))
     {
     case 0:
