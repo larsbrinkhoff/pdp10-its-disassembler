@@ -30,9 +30,11 @@
 #define TAIL    0126441515412LL /* *TAIL* */
 #define PRMEND  0046045564404LL /* $PEND$ */
 
-#define LMEDER  030
+#define LMEDER  030 /* Length of media error data. */
 
-#define MAX 10240
+#define MAX800   1280 /* Max record size for 800 BPI. */
+#define MAX6250 10240 /* Max record size for 6520 BPI. */
+#define MAX     MAX6250
 static word_t block[MAX];
 static int extract = 0;
 
@@ -53,6 +55,7 @@ static int tape_frames;
 static int tape_bpw; /* Tape frames per word. */
 static int tape_bpi;
 
+/* Convert a WAITS date to year, month, day. */
 static void
 compute_date (word_t date, int *year, int *month, int *day)
 {
@@ -61,6 +64,7 @@ compute_date (word_t date, int *year, int *month, int *day)
   *year = (date / 31 / 12) + 1964;
 }
 
+/* Convert a WAITS date to a struct timeval. */
 static void
 unix_time (struct timeval *tv, word_t date, word_t minutes)
 {
@@ -76,6 +80,7 @@ unix_time (struct timeval *tv, word_t date, word_t minutes)
   tv->tv_usec = 0;
 }
 
+/* Print WAITS date and time. */
 static void
 print_timestamp (FILE *f, word_t date, word_t minutes)
 {
@@ -86,6 +91,7 @@ print_timestamp (FILE *f, word_t date, word_t minutes)
 	   minutes / 60, minutes % 60);
 }
 
+/* Convert a Unix time_t to WAITS date and time. */
 static word_t
 waits_timestamp (time_t t)
 {
@@ -107,6 +113,7 @@ left (word_t word)
   return right (word >> 18);
 }
 
+/* Print the retrieval information block. */
 static void
 print_rib (FILE *f, word_t *rib)
 {
@@ -130,6 +137,7 @@ print_rib (FILE *f, word_t *rib)
     fprintf (f, "\nRecord offset: %012llo", rib[017]);
 }
 
+/* Print extended information. */
 static void
 print_ext (FILE *f, word_t *data, word_t type)
 {
@@ -160,6 +168,7 @@ print_ext (FILE *f, word_t *data, word_t type)
   fprintf (f, " %lld words left", data[012]);
 }
 
+/* Print media error information. */
 static void
 print_mederr (FILE *f, word_t *mederr)
 {
@@ -220,6 +229,7 @@ close_file (void)
   utimes (file_path, timestamp);
 }
 
+/* Convert WAITS file name to an acceptable Unix name. */
 static char *
 mangle (char *string)
 {
@@ -242,6 +252,7 @@ check_name (char *string, size_t m)
   return strlen (string) <= m;
 }
 
+/* Ensure PRJ and PRG names have the right size and padding to the left. */
 static int
 fix_name (char *string)
 {
@@ -253,6 +264,7 @@ fix_name (char *string)
   return 1;
 }
 
+/* Check that a file name from the command line has the right syntax. */
 static int
 names_ok (int n, char *prj, char *prg, char *nam, char *ext)
 {
@@ -268,6 +280,7 @@ names_ok (int n, char *prj, char *prg, char *nam, char *ext)
   return 0;
 }
 
+/* Convert a file name from the command line to a WAITS file name. */
 static void
 unmangle (char *name, char *nam, char *ext, char *prj, char *prg)
 {
@@ -353,6 +366,7 @@ file_size (char *name)
   return size;
 }
 
+/* Compute the rotated checksum for IOVER3 header/trailer. */
 static word_t
 rotchk (word_t x)
 {
@@ -533,6 +547,7 @@ read_header (FILE *f, word_t word)
     fprintf (debug, "\nGood checksum: %012llo", checksum);
 }
 
+/* A -9 record type is a gap to be skipped over. */
 static word_t
 read_gap (FILE *f)
 {
@@ -650,7 +665,7 @@ read_block (FILE *f, word_t *data, int offset)
   int i, max, size = 0;
   word_t word;
 
-  max = iover < 3 ? 1280 : 10240 - 030;
+  max = iover < 3 ? MAX800 : MAX6250 - LMEDER;
   max -= 2; /* Leave room for length and checksum words. */
 
   for (i = offset; i < max; i++)
@@ -674,8 +689,8 @@ write_data (FILE *f, FILE *input, int offset, word_t start)
   if (iover >= 3)
     {
       block[027] = tape_feet ();
-      memset (block + length, 0, 030 * sizeof (word_t));
-      length += 030;
+      memset (block + length, 0, LMEDER * sizeof (word_t));
+      length += LMEDER;
       block[length - 1] = PRMEND;
     }
   write_word (f, length | start);
