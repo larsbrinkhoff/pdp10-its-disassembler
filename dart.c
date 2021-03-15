@@ -773,7 +773,8 @@ write_file (FILE *f, char *name)
     }
 
   tape_frames += 3 * tape_bpi; /* Tape mark. */
-  write_data (f, input, offset, (01000000 - iover) << 18 | START_FILE);
+  write_data (f, input, offset,
+	      (((01000000 - iover) << 18) & 0777777000000LL) | START_FILE);
   if (iover >= 3)
     block[022] = ascii_to_sixbit ("CON   ") | iover;
   else
