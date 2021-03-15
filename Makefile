@@ -128,7 +128,7 @@ check: \
 	out/stink.-ipak-.ipak \
 	out/thirty.scrmbl out/sixbit.scrmbl out/pdpten.scrmbl \
 	out/aaaaaa.scrmbl out/0s.scrmbl \
-	out/dart.tape.dart
+	out/dart.tape.dart out/two.tapes.dasm
 
 samples/ts.obs = -Wits
 samples/ts.ksfedr = -Wits
@@ -144,6 +144,7 @@ samples/@.midas = -D774000 -Sall
 samples/stink.-ipak- = -Wascii
 samples/srccom.exe = -Wascii
 samples/dart.dmp = -6 -Wdata8
+samples/two.tapes = -r -Wtape
 
 out/%.dasm: samples/% dis10 test/%.dasm
 	./dis10 $($<) $< > $@
