@@ -247,7 +247,7 @@ get_tape_word (FILE *f)
 	  else
 	    tape_bits = START_FILE;
 	}
-      else
+      else if (tape_bits == 0)
 	tape_bits = START_RECORD;
       n = 0;
     }
