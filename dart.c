@@ -790,7 +790,6 @@ write_tape (FILE *f)
   if (f == NULL)
     f = stdout;
 
-  dart = 5;
   tape_frames = 0;
   write_header (f, HEAD);
   for (i = 0; i < file_argc; i++)
@@ -886,7 +885,6 @@ main (int argc, char **argv)
 	case '2':
 	case '3':
 	  iover = opt - '0';
-	  dart = iover + 3;
 	  break;
 	case '7':
 	  input_word_format = &tape7_word_format;
@@ -944,6 +942,10 @@ main (int argc, char **argv)
 	       directory, strerror (errno));
       exit (1);
     }
+
+  /* DART version is roughly three higher than IOVER.  This is a
+     reasonable approximation. */
+  dart = iover + 3;
 
   file_argc = argc - optind;
   file_argv = argv + optind;
