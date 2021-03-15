@@ -35,7 +35,6 @@
 #define MAX 10240
 static word_t block[MAX];
 static int extract = 0;
-static int verbose = 0;
 
 static FILE *list;
 static FILE *info;
@@ -808,6 +807,7 @@ main (int argc, char **argv)
   void (*process_tape) (FILE *) = NULL;
   char *tape_name = NULL, *mode;
   char *directory = NULL;
+  int verbose = 0;
   FILE *f;
   int opt;
 
