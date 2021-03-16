@@ -14,6 +14,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
+/* The basic operation of this program is to read input in one word
+format, specified with -W, and write output in another word format,
+specified with -X.  Since the word formats include support for tape
+image files, there are also a number of applications for manipulating
+tapes.  If more than one input file is specified and the output is a
+tape, they will be separated in the output by tape marks.  If the
+inputs are tapes, the physical end of tape will be converted to plain
+tape mark.
+
+Here are some interesting use cases:
+
+ 1. Convert a file from one word format to another.
+    conv36 -Wformat1 -Xformat2 input > output
+
+ 2. Convert between tape image formats.
+    conv36 -Wtape7 -Xtape tape > output
+
+ 3. Copy several input files to a tape.
+    conv36 -Wformat1 -Xtape -Bblocksize input1 input2 input3 > output
+
+ 4. Concatenate several tapes into one.
+    conv36 -Wtape -Xtape tape1 tape2 tape3 > output */
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
