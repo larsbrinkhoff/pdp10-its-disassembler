@@ -12,7 +12,7 @@ OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 
 UTILS =	conv36 bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
 	macdmp macro-tapes tape-dir harscntopbm palx its2ascii \
-	ipak kldcp klfedr scrmbl unscr tvpic tito dart
+	ipak kldcp klfedr scrmbl unscr tvpic tito dart od10
 
 all: dis10 $(UTILS) check
 
@@ -82,6 +82,9 @@ tito: tito.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
 dart: dart.o $(OBJS) libwords.a
+	$(CC) $(CFLAGS) $^ -o $@
+
+od10: od10.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
 harscntopbm: harscntopbm.o libwords.a
