@@ -830,8 +830,8 @@ main (int argc, char **argv)
   FILE *f;
   int opt;
 
-  tape_bpi = 800;
-  input_word_format = &tape7_word_format;
+  tape_bpi = 6250;
+  input_word_format = &tape_word_format;
   output_word_format = &aa_word_format;
 
   /* If you ask for a file listing with -t or -xv, it's considered the
