@@ -10,8 +10,8 @@ WORDS =  aa-word.o bin-word.o cadr-word.o core-word.o data8-word.o \
 OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o weenix.o
 
-UTILS =	conv36 bin2ascii bin2x its2x its2bin its2rim itsarc magdmp magfrm dskdmp \
-	macdmp macro-tapes tape-dir harscntopbm palx its2ascii \
+UTILS =	conv36 itsarc magdmp magfrm dskdmp \
+	macdmp macro-tapes tape-dir harscntopbm palx \
 	ipak kldcp klfedr scrmbl unscr tvpic tito dart od10
 
 all: dis10 $(UTILS) check
@@ -34,24 +34,6 @@ libwords.a: word.o $(WORDS)
 	ar -crs $@ $^
 
 conv36: conv36.o libwords.a
-	$(CC) $(CFLAGS) $^ -o $@
-
-bin2ascii: bin2ascii.o
-	$(CC) $(CFLAGS) $^ -o $@
-
-bin2x: bin2x.o
-	$(CC) $(CFLAGS) $^ -o $@
-
-its2x: its2x.o libwords.a
-	$(CC) $(CFLAGS) $^ -o $@
-
-its2bin: its2bin.o libwords.a
-	$(CC) $(CFLAGS) $^ -o $@
-
-its2rim: its2rim.o libwords.a
-	$(CC) $(CFLAGS) $^ -o $@
-
-its2ascii: its2ascii.o libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
 dskdmp: dskdmp.c $(OBJS) libwords.a
@@ -161,11 +143,11 @@ out/%.ipak: samples/% ipak test/%.ipak
 	./ipak -t $($<) $< 2> $@
 	cmp $@ test/$*.ipak || rm $@ /no-such-file
 
-out/%.scrmbl: samples/zeros.%.scrmbl scrmbl its2bin samples/zeros.scrmbl
+out/%.scrmbl: samples/zeros.%.scrmbl scrmbl conv36 samples/zeros.scrmbl
 	./scrmbl -Wbin $* samples/zeros.scrmbl $@
-	./its2bin $@ | cmp - $< || rm $@ /no-such-file
+	./conv36 -Wits -Xbin $@ | cmp - $< || rm $@ /no-such-file
 	./scrmbl -d -Wits $* $@ out/$*.unscrm
-	./its2bin out/$*.unscrm | cmp - samples/zeros.scrmbl \
+	./conv36 -Wits -Xbin out/$*.unscrm | cmp - samples/zeros.scrmbl \
 		|| rm $@ /no-such-file
 
 FIX_TIME=sed 's/RECORDED ....-..-.. ..:..,/RECORDED XXXX-XX-XX XX:XX/'
@@ -178,15 +160,11 @@ out/%.dart: samples/% dart test/%.dart
 
 #dependencies
 bin-word.o: bin-word.c dis.h
-bin2ascii.o: bin2ascii.c
-bin2x.o: bin2x.c
 conv36.o: dis.h
 data8-word.o: data8-word.c dis.h
 dis.o: dis.c opcode/pdp10.h dis.h memory.h timing.h
 info.o: info.c dis.h memory.h
 its-word.o: its-word.c dis.h
-its2bin.o: its2bin.c dis.h
-its2x.o: its2x.c dis.h
 main.o: main.c dis.h opcode/pdp10.h memory.h
 memory.o: memory.c memory.h dis.h
 oct-word.o: oct-word.c dis.h
