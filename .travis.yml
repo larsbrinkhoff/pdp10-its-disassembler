@@ -2,6 +2,6 @@ language: c
 dist: trusty
 sudo: required
 #install: sh -ex 
-script: make -d check
+script: make check
 notifications:
   email: lars@nocrew.org
