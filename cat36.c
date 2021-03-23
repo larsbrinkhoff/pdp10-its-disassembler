@@ -26,16 +26,16 @@ tape mark.
 Here are some interesting use cases:
 
  1. Convert a file from one word format to another.
-    conv36 -Wformat1 -Xformat2 input > output
+    cat36 -Wformat1 -Xformat2 input > output
 
  2. Convert between tape image formats.
-    conv36 -Wtape7 -Xtape tape > output
+    cat36 -Wtape7 -Xtape tape > output
 
  3. Copy several input files to a tape.
-    conv36 -Wformat1 -Xtape -Bblocksize input1 input2 input3 > output
+    cat36 -Wformat1 -Xtape -Bblocksize input1 input2 input3 > output
 
  4. Concatenate several tapes into one.
-    conv36 -Wtape -Xtape tape1 tape2 tape3 > output */
+    cat36 -Wtape -Xtape tape1 tape2 tape3 > output */
 
 #include <errno.h>
 #include <stdio.h>
