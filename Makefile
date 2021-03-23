@@ -10,7 +10,7 @@ WORDS =  aa-word.o bin-word.o cadr-word.o core-word.o data8-word.o \
 OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o weenix.o
 
-UTILS =	conv36 itsarc magdmp magfrm dskdmp \
+UTILS =	cat36 itsarc magdmp magfrm dskdmp \
 	macdmp macro-tapes tape-dir harscntopbm palx \
 	ipak kldcp klfedr scrmbl unscr tvpic tito dart od10
 
@@ -33,7 +33,7 @@ libfiles.a: file.o $(FILES)
 libwords.a: word.o $(WORDS)
 	ar -crs $@ $^
 
-conv36: conv36.o libwords.a
+cat36: cat36.o libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
 dskdmp: dskdmp.c $(OBJS) libwords.a
@@ -143,11 +143,11 @@ out/%.ipak: samples/% ipak test/%.ipak
 	./ipak -t $($<) $< 2> $@
 	cmp $@ test/$*.ipak || rm $@ /no-such-file
 
-out/%.scrmbl: samples/zeros.%.scrmbl scrmbl conv36 samples/zeros.scrmbl
+out/%.scrmbl: samples/zeros.%.scrmbl scrmbl cat36 samples/zeros.scrmbl
 	./scrmbl -Wbin $* samples/zeros.scrmbl $@
-	./conv36 -Wits -Xbin $@ | cmp - $< || rm $@ /no-such-file
+	./cat36 -Wits -Xbin $@ | cmp - $< || rm $@ /no-such-file
 	./scrmbl -d -Wits $* $@ out/$*.unscrm
-	./conv36 -Wits -Xbin out/$*.unscrm | cmp - samples/zeros.scrmbl \
+	./cat36 -Wits -Xbin out/$*.unscrm | cmp - samples/zeros.scrmbl \
 		|| rm $@ /no-such-file
 
 FIX_TIME=sed 's/RECORDED ....-..-.. ..:..,/RECORDED XXXX-XX-XX XX:XX/'
@@ -160,7 +160,7 @@ out/%.dart: samples/% dart test/%.dart
 
 #dependencies
 bin-word.o: bin-word.c dis.h
-conv36.o: dis.h
+cat36.o: dis.h
 data8-word.o: data8-word.c dis.h
 dis.o: dis.c opcode/pdp10.h dis.h memory.h timing.h
 info.o: info.c dis.h memory.h
