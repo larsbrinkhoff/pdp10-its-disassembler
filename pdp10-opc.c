@@ -322,7 +322,7 @@ const struct pdp10_instruction pdp10_instruction[] =
    * both carries, overflow) are recognized.  Exotic combinations are
    * caught by the last entry.
    */
-  { "nop",	025500,	PDP10_A_OPCODE | PDP10_E_UNUSED,
+  { "jfcl",	025500,	PDP10_A_OPCODE | PDP10_E_UNUSED,
 					PDP10_ALL, 0, 0 },
 /*{ "jpcch",	025504,	PDP10_A_OPCODE,	PDP6_166 },*/
   { "jfov",	025504,	PDP10_A_OPCODE,	PDP10_KA10up, 0, 0 },
@@ -445,10 +445,10 @@ const struct pdp10_instruction pdp10_instruction[] =
   { "xori",	0431,	PDP10_BASIC,	PDP10_ALL, 0, HINT_IMMEDIATE },
   { "xorm",	0432,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
   { "xorb",	0433,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
-  { "or",	0434,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
-  { "ori",	0435,	PDP10_BASIC,	PDP10_ALL, 0, HINT_IMMEDIATE },
-  { "orm",	0436,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
-  { "orb",	0437,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
+  { "ior",	0434,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
+  { "iori",	0435,	PDP10_BASIC,	PDP10_ALL, 0, HINT_IMMEDIATE },
+  { "iorm",	0436,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
+  { "iorb",	0437,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
   { "andcb",	0440,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
   { "andcbi",	0441,	PDP10_BASIC,	PDP10_ALL, 0, HINT_IMMEDIATE },
   { "andcbm",	0442,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
@@ -893,12 +893,13 @@ const struct pdp10_device pdp10_device[] =
 const struct pdp10_instruction pdp10_alias[] =
 {
   /* name,	opcode,	type,		models */
+  { "nop",	0255,	PDP10_BASIC,	PDP10_ALL, 0, HINT_NUMBER },
   { "pxct",	0256,	PDP10_BASIC,	PDP10_ALL, 0, 0 }, /* A_SPECIAL_CODE */
   { "setmi",	0415,	PDP10_BASIC,	PDP10_ALL, 0, HINT_IMMEDIATE },
-  { "ior",	0434,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
-  { "iori",	0435,	PDP10_BASIC,	PDP10_ALL, 0, HINT_IMMEDIATE },
-  { "iorm",	0436,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
-  { "iorb",	0437,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
+  { "or",	0434,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
+  { "ori",	0435,	PDP10_BASIC,	PDP10_ALL, 0, HINT_IMMEDIATE },
+  { "orm",	0436,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
+  { "orb",	0437,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
   { "hlli",	0501,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
 };
 
