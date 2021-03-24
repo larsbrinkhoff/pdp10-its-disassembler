@@ -619,8 +619,8 @@ const struct pdp10_instruction pdp10_instruction[] =
   { "spm",	010204,	PDP10_A_OPCODE,	PDP10_KA10_ITS, 0, 0 },
   { "lpmr",	010210,	PDP10_A_OPCODE,	PDP10_KA10_ITS, 0, 0 },
   { "lpmri",	010230,	PDP10_A_OPCODE,	PDP10_KA10_ITS, 0, HINT_IMMEDIATE },
-  { "xctr",	010300,	PDP10_A_OPCODE,	PDP10_KA10_ITS, 0, 0 },
-  { "xctri",	010320,	PDP10_A_OPCODE,	PDP10_KA10_ITS, 0, 0 },
+  { "xctri",	010320,	PDP10_A_XCTRI,	PDP10_KA10_ITS, HINT_XCTR, 0 },
+  { "xctr",	0103,	PDP10_BASIC,	PDP10_KA10_ITS, HINT_XCTR, 0 },
 #endif
 
 #if 1
@@ -633,8 +633,8 @@ const struct pdp10_instruction pdp10_instruction[] =
   { "lpmr",	010210,	PDP10_A_OPCODE,	PDP10_KL10_ITS, 0, 0 },
   { "lpmri",	010230,	PDP10_A_OPCODE,	PDP10_KL10_ITS, 0, HINT_IMMEDIATE },
 
-  { "xctr",	0074,	PDP10_BASIC,	PDP10_KL10_ITS, 0, 0 },
-  { "xctri",	0075,	PDP10_BASIC,	PDP10_KL10_ITS, 0, 0 },
+  { "xctr",	0074,	PDP10_BASIC,	PDP10_KL10_ITS, HINT_XCTR, 0 },
+  { "xctri",	0075,	PDP10_BASIC,	PDP10_KL10_ITS, HINT_XCTR, 0 },
   { "lpmr",	0076,	PDP10_BASIC,	PDP10_KL10_ITS, 0, 0 },
   { "spm",	0077,	PDP10_BASIC,	PDP10_KL10_ITS, 0, 0 },
 #endif
@@ -669,8 +669,8 @@ const struct pdp10_instruction pdp10_instruction[] =
    * KS10 ITS system instructions.
    */
 
-  { "xctr",	0102,	PDP10_BASIC,	PDP10_KS10_ITS, 0, 0 },
-  { "xctri",	0103,	PDP10_BASIC,	PDP10_KS10_ITS, 0, 0 },
+  { "xctr",	0102,	PDP10_BASIC,	PDP10_KS10_ITS, HINT_XCTR, 0 },
+  { "xctri",	0103,	PDP10_BASIC,	PDP10_KS10_ITS, HINT_XCTR, 0 },
   { "aprid",	070000,	PDP10_A_OPCODE,	PDP10_KS10_ITS, 0, 0 },
 #if 0
   /* CONO and CONI appear to be preferred to these mnemonics in */

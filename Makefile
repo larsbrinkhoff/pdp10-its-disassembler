@@ -109,7 +109,8 @@ check: \
 	out/ts.srccom.dasm out/atsign.tcp.dasm out/arc.code.list \
 	out/macro.low.dasm out/pt.rim.dasm out/visib1.bin.dasm \
 	out/visib2.bin.dasm out/visib3.bin.dasm out/@.midas.dasm \
-	out/srccom.exe.dasm out/dart.dmp.dasm \
+	out/srccom.exe.dasm out/dart.dmp.dasm out/@.its.dasm \
+	out/its.bin.dasm out/its.rp06.dasm \
 	out/stink.-ipak-.ipak \
 	out/thirty.scrmbl out/sixbit.scrmbl out/pdpten.scrmbl \
 	out/aaaaaa.scrmbl out/0s.scrmbl \
@@ -121,15 +122,18 @@ samples/ts.name = -Wits -Sall
 samples/ts.srccom = -Wits
 samples/atsign.tcp = -Wits
 samples/macro.low = -r -Wascii
-samples/pt.rim = -r -Wpt
+samples/pt.rim = -r -Wpt -mka10its
 samples/visib1.bin = -Wits -Sddt
 samples/visib2.bin = -Wits -Sddt
 samples/visib3.bin = -Wits -Sall
 samples/@.midas = -D774000 -Sall
 samples/stink.-ipak- = -Wascii
-samples/srccom.exe = -Wascii
+samples/srccom.exe = -mka10 -Wascii
 samples/dart.dmp = -6 -Wdata8
 samples/two.tapes = -r -Wtape
+samples/@.its = -Sall -mka10_its
+samples/its.bin = -mkl10_its
+samples/its.rp06 = -mks10_its
 
 out/%.dasm: samples/% dis10 test/%.dasm
 	./dis10 $($<) $< > $@
