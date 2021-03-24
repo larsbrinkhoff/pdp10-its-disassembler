@@ -254,6 +254,23 @@ hint_channel (const struct symbol *first, word_t value)
   return first;
 }
 
+static const struct symbol *
+hint_xctr (const struct symbol *first, word_t value)
+{
+  const struct symbol *symbol = first;
+
+  /* Look for matching symbol that begins with X. */
+  do
+    {
+      if (*symbol->name == 'x')
+	return symbol;
+      symbol++;
+    }
+  while (symbol < symbols + num_symbols && symbol->value == value);
+
+  return first;
+}
+
 const struct symbol *
 get_symbol_by_value (word_t value, int hint)
 {
@@ -281,6 +298,7 @@ get_symbol_by_value (word_t value, int hint)
     case HINT_ADDRESS:     first = hint_address (first, value); break;
     case HINT_OFFSET:      first = hint_offset (first, value); break;
     case HINT_IMMEDIATE:   first = hint_offset (first, value); break;
+    case HINT_XCTR:        first = hint_xctr (first, value); break;
     }
 
   if (symbols_mode == SYMBOLS_DDT)

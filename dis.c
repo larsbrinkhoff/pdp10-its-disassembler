@@ -179,6 +179,8 @@ lookup (word_t word, int cpu_model)
     {
       if (pdp10_instruction[i].type & PDP10_A_OPCODE)
 	opcode = OPCODE_A (word);
+      else if (pdp10_instruction[i].type & PDP10_A_XCTRI)
+	opcode = OPCODE_A (word) & 077720; /* Just keep the XCTRI bit. */
       else if (pdp10_instruction[i].type & PDP10_IO)
 	opcode = OPCODE_A (word) & 070034;
       else
@@ -415,6 +417,12 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 	    n += printf ("%s, ", dev->name);
 	  else
 	    n += print_val ("%o, ", DEVICE (word), HINT_DEVICE);
+	}
+      else if (op->type & PDP10_A_XCTRI)
+	{
+	  hint = op->ac_hint ? op->ac_hint : HINT_ACCUMULATOR;
+	  /* Mask off XCTRI bit in AC field. */
+	  n += print_val ("%o, ", A (word) & ~4, hint);
 	}
       else if (!(op->type & PDP10_A_OPCODE))
 	{

@@ -62,6 +62,7 @@ the Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307
 #define PDP10_BASIC		0000
 #define PDP10_A_OPCODE		0001
 #define PDP10_A_UNUSED		0002
+#define PDP10_A_XCTRI		0004
 #define PDP10_E_UNUSED		0010
 #define PDP10_A_E_UNUSED	(PDP10_A_UNUSED | PDP10_E_UNUSED)
 #define PDP10_IO		0020
