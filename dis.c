@@ -37,6 +37,7 @@
 #define SETZ	((word_t)(0400000000000LL))
 #define ITS_OPER 042
 #define ITS_CALL 04300
+#define CALLI    047
 
 struct its_oper
 {
@@ -159,6 +160,133 @@ static struct its_oper opers[] =
   { ".netint",	0000111, HINT_CHANNEL },
 };
 
+static struct its_oper waits_callis[] =
+{
+  { "reset",	0000000, 0 },
+  { "ddtin",	0000001, 0 },
+  { "setddt",	0000002, 0 },
+  { "ddtout",	0000003, 0 },
+  { "devchr",	0000004, 0 },
+//{ "ddtgt",	0000005, 0 }, /* Illegail in WAITS. */
+  { "getchr",	0000006, 0 },
+//{ "ddtrl",	0000007, 0 }, /* Illegail in WAITS. */
+  { "wait",	0000010, 0 },
+  { "core",	0000011, 0 },
+  { "exit",	0000012, 0 },
+  { "utpclr",	0000013, 0 },
+  { "date",	0000014, 0 },
+  { "login",	0000015, 0 },
+  { "aprenb",	0000016, 0 },
+  { "logout",	0000017, 0 },
+  { "switch",	0000020, 0 },
+  { "reassi",	0000021, 0 },
+  { "timer",	0000022, 0 },
+  { "mstime",	0000023, 0 },
+  { "getppn",	0000024, 0 },
+//{ "trpset",	0000025, 0 }, /* Illegail in WAITS. */
+//{ "trpjen",	0000026, 0 }, /* Illegail in WAITS. */
+  { "runtim",	0000027, 0 },
+  { "pjob",	0000030, 0 },
+  { "sleep",	0000031, 0 },
+  { "setpov",	0000032, 0 },
+  { "peek",	0000033, 0 },
+  { "getln",	0000034, 0 },
+  { "run",	0000035, 0 },
+  { "setuwp",	0000036, 0 },
+  { "remap",	0000037, 0 },
+//{ "getseg",	0000040, 0 }, /* Illegail in WAITS. */
+//{ "gettab",	0000041, 0 }, /* Illegail in WAITS. */
+//{ "spy",	0000042, 0 }, /* Illegail in WAITS. */
+  { "setnam",	0000043, 0 },
+  { "tmpcor",	0000044, 0 },
+
+  { "spwbut",	0400000, 0 },
+  { "ctlv",	0400001, 0 },
+  { "setnam",	0400002, 0 },
+  { "spcwgo",	0400003, 0 },
+  { "swap",	0400004, 0 },
+  { "eiotm",	0400005, 0 },
+  { "liotm",	0400006, 0 },
+  { "pname",	0400007, 0 },
+  { ".syml",	0400010, 0 },
+  { "showit",	0400011, 0 },
+  { "freeze",	0400012, 0 },
+  { "jbtsts",	0400013, 0 },
+  { "ttyios",	0400014, 0 },
+  { "core2",	0400015, 0 },
+  { "attseg",	0400016, 0 },
+  { "detseg",	0400017, 0 },
+  { "setpro",	0400020, 0 },
+  { "segnum",	0400021, 0 },
+  { "segsiz",	0400022, 0 },
+  { "linkup",	0400023, 0 },
+  { "dismis",	0400024, 0 },
+  { "inteng",	0400025, 0 },
+  { "intorm",	0400026, 0 },
+  { "intacm",	0400027, 0 },
+  { "intens",	0400030, 0 },
+  { "intiip",	0400031, 0 },
+  { "intirq",	0400032, 0 },
+  { "intgen",	0400033, 0 },
+  { "uwait",	0400034, 0 },
+  { "debrea",	0400035, 0 },
+  { "setnm2",	0400036, 0 },
+  { "segnam",	0400037, 0 },
+  { "iwait",	0400040, 0 },
+  { "uskip",	0400041, 0 },
+  { "buflen",	0400042, 0 },
+  { "namein",	0400043, 0 },
+  { "slevel",	0400044, 0 },
+  { "ienbw",	0400045, 0 },
+//{ "runmsk",	0400046, 0 }, /* Illegail in WAITS. */
+  { "ttymes",	0400047, 0 },
+  { "jobrd",	0400050, 0 },
+  { "devuse",	0400051, 0 },
+  { "setpr2",	0400052, 0 },
+  { "getpr2",	0400053, 0 },
+  { "rlevel",	0400054, 0 },
+  { "ufbphy",	0400055, 0 },
+  { "ufbskp",	0400056, 0 },
+  { "fbwait",	0400057, 0 },
+  { "ufberr",	0400060, 0 },
+  { "wakeme",	0400061, 0 },
+  { "getnam",	0400062, 0 },
+  { "sneakw",	0400063, 0 },
+  { "sneak",	0400064, 0 },
+//{ "gdptim",	0400065, 0 }, /* Illegail in WAITS. */
+  { "setprv",	0400066, 0 },
+  { "ddchan",	0400067, 0 },
+  { "vdsmap",	0400070, 0 },
+  { "dskppn",	0400071, 0 },
+//{ "dsktim",	0400072, 0 }, /* In early Stanford monitor. */
+  { "gethi",	0400072, 0 },
+  { "setcrd",	0400073, 0 },
+  { "callit",	0400074, 0 },
+  { "xgpuuo",	0400075, 0 },
+  { "lock",	0400076, 0 },
+  { "unlock",	0400077, 0 },
+  { "dayvnt",	0400100, 0 },
+  { "acctim",	0400101, 0 },
+  { "unpure",	0400102, 0 },
+  { "tmpcrd",	0400103, 0 },
+  { "devnum",	0400104, 0 },
+  { "actchr",	0400105, 0 },
+  { "uuosim",	0400106, 0 },
+  { "ppspy",	0400107, 0 },
+  { "adsmap",	0400110, 0 },
+  { "beep",	0400111, 0 },
+  { "who",	0400112, 0 },
+  { "ttyjob",	0400113, 0 },
+  { "nulmes",	0400114, 0 },
+  { "getprv",	0400115, 0 },
+  { "ttyskp",	0400116, 0 },
+  { "dial",	0400117, 0 },
+//{ "lthuuo",	0400120, 0 }, /* Illegail in WAITS. */
+  { "ttyset",	0400121, 0 },
+  { "mtruuo",	0400122, 0 },
+  { "rdline",	0400123, 0 },
+};
+
 static int
 spaces (int n)
 {
@@ -209,17 +337,17 @@ lookup_device (int number, int cpu_model)
 }
 
 static const struct its_oper *
-lookup_oper (word_t word)
+lookup_oper (word_t word, struct its_oper *table, int size)
 {
   unsigned int i;
   int e;
 
   e = E (word);
 
-  for (i = 0; i < sizeof opers / sizeof opers[0]; i++)
+  for (i = 0; i < size; i++)
     {
-      if (e == opers[i].opcode)
-	return &opers[i];
+      if (e == table[i].opcode)
+	return &table[i];
     }
 
   return NULL;
@@ -355,10 +483,10 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 	    n += printf ("%s", sym->name);
 	}
     }
-  else if (OPCODE (word) == ITS_OPER)
+  else if ((cpu_model & PDP10_ITS) && OPCODE (word) == ITS_OPER)
     {
       const struct its_oper *oper;
-      oper = lookup_oper (word);
+      oper = lookup_oper (word, opers, sizeof opers / sizeof opers[0]);
       if (oper)
 	{
 	  n += printf ("%-8s ", oper->name);
@@ -366,8 +494,20 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 	    n += print_val ("%o,", A (word), oper->hint);
 	}
     }
+  else if ((cpu_model & PDP10_SAIL) && OPCODE (word) == CALLI)
+    {
+      const struct its_oper *calli;
+      calli = lookup_oper (word, waits_callis,
+			   sizeof waits_callis / sizeof waits_callis[0]);
+      if (calli)
+	{
+	  n += printf ("%-8s ", calli->name);
+	  if (calli->hint == HINT_CHANNEL || A (word) != 0)
+	    n += print_val ("%o,", A (word), calli->hint);
+	}
+    }
 #if 1
-  else if (OPCODE_A (word) == ITS_CALL)
+  else if ((cpu_model & PDP10_ITS) && OPCODE_A (word) == ITS_CALL)
     {
       int address;
       
