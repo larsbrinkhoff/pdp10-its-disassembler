@@ -585,27 +585,40 @@ usage_machine (void)
 int
 parse_machine (const char *string, int *machine)
 {
-  int its = 0;
-
   /* Do some lax matching to find CPU and variants. */
-
-  if (strcasestr (string, "ITS"))
-    its = 1;
 
   if (strcasestr (string, "166"))
     *machine = PDP6_166;
   else if (strcasestr (string, "pdp6"))
     *machine = PDP6_166;
   else if (strcasestr (string, "KA"))
-    *machine = its ? PDP10_KA10_ITS : PDP10_KA10;
+    *machine = PDP10_KA10;
   else if (strcasestr (string, "KI"))
     *machine = PDP10_KI10;
   else if (strcasestr (string, "KL"))
-    *machine = its ? PDP10_KL10_ITS : (PDP10_KL10|PDP10_KL10_271);
+    *machine = PDP10_KL10 | PDP10_KL10_271;
   else if (strcasestr (string, "KS"))
-    *machine = its ? PDP10_KS10_ITS : PDP10_KS10;
+    *machine = PDP10_KS10;
   else
     return -1;
+
+  if (strcasestr (string, "ITS"))
+    {
+      if (*machine & PDP10_KA10)
+	*machine = PDP10_KA10_ITS;
+      if (*machine & PDP10_KL10)
+	*machine = PDP10_KL10_ITS;
+      if (*machine & PDP10_KS10)
+	*machine = PDP10_KS10_ITS;
+    }
+
+  if (strcasestr (string, "SAIL"))
+    {
+      if (*machine & PDP10_KA10)
+	*machine = PDP10_KA10_SAIL;
+      if (*machine & PDP10_KL10)
+	*machine = PDP10_KL10_SAIL;
+    }
 
   return 0;
 }
