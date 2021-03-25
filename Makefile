@@ -110,7 +110,8 @@ check: \
 	out/macro.low.dasm out/pt.rim.dasm out/visib1.bin.dasm \
 	out/visib2.bin.dasm out/visib3.bin.dasm out/@.midas.dasm \
 	out/srccom.exe.dasm out/dart.dmp.dasm out/@.its.dasm \
-	out/its.bin.dasm out/its.rp06.dasm \
+	out/its.bin.dasm out/its.rp06.dasm out/system.dmp.dasm \
+	out/dired.dmp.dasm \
 	out/stink.-ipak-.ipak \
 	out/thirty.scrmbl out/sixbit.scrmbl out/pdpten.scrmbl \
 	out/aaaaaa.scrmbl out/0s.scrmbl \
@@ -130,6 +131,8 @@ samples/@.midas = -D774000 -Sall
 samples/stink.-ipak- = -Wascii
 samples/srccom.exe = -mka10 -Wascii
 samples/dart.dmp = -6 -mka10sail -Wdata8
+samples/system.dmp = -6 -mka10sail -Woct -Sall
+samples/dired.dmp = -6 -mka10sail -Wascii -Sddt
 samples/two.tapes = -r -Wtape
 samples/@.its = -Sall -mka10_its
 samples/its.bin = -mkl10_its
