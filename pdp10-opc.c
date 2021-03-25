@@ -192,6 +192,8 @@ const struct pdp10_instruction pdp10_instruction[] =
   { "adjsp",	0105,	PDP10_BASIC,	PDP10_KL10up, 0, 0 },
   { "gfmp",	0106,	PDP10_BASIC,	PDP10_KL10_271, 0, 0 },
   { "gfdv",	0107,	PDP10_BASIC,	PDP10_KL10_271, 0, 0 },
+  /* The ITS DECUUO emulator accepts opcode 110 as FIX. */
+//{ "fix",	0110,	PDP10_BASIC,	PDP10_KA10_ITS, 0, 0 },
   { "dfad",	0110,	PDP10_BASIC,	PDP10_KI10up, 0, 0 },
   { "dfsb",	0111,	PDP10_BASIC,	PDP10_KI10up, 0, 0 },
   { "dfmp",	0112,	PDP10_BASIC,	PDP10_KI10up, 0, 0 },
@@ -292,7 +294,7 @@ const struct pdp10_instruction pdp10_instruction[] =
   { "ashc",	0244,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
   { "rotc",	0245,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
   { "lshc",	0246,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
-/*{ "",		0247,	PDP10_BASIC,	PDP10_NONE },*/
+  { "fix",	0247,	PDP10_BASIC,	PDP10_KA10_SAIL },
   { "exch",	0250,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
   { "blt",	0251,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
   { "aobjp",	0252,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
@@ -334,8 +336,9 @@ const struct pdp10_instruction pdp10_instruction[] =
 
   { "xct",	0256,	PDP10_A_UNUSED,	PDP10_ALL, 0, 0 },
 
-  /* TOPS-10 instruction; nop otherwise */
+  /* TOPS-10 instruction, CONS at SAIL, nop otherwise */
   { "map",	0257,	PDP10_BASIC,	PDP10_KA10_to_KI10, 0, 0 },
+  { "cons",	0257,	PDP10_BASIC,	PDP10_KA10_SAIL, 0, 0 },
 
   { "pushj",	0260,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
   { "push",	0261,	PDP10_BASIC,	PDP10_ALL, 0, 0 },

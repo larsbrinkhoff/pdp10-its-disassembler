@@ -93,20 +93,21 @@ the Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307
 #define PDP10_SC30M    0x020000	/* System Concepts SC-30M */
 #define PDP10_SC40     0x040000	/* System Concepts SC-40 */
 #define PDP10_XKL1     0x080000	/* XKL TOAD-1 XKL-1 */
+#define PDP10_KA10_SAIL     0x100000	/* Modifications at Stanford. */
+#define PDP10_KL10_SAIL     0x200000
 #define PDP10_ALL      0xffffff
 
 /* Useful combinations of the above. */
 #define PDP6_166_to_PDP10_KI10	(PDP6_166 | PDP10_KA10_to_KI10)
-#define PDP10_KA10any		(PDP10_KA10 | PDP10_KA10_ITS)
+#define PDP10_KA10any		(PDP10_KA10 | PDP10_KA10_ITS | PDP10_KA10_SAIL)
 #define PDP10_KA10_to_KI10	(PDP10_KA10 | PDP10_KI10)
 #define PDP10_KA10_to_KL10	(PDP10_KA10_to_KI10 | PDP10_KL10any)
 #define PDP10_KI10_to_KL10	(PDP10_KI10 | PDP10_KL10any)
 #define PDP10_KA10up		(PDP10_KA10any | PDP10_KI10up)
 #define PDP10_KI10up		(PDP10_KI10 | PDP10_KL10up)
 #define PDP10_KL10any		(PDP10_KL10 | PDP10_KL10_ITS | \
-				 PDP10_KL10_271up)
-#define PDP10_KL10up		(PDP10_KL10 | PDP10_KL10_ITS | \
-				 PDP10_KL10_271up | PDP10_KS10)
+				 PDP10_KL10_SAIL  |PDP10_KL10_271up)
+#define PDP10_KL10up		(PDP10_KL10any | PDP10_KS10)
 #define PDP10_KL10_271up	(PDP10_KL10_271 | PDP10_SC20up | PDP10_XKL1)
 #define PDP10_KS10any		(PDP10_KS10 | PDP10_KS10_ITS)
 #define PDP10_not_KS10		(PDP10_ALL & ~(PDP10_KS10any))
@@ -114,6 +115,7 @@ the Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307
 #define PDP10_SC20up		(PDP10_SC20_to_SC25 | PDP10_SC30M | PDP10_SC40)
 #define PDP10_ITS		(PDP10_KA10_ITS | PDP10_KL10_ITS | \
 				 PDP10_KS10_ITS)
+#define PDP10_SAIL		(PDP10_KA10_SAIL | PDP10_KL10_SAIL)
 
 struct pdp10_instruction
 {
