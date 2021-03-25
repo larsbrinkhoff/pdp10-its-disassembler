@@ -313,6 +313,90 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
   return;
 }
 
+static char *
+unpad (char *str)
+{
+  for (; *str == ' '; str++)
+    ;
+  return str;
+}
+
+static void
+print_sail_symbol (word_t word, word_t block, word_t value)
+{
+  char *str, str1[7], str2[7];
+  int flags = word >> 32;
+
+  squoze_to_ascii (word, str1);
+  /* Remove space padding. */
+  str = unpad (str1);
+
+  switch (flags)
+    {
+    case 000: /* Program name. */
+      if (*str != 0)
+	printf ("  Program: %s\n", str);
+      break;
+    case 003: /* Block name. */
+      printf ("  Block: %s\n", str);
+      break;
+    default:
+      printf ("    Symbol %s ", str);
+      squoze_to_ascii (block, str2);
+      if (block != 0)
+	printf ("[%s] ", unpad (str2));
+      printf ("= %llo (%02o)\n", value, flags);
+      add_symbol (str, value, 0); /* Don't know what flags mean. */
+    }
+}
+
+void
+dmp_new_symbols (struct pdp10_memory *memory, int table)
+{
+  word_t word1, word2, block, value;
+  int bname, class1, class2, class3, class4, lastv;
+  int i;
+
+  bname = get_word_at (memory, table + 1);
+  class1 = get_word_at (memory, table + 5);
+  class2 = get_word_at (memory, table + 6);
+  class3 = get_word_at (memory, table + 7);
+  class4 = get_word_at (memory, table + 8);
+  lastv = get_word_at (memory, table + 9);
+
+  printf ("\nSymbol table:\n");
+
+  for (i = class1; i < class2; i += 2)
+    {
+      word1 = get_word_at (memory, table + i);
+      word2 = get_word_at (memory, table + i + 1);
+      block = get_word_at (memory, table + bname + (word2 >> 23));
+      print_sail_symbol (word1, block, word2 & 0777777LL);
+    }
+  for (i = class2; i < class3; i += 2)
+    {
+      word1 = get_word_at (memory, table + i);
+      word2 = get_word_at (memory, table + i + 1);
+      block = get_word_at (memory, table + bname + (word2 >> 23));
+      print_sail_symbol (word1, block, word2 & 0777777LL);
+    }
+  for (i = class3; i < class4; i += 2)
+    {
+      word1 = get_word_at (memory, table + i);
+      word2 = get_word_at (memory, table + i + 1);
+      block = get_word_at (memory, table + bname + (word2 >> 23));
+      print_sail_symbol (word1, block, (word2 & 0777777LL) << 18);
+    }
+  for (i = class4; i < lastv; i += 2)
+    {
+      word1 = get_word_at (memory, table + i);
+      word2 = get_word_at (memory, table + i + 1);
+      block = get_word_at (memory, table + bname + (word2 >> 23));
+      value = get_word_at (memory, table + (word2 & 0777777LL));
+      print_sail_symbol (word1, block, value);
+    }
+}
+
 void
 dmp_info (struct pdp10_memory *memory, int cpu_model)
 {
@@ -332,7 +416,12 @@ dmp_info (struct pdp10_memory *memory, int cpu_model)
      the executable. */
   jbsym = get_word_at (memory, 0116);
   p = jbsym & 0777777;
-  if (jbsym != -1 && p != 0 && get_word_at (memory, p) != -1)
+  if (jbsym == -1 || p == 0 || get_word_at (memory, p) == -1)
+    return;
+
+  if (get_word_at (memory, p) == 0777777777777LL)
+    dmp_new_symbols (memory, p);
+  else
     {
       int i;
       int length = 01000000 - (jbsym >> 18);
@@ -343,7 +432,7 @@ dmp_info (struct pdp10_memory *memory, int cpu_model)
 	{
 	  word_t word1 = get_word_at (memory, p + i);
 	  word_t word2 = get_word_at (memory, p + i + 1);
-	  print_symbol (word1, word2);
+	  print_sail_symbol (word1, 0LL, word2);
 	}
     }
 }
