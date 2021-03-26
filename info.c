@@ -335,14 +335,14 @@ dmp_info (struct pdp10_memory *memory, int cpu_model)
   if (jbsym != -1 && p != 0 && get_word_at (memory, p) != -1)
     {
       int i;
-      int length = -((jbsym >> 18) | ((-1) & ~0777777));
+      int length = 01000000 - (jbsym >> 18);
 
       printf ("\nSymbol table:\n");
 
-      for (i = 0; i < length / 2; i++)
+      for (i = length - 2; i >= 0; i -= 2)
 	{
-	  word_t word1 = get_word_at (memory, p++);
-	  word_t word2 = get_word_at (memory, p++);
+	  word_t word1 = get_word_at (memory, p + i);
+	  word_t word2 = get_word_at (memory, p + i + 1);
 	  print_symbol (word1, word2);
 	}
     }
