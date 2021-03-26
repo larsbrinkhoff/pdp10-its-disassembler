@@ -263,7 +263,6 @@ check_block_size (int n)
 static void
 close_file (word_t x)
 {
-  checksum &= 0777777777777;
   fprintf (info, "Checksum: %012llo (%012llo)\n", checksum, x);
   fclose (output);
   output = NULL;
@@ -305,7 +304,8 @@ write_data (word_t *data, int size)
   int i;
   for (i = 0; i < size; i++)
     {
-      checksum += *data;
+      checksum = (checksum << 7) | (checksum >> 29);
+      checksum = (checksum ^ *data) & 0777777777777LL;
       write_word (output, *data++);
     }
 }
