@@ -5,7 +5,8 @@ FILES =  sblk-file.o pdump-file.o dmp-file.o raw-file.o shr-file.o \
 	 mdl-file.o
 
 WORDS =  aa-word.o bin-word.o cadr-word.o core-word.o data8-word.o \
-	 dta-word.o its-word.o oct-word.o pt-word.o tape-word.o x-word.o
+	 dta-word.o its-word.o oct-word.o pt-word.o sail-word.o tape-word.o \
+	 x-word.o
 
 OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o weenix.o
@@ -118,7 +119,8 @@ check: \
 	out/stink.-ipak-.ipak \
 	out/thirty.scrmbl out/sixbit.scrmbl out/pdpten.scrmbl \
 	out/aaaaaa.scrmbl out/0s.scrmbl \
-	out/dart.tape.dart out/two.tapes.dasm
+	out/dart.tape.dart out/two.tapes.dasm \
+	out/chars.pub.oct.sail out/chars.pub.sail.ascii
 
 samples/ts.obs = -Wits
 samples/ts.ksfedr = -Wits
@@ -160,6 +162,14 @@ out/%.scrmbl: samples/zeros.%.scrmbl scrmbl cat36 samples/zeros.scrmbl
 	./cat36 -Wits -Xbin out/$*.unscrm | cmp - samples/zeros.scrmbl \
 		|| rm $@ /no-such-file
 
+out/%.oct.sail: samples/%.oct cat36
+	./cat36 -Woct -Xsail $< > $@
+	cmp $@ test/$*.oct.sail
+
+out/%.sail.ascii: samples/%.sail cat36
+	./cat36 -Wsail -Xascii $< > $@
+	cmp $@ test/$*.sail.ascii
+
 FIX_TIME=sed 's/RECORDED ....-..-.. ..:..,/RECORDED XXXX-XX-XX XX:XX/'
 
 out/%.dart: samples/% dart test/%.dart
@@ -180,6 +190,7 @@ memory.o: memory.c memory.h dis.h
 oct-word.o: oct-word.c dis.h
 pdp10-opc.o: pdp10-opc.c opcode/pdp10.h
 pdump.o: pdump.c dis.h memory.h
+sail-word.o: sail-word.c dis.h
 sblk.o: sblk.c dis.h memory.h
 scrmbl.o: scrmbl.c dis.h
 timing.o: timing.c opcode/pdp10.h timing.h dis.h
