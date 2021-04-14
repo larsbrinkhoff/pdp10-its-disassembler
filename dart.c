@@ -388,7 +388,7 @@ static word_t
 read_start (FILE *f, int length)
 {
   word_t word, date, minutes;
-  char string[8];
+  char string[9];
   char prj[4], prg[4];
   char name[7], ext[7];
   int offset = 022;
@@ -398,6 +398,7 @@ read_start (FILE *f, int length)
   sixbit_to_ascii (block[1], string);
   string[6] = ' ';
   string[7] = ' ';
+  string[8] = 0;
   *strchr (string, ' ') = ':';
   fprintf (list, "\n   %s", string);
   *strchr (string, ':') = ' ';
