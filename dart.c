@@ -827,7 +827,7 @@ main (int argc, char **argv)
   char *tape_name = NULL, *mode;
   char *directory = NULL;
   int verbose = 0;
-  FILE *f;
+  FILE *f = NULL;
   int opt;
 
   tape_bpi = 6250;
