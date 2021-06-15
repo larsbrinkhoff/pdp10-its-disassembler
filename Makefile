@@ -11,7 +11,7 @@ OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o weenix.o
 
 UTILS =	cat36 itsarc magdmp magfrm dskdmp \
-	macdmp macro-tapes tape-dir harscntopbm palx \
+	macdmp macro-tapes tape-dir harscntopbm palx cross \
 	ipak kldcp klfedr scrmbl unscr tvpic tito dart od10
 
 all: dis10 $(UTILS) check
@@ -73,6 +73,9 @@ harscntopbm: harscntopbm.o libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
 palx: palx.o $(OBJS) libwords.a
+	$(CC) $(CFLAGS) $^ -o $@
+
+cross: cross.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
 kldcp: kldcp.o $(OBJS) das.o libwords.a
