@@ -12,7 +12,8 @@ OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 
 UTILS =	cat36 itsarc magdmp magfrm dskdmp \
 	macdmp macro-tapes tape-dir harscntopbm palx cross \
-	ipak kldcp klfedr scrmbl unscr tvpic tito dart od10
+	ipak kldcp klfedr scrmbl unscr tvpic tito dart od10 \
+	font
 
 all: dis10 $(UTILS) check
 
@@ -70,6 +71,9 @@ od10: od10.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
 harscntopbm: harscntopbm.o libwords.a
+	$(CC) $(CFLAGS) $^ -o $@
+
+font: font.o libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
 palx: palx.o $(OBJS) libwords.a
