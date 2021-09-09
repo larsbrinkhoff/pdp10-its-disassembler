@@ -209,6 +209,41 @@ int get_7track_record (FILE *f, word_t **buffer)
   return reclen / 6;
 }
 
+static int get_octet_record (FILE *f, word_t **buffer)
+{
+  int i, x, reclen;
+  word_t *p;
+
+  reclen = get_reclen (f);
+  if (reclen == 0)
+    return 0;
+  
+  *buffer = malloc (sizeof (word_t) * reclen);
+  if (*buffer == NULL)
+    {
+      fprintf (stderr, "Out of memory.\n");
+      exit (1);
+    }
+
+  for (i = 0, p = *buffer; i < reclen; i++)
+    *p++ = get_byte (f);
+
+  x = get_reclen (f);
+  if (x != reclen)
+    {
+      fprintf (stderr, "Error in tape image format.\n"
+	       "%d != %d\n", reclen, x);
+      exit (1);
+    }
+
+  if (reclen == 0)
+    {
+      free (*buffer);
+    }
+
+  return reclen;
+}
+
 static word_t *buffer = NULL;
 static int n, words;
 static word_t tape_bits = START_FILE;
@@ -218,8 +253,10 @@ get_tape_record (FILE *f, word_t **buffer)
 {
   if (input_word_format == &tape_word_format)
     return get_9track_record (f, buffer);
-  else
+  else if (input_word_format == &tape7_word_format)
     return get_7track_record (f, buffer);
+  else
+    return get_octet_record (f, buffer);
 }
 
 static word_t
@@ -329,6 +366,16 @@ flush_tape_word (FILE *f)
   beginning_of_tape = 1;
 }
 
+static word_t
+get_tape8_word (FILE *f)
+{
+  int c = fgetc (f);
+  if (c == EOF)
+    return -1;
+  else
+    return c;
+}
+
 struct word_format tape_word_format = {
   "tape",
   get_tape_word,
@@ -343,4 +390,12 @@ struct word_format tape7_word_format = {
   rewind_tape_word,
   write_tape_word,
   flush_tape_word
+};
+
+struct word_format tape8_word_format = {
+  "tape8",
+  get_tape_word,
+  NULL,
+  NULL,
+  NULL
 };

@@ -5,7 +5,8 @@ FILES =  sblk-file.o pdump-file.o dmp-file.o raw-file.o shr-file.o \
 	 mdl-file.o
 
 WORDS =  aa-word.o bin-word.o cadr-word.o core-word.o data8-word.o \
-	 dta-word.o its-word.o oct-word.o pt-word.o tape-word.o x-word.o
+	 dta-word.o its-word.o oct-word.o octet-word.o pt-word.o \
+	 tape-word.o x-word.o
 
 OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o weenix.o

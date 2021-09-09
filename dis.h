@@ -75,9 +75,11 @@ extern struct word_format data8_word_format;
 extern struct word_format dta_word_format;
 extern struct word_format its_word_format;
 extern struct word_format oct_word_format;
+extern struct word_format octet_word_format;
 extern struct word_format pt_word_format;
 extern struct word_format tape_word_format;
 extern struct word_format tape7_word_format;
+extern struct word_format tape8_word_format;
 extern struct word_format x_word_format;
 
 extern void     usage_file_format (void);

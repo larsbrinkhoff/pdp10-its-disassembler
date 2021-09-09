@@ -30,9 +30,11 @@ static struct word_format *word_formats[] = {
   &dta_word_format,
   &its_word_format,
   &oct_word_format,
+  &octet_word_format,
   &pt_word_format,
   &tape_word_format,
   &tape7_word_format,
+  &tape8_word_format,
   &x_word_format,
   NULL
 };

@@ -14,6 +14,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "dis.h"
 
 /* The binary output from CROSS is formatted into blocks, with a
@@ -27,6 +28,7 @@ address (inclusive). */
 
 static unsigned char buf[4];
 static int n = 0;
+static int start = 0x6000;
 
 static void refill (FILE *f)
 {
@@ -76,6 +78,13 @@ static void block (FILE *f)
   length = get_16 (f);
   address = get_16 (f);
 
+  if (address == 0 && length == 6) {
+    fprintf (stderr, "Skipping: Length %d, address %04x\n", length, address);
+    for (i = 0; i < length; i++)
+      get_8 (f);
+    return;
+  }
+
   fprintf (stderr, "Type %d, length %d, address %04x\n",
 	   type, length, address);
 
@@ -88,10 +97,20 @@ static void block (FILE *f)
   get_8 (f);
 }
 
+static void end (void)
+{
+  fprintf (stderr, "Start: %04X\n", start);
+  out_16 (0x02E0);
+  out_16 (0x02E1);
+  out_16 (start);
+}
+
 int main (void)
 {
   input_word_format = &its_word_format;
   
+  atexit (end);
+
   out_16 (0xFFFF);
 
   for (;;)
