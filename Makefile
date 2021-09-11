@@ -12,7 +12,7 @@ OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 
 UTILS =	cat36 itsarc magdmp magfrm dskdmp \
 	macdmp macro-tapes tape-dir harscntopbm palx cross \
-	ipak kldcp klfedr scrmbl unscr tvpic tito dart od10
+	ipak kldcp klfedr scrmbl unscr tvpic pictv tito dart od10
 
 all: dis10 $(UTILS) check
 
@@ -99,6 +99,11 @@ lodepng.h: lodepng/lodepng.h
 tvpic.o: tvpic.c lodepng.h
 
 tvpic: tvpic.o lodepng.o $(OBJS) libwords.a
+	$(CC) $(CFLAGS) $^ -o $@
+
+pictv.o: pictv.c lodepng.h
+
+pictv: pictv.o lodepng.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
 test/test_write: test/test_write.o $(OBJS) libwords.a
