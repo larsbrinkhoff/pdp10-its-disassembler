@@ -14,7 +14,7 @@
 - Make a picture file suitable for displaying on a Knight TV.
 
 A Linux FUSE implementation of the networking filesystem protocol MLDEV
-is elsewhere: http://github.com/larsbrinkhoff/lmdev
+is elsewhere: http://github.com/larsbrinkhoff/mldev
 
 ## Tools for other PDP-10 systems.
 
