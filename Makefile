@@ -2,7 +2,7 @@
 CFLAGS = -g -W -Wall
 
 FILES =  sblk-file.o pdump-file.o dmp-file.o raw-file.o shr-file.o \
-	 mdl-file.o
+	 mdl-file.o rim10-file.o
 
 WORDS =  aa-word.o bin-word.o cadr-word.o core-word.o data8-word.o \
 	 dta-word.o its-word.o oct-word.o pt-word.o sail-word.o tape-word.o \
@@ -128,7 +128,7 @@ samples/ts.name = -Wits -Sall
 samples/ts.srccom = -Wits
 samples/atsign.tcp = -Wits
 samples/macro.low = -r -Wascii
-samples/pt.rim = -r -Wpt -mka10its
+samples/pt.rim = -Frim10 -Wpt -mka10its
 samples/visib1.bin = -Wits -Sddt
 samples/visib2.bin = -Wits -Sddt
 samples/visib3.bin = -Wits -Sall
