@@ -62,29 +62,42 @@ add_memory (struct pdp10_memory *memory, int address, int length, word_t *data)
   if (find_area (memory, address) != NULL)
     return -2;
 
-  memory->areas++;
-  area = realloc (memory->area, memory->areas * sizeof (struct pdp10_area));
-  if (area == NULL)
-    {
-      memory->areas--;
-      return -1;
-    }
-  memory->area = area;
-
-  for (i = 0; i < memory->areas - 1; i++)
+  for (i = 0; i < memory->areas; i++)
     {
       if (address > memory->area[i].start)
 	continue;
-      memmove (&memory->area[i+1], &memory->area[i],
-	       (memory->areas - i - 1) * sizeof (struct pdp10_area));
-      area = &memory->area[i];
-      area->start = address;
-      area->end = address + length;
-      area->data = data;
+      break;
+    }
+
+  if (i > 0 && address == memory->area[i-1].end)
+    {
+      int new_length;
+      area = &memory->area[i-1];
+      new_length = length + area->end - area->start;
+      area->data = realloc (area->data, new_length * sizeof (word_t));
+      if (area->data == NULL)
+	{
+	  fprintf (stderr, "realloc failed\n");
+	  exit (1);
+	}
+      memcpy (&area->data[area->end - area->start], data, sizeof (word_t) * length);
+      area->end += length;
+      free (data);
       return 0;
     }
 
-  area = &memory->area[memory->areas - 1];
+  memory->areas++;
+  memory->area = realloc (memory->area, memory->areas * sizeof (struct pdp10_area));
+  if (memory->area == NULL)
+    {
+      fprintf (stderr, "realloc failed\n");
+      exit (1);
+    }
+
+  memmove (&memory->area[i+1], &memory->area[i],
+	   (memory->areas - i - 1) * sizeof (struct pdp10_area));
+
+  area = &memory->area[i];
   area->start = address;
   area->end = address + length;
   area->data = data;
