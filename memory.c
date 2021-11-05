@@ -15,6 +15,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "memory.h"
 
 static struct pdp10_area *
@@ -56,6 +57,7 @@ int
 add_memory (struct pdp10_memory *memory, int address, int length, word_t *data)
 {
   struct pdp10_area *area;
+  int i;
 
   if (find_area (memory, address) != NULL)
     return -2;
@@ -68,6 +70,19 @@ add_memory (struct pdp10_memory *memory, int address, int length, word_t *data)
       return -1;
     }
   memory->area = area;
+
+  for (i = 0; i < memory->areas - 1; i++)
+    {
+      if (address > memory->area[i].start)
+	continue;
+      memmove (&memory->area[i+1], &memory->area[i],
+	       (memory->areas - i - 1) * sizeof (struct pdp10_area));
+      area = &memory->area[i];
+      area->start = address;
+      area->end = address + length;
+      area->data = data;
+      return 0;
+    }
 
   area = &memory->area[memory->areas - 1];
   area->start = address;
