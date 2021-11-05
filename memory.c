@@ -148,3 +148,25 @@ get_word_at (struct pdp10_memory *memory, int address)
 
   return getword (area, address);
 }
+
+static void
+setword (struct pdp10_area *area, int address, word_t word)
+{
+  area->data[address - area->start] = word;
+}
+
+void
+set_word_at (struct pdp10_memory *memory, int address, word_t word)
+{
+  struct pdp10_area *area;
+
+  area = find_area (memory, address);
+  if (area == NULL) {
+    word_t *data = malloc (sizeof word);
+    *data = word;
+    add_memory (memory, address, 1, data);
+    return;
+  }
+
+  setword (area, address, word);
+}
