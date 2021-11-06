@@ -114,5 +114,6 @@ read_pdump (FILE *f, struct pdp10_memory *memory, int cpu_model)
 
 struct file_format pdump_file_format = {
   "pdump",
-  read_pdump
+  read_pdump,
+  NULL
 };

@@ -227,5 +227,6 @@ read_rim10 (FILE *f, struct pdp10_memory *memory, int cpu_model)
 
 struct file_format rim10_file_format = {
   "rim10",
-  read_rim10
+  read_rim10,
+  NULL
 };

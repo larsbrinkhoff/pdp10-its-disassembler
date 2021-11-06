@@ -31,5 +31,6 @@ read_dmp (FILE *f, struct pdp10_memory *memory, int cpu_model)
 
 struct file_format dmp_file_format = {
   "dmp",
-  read_dmp
+  read_dmp,
+  NULL
 };
