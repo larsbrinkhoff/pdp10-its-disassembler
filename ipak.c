@@ -94,6 +94,8 @@ main (int argc, char **argv)
   int opt;
   int i;
 
+  output_file = stdout;
+
   while ((opt = getopt (argc, argv, "etxW:X:")) != -1)
     {
       switch (opt)

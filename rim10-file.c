@@ -212,7 +212,7 @@ read_rim10 (FILE *f, struct pdp10_memory *memory, int cpu_model)
   word_t word;
   int i;
 
-  printf ("RIM10 format\n");
+  fprintf (output_file, "RIM10 format\n");
 
   word = get_word (f);
   address = (word & 0777777) + 1;
@@ -252,7 +252,7 @@ read_rim10 (FILE *f, struct pdp10_memory *memory, int cpu_model)
       start_instruction = JRST + address;
       break;
     }
-  printf ("Start address: %o\n", address);
+  fprintf (output_file, "Start address: %o\n", address);
 }
 
 static void

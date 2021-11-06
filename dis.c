@@ -293,7 +293,7 @@ spaces (int n)
   int i;
 
   for (i = 0; i < n; i++)
-    putchar (' ');
+    fputc (' ', output_file);
 
   return i < 0 ? 0 : i;
 }
@@ -383,11 +383,11 @@ dis (struct pdp10_memory *memory, int cpu_model)
   while ((word = get_next_word (memory)) != -1)
     {
       if (word & START_TAPE)
-	printf ("Logical end of tape.\n");
+	fprintf (output_file, "Logical end of tape.\n");
       else if (word & START_FILE)
-	printf ("Start of file.\n");
+	fprintf (output_file, "Start of file.\n");
       else if (word & START_RECORD)
-	printf ("Start of record.\n");
+	fprintf (output_file, "Start of record.\n");
       disassemble_word (memory, word & mask, get_address (memory), cpu_model);
     }
 }
@@ -407,13 +407,13 @@ print_val (const char *format, int field, int hint)
 
 	  sym = get_symbol_by_value (field, hint);
 	  if (sym == NULL)
-	    n += printf ("%o", field);
+	    n += fprintf (output_file, "%o", field);
 	  else
-	    n += printf ("%s", sym->name);
+	    n += fprintf (output_file, "%s", sym->name);
 	}
       else
 	{
-	  n += printf ("%c", *p);
+	  n += fprintf (output_file, "%c", *p);
 	}
     }
 
@@ -461,14 +461,14 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 
   sym = get_symbol_by_value (address, HINT_ADDRESS);
   if (sym != NULL)
-    printf ("%s:\n", sym->name);
+    fprintf (output_file, "%s:\n", sym->name);
 
   if (address == -1)
-    printf ("         ");
+    fprintf (output_file, "         ");
   else
-    printf ("%06o:  ", address);
+    fprintf (output_file, "%06o:  ", address);
 
-  printf ("%012llo  ", word);
+  fprintf (output_file, "%012llo  ", word);
 
   n = 0;
 
@@ -480,7 +480,7 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 	  /* If no opcode found and left half is 0, print as symbol. */
 	  sym = get_symbol_by_value (Y (word), HINT_ADDRESS);
 	  if (sym != NULL)
-	    n += printf ("%s", sym->name);
+	    n += fprintf (output_file, "%s", sym->name);
 	}
     }
   else if ((cpu_model & PDP10_ITS) && OPCODE (word) == ITS_OPER)
@@ -489,7 +489,7 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
       oper = lookup_oper (word, opers, sizeof opers / sizeof opers[0]);
       if (oper)
 	{
-	  n += printf ("%-8s ", oper->name);
+	  n += fprintf (output_file, "%-8s ", oper->name);
 	  if (oper->hint == HINT_CHANNEL || A (word) != 0)
 	    n += print_val ("%o,", A (word), oper->hint);
 	}
@@ -501,7 +501,7 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 			   sizeof waits_callis / sizeof waits_callis[0]);
       if (calli)
 	{
-	  n += printf ("%-8s ", calli->name);
+	  n += fprintf (output_file, "%-8s ", calli->name);
 	  if (calli->hint == HINT_CHANNEL || A (word) != 0)
 	    n += print_val ("%o,", A (word), calli->hint);
 	}
@@ -511,14 +511,14 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
     {
       int address;
       
-      n += printf ("%-8s ", ".call");
+      n += fprintf (output_file, "%-8s ", ".call");
 
       address = calc_e (memory, word);
       if (address == -1 ||
 	  get_word_at (memory, address) != SETZ)
 	{
 	  if (I (word))
-	    n += printf ("@");
+	    n += fprintf (output_file, "@");
 	  n += print_val ("%o", Y (word), HINT_ADDRESS);
 	  if (X (word))
 	    n += print_val ("(%o)", X (word), HINT_ACCUMULATOR);
@@ -530,31 +530,31 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 	  word_t w;
 
 	  n = 0;
-	  printf ("[setz\n");
+	  fprintf (output_file, "[setz\n");
 	  w = get_word_at (memory, address + 1);
 	  sixbit_to_ascii (w, name);
-	  printf ("                                 SIXBIT/%s/\n", name);
+	  fprintf (output_file, "                                 SIXBIT/%s/\n", name);
 	  i = 2;
 	  while (((w = get_word_at (memory, address + i)) & SIGNBIT) == 0)
 	    {
-	      printf ("                                 %012llo\n", w);
+	      fprintf (output_file, "                                 %012llo\n", w);
 	      i++;
 	    }
-	  printf ("                                 %012llo]\n", w);
-	  printf ("                       ");
+	  fprintf (output_file, "                                 %012llo]\n", w);
+	  fprintf (output_file, "                       ");
 	}
     }
 #endif
   else
     {
-      n += printf ("%-8s ", op->name);
+      n += fprintf (output_file, "%-8s ", op->name);
 
       if (op->type & PDP10_IO)
 	{
 	  const struct pdp10_device *dev;
 	  dev = lookup_device (DEVICE (word), cpu_model);
 	  if (dev != NULL)
-	    n += printf ("%s, ", dev->name);
+	    n += fprintf (output_file, "%s, ", dev->name);
 	  else
 	    n += print_val ("%o, ", DEVICE (word), HINT_DEVICE);
 	}
@@ -576,15 +576,15 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
       if (E (word) != 0 || !(op->type & PDP10_E_UNUSED))
 	{
 	  if (I (word))
-	    n += printf ("@");
+	    n += fprintf (output_file, "@");
 
 	  if (op->addr_hint == HINT_FLOAT && X (word) == 0)
 	    {
 	      const struct symbol *sym = get_symbol_by_value (Y (word), hint);
 	      if (sym == NULL)
-		n += printf ("(%f)", immediate_float (Y (word)));
+		n += fprintf (output_file, "(%f)", immediate_float (Y (word)));
 	      else
-		n += printf ("%s", sym->name);
+		n += fprintf (output_file, "%s", sym->name);
 	    }
 	  else if (Y (word) != 0 && X (word) != 0)
 	    n += print_val ("%o", Y (word), HINT_OFFSET);
@@ -607,7 +607,7 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
   {
     int t = instruction_time (word, PDP10_KI10);
     if (t > 0)
-      printf (";%5dns", t);
+      fprintf (output_file, ";%5dns", t);
     else
       spaces (8);
   }
@@ -615,13 +615,13 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 
 #if 1
   /* Print word as six SIXBIT characters. */
-  printf (";\"");
+  fprintf (output_file, ";\"");
   for (i = 0; i < 6; i++)
     {
       int c = (int)(word >> (6 * (5 - i))) & 077;
-      putchar (c + ' ');
+      fputc (c + ' ', output_file);
     }
-  putchar ('"');
+  fputc ('"', output_file);
 #endif
 
 #if 1
@@ -668,51 +668,51 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 
   if (printable)
     {
-      printf (" \"");
+      fprintf (output_file, " \"");
       for (i = 0; i < 5; i++)
 	{
 	  switch (ch[i])
 	    {
 	    case '\0':
-	      printf ("\\0");
+	      fprintf (output_file, "\\0");
 	      break;
 	    case '\t':
-	      printf ("\\t");
+	      fprintf (output_file, "\\t");
 	      break;
 	    case '\n':
-	      printf ("\\n");
+	      fprintf (output_file, "\\n");
 	      break;
 	    case '\f':
-	      printf ("\\f");
+	      fprintf (output_file, "\\f");
 	      break;
 	    case '\r':
-	      printf ("\\r");
+	      fprintf (output_file, "\\r");
 	      break;
 	    case '\\':
-	      printf ("\\\\");
+	      fprintf (output_file, "\\\\");
 	      break;
 	    case '\"':
-	      printf ("\\\"");
+	      fprintf (output_file, "\\\"");
 	      break;
 	    default:
 	      if (ch[i] < 040 || ch[i] > 0176)
-		printf ("\\%03o", ch[i]);
+		fprintf (output_file, "\\%03o", ch[i]);
 	      else
-		putchar (ch[i]);
+		fputc (ch[i], output_file);
 	      break;
 	    }
 	}
-      printf ("\"");
+      fprintf (output_file, "\"");
     }
 #endif
 
 #if 0
   /* Print word as six SQUOZE characters. */
   squoze_to_ascii (word, ch);
-  printf (" \"%s\"", ch);
+  fprintf (output_file, " \"%s\"", ch);
 #endif
 
-  printf ("\n");
+  fprintf (output_file, "\n");
 }
 
 void

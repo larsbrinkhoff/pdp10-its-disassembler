@@ -35,6 +35,7 @@
 #define STBINF      3
 
 word_t start_instruction;
+FILE *output_file;
 
 word_t
 ascii_to_sixbit (const char *ascii)
@@ -118,7 +119,7 @@ print_date (FILE *f, word_t t)
   fprintf (f, "%u-%02u-%02u", (year >> 9) + 1900, (month >> 5), day);
 
   if ((year & 0600000) && !supress_warning)
-    printf (" [WARNING: overflowed year field]");
+    fprintf (output_file, " [WARNING: overflowed year field]");
 }
 
 void
@@ -149,27 +150,27 @@ print_symbol (word_t word1, word_t word2)
   int flags = 0;
 
   squoze_to_ascii (word1, str);
-  printf ("    Symbol %s = ", str);
-  printf ("%llo   (", word2);
+  fprintf (output_file, "    Symbol %s = ", str);
+  fprintf (output_file, "%llo   (", word2);
 
   if (word1 & SYHKL)
     {
-      printf (" halfkilled");
+      fprintf (output_file, " halfkilled");
       flags |= SYMBOL_HALFKILLED;
     }
   if (word1 & SYKIL)
     {
-      printf (" killed");
+      fprintf (output_file, " killed");
       flags |= SYMBOL_KILLED;
     }
   if (word1 & SYLCL)
-    printf (" local");
+    fprintf (output_file, " local");
   if (word1 & SYGBL)
     {
-      printf (" global");
+      fprintf (output_file, " global");
       flags |= SYMBOL_GLOBAL;
     }
-  printf (")\n");
+  fprintf (output_file, ")\n");
 
   add_symbol (str, word2, flags);
 }
@@ -181,12 +182,12 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
   word_t word;
   int i;
 
-  printf ("Start instruction:\n");
+  fprintf (output_file, "Start instruction:\n");
   disassemble_word (NULL, word0, -1, cpu_model);
 
   while ((word = get_word (f)) & SIGNBIT)
     {
-      printf ("\n");
+      fprintf (output_file, "\n");
       reset_checksum (word);
       block_length = -((word >> 18) | ((-1) & ~0777777));
       switch ((int)word & 0777777)
@@ -195,7 +196,7 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 	  {
 	    char str[7];
 
-	    printf ("Symbol table:\n");
+	    fprintf (output_file, "Symbol table:\n");
 
 	    for (i = 0; i < block_length; i += 2)
 	      {
@@ -204,7 +205,7 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 		word1 = get_checksummed_word (f);
 		word2 = get_checksummed_word (f);
 		if (word1 == -1 || word2 == -1) {
-		  printf ("  [WARNING: early end of file]\n");
+		  fprintf (output_file, "  [WARNING: early end of file]\n");
 		  goto end;
 		}
 
@@ -215,34 +216,34 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 		else
 		  {
 		    squoze_to_ascii (word1, str);
-		    printf ("  Header: %s\n", str);
+		    fprintf (output_file, "  Header: %s\n", str);
 		  }
 	      }
 	    goto checksum;
 	  }
 	case STBUND:
-	  printf ("Undefined symbol table:\n");
+	  fprintf (output_file, "Undefined symbol table:\n");
 	  break;
 	case STBFIL:
 	  {
 	    char str[7];
 
-	    printf ("Indirect symbol table pointer:\n");
+	    fprintf (output_file, "Indirect symbol table pointer:\n");
 
 	    if (block_length != 4)
 	      {
-		printf ("  (unknown table format)\n");
+		fprintf (output_file, "  (unknown table format)\n");
 		break;
 	      }
 
 	    sixbit_to_ascii (get_checksummed_word (f), str);
-	    printf ("  Device name: %s\n", str);
+	    fprintf (output_file, "  Device name: %s\n", str);
 	    sixbit_to_ascii (get_checksummed_word (f), str);
-	    printf ("  File name 1: %s\n", str);
+	    fprintf (output_file, "  File name 1: %s\n", str);
 	    sixbit_to_ascii (get_checksummed_word (f), str);
-	    printf ("  File name 2: %s\n", str);
+	    fprintf (output_file, "  File name 2: %s\n", str);
 	    sixbit_to_ascii (get_checksummed_word (f), str);
-	    printf ("  File sname:  %s\n", str);
+	    fprintf (output_file, "  File sname:  %s\n", str);
 	    goto checksum;
 	  }
 	case STBINF:
@@ -255,34 +256,34 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 	    switch ((int)word & 0777777)
 	      {
 	      case 1:
-		printf ("Assembly info:\n");
+		fprintf (output_file, "Assembly info:\n");
 		sixbit_to_ascii (get_checksummed_word (f), str);
-		printf ("  User name:          %s\n", str);
-		printf ("  Creation time:      ");
-		print_datime(stdout, get_checksummed_word (f));
-		putchar ('\n');
+		fprintf (output_file, "  User name:          %s\n", str);
+		fprintf (output_file, "  Creation time:      ");
+		print_datime (output_file, get_checksummed_word (f));
+		fputc ('\n', output_file);
 		sixbit_to_ascii (get_checksummed_word (f), str);
-		printf ("  Source file device: %s\n", str);
+		fprintf (output_file, "  Source file device: %s\n", str);
 		sixbit_to_ascii (get_checksummed_word (f), str);
-		printf ("  Source file name 1: %s\n", str);
+		fprintf (output_file, "  Source file name 1: %s\n", str);
 		sixbit_to_ascii (get_checksummed_word (f), str);
-		printf ("  Source file name 2: %s\n", str);
+		fprintf (output_file, "  Source file name 2: %s\n", str);
 		sixbit_to_ascii (get_checksummed_word (f), str);
-		printf ("  Source file sname:  %s\n", str);
+		fprintf (output_file, "  Source file sname:  %s\n", str);
 		for (i = 0; i < block_length - subblock_length - 1; i++)
 		  {
-		    printf ("  (%012llo)\n", get_checksummed_word(f));
+		    fprintf (output_file, "  (%012llo)\n", get_checksummed_word(f));
 		  }
 		goto checksum;
 	      case 2:
-		printf ("Debugging info:\n");
+		fprintf (output_file, "Debugging info:\n");
 		break;
 	      default:
-		printf ("Unknown miscellaneous info:\n");
+		fprintf (output_file, "Unknown miscellaneous info:\n");
 		break;
 	      }
 
-	    printf ("    (%d words)\n", subblock_length);
+	    fprintf (output_file, "    (%d words)\n", subblock_length);
 	    for (i = 0; i < subblock_length; i++)
 	      {
 		get_checksummed_word (f);
@@ -291,11 +292,11 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
 	    goto checksum;
 	  }
 	default:
-	  printf ("Unknown information:\n");
+	  fprintf (output_file, "Unknown information:\n");
 	  break;
 	}
 
-      printf ("(%d words)\n", block_length);
+      fprintf (output_file, "(%d words)\n", block_length);
       for (i = 0; i < block_length; i++)
 	{
 	  get_checksummed_word (f);
@@ -308,7 +309,7 @@ sblk_info (FILE *f, word_t word0, int cpu_model)
       check_checksum (word);
     }
 
-  printf ("\nDuplicate start instruction:\n");
+  fprintf (output_file, "\nDuplicate start instruction:\n");
   disassemble_word (NULL, word, -1, cpu_model);
 
  end:
@@ -337,17 +338,17 @@ print_sail_symbol (word_t word, word_t block, word_t value)
     {
     case 000: /* Program name. */
       if (*str != 0)
-	printf ("  Program: %s\n", str);
+	fprintf (output_file, "  Program: %s\n", str);
       break;
     case 003: /* Block name. */
-      printf ("  Block: %s\n", str);
+      fprintf (output_file, "  Block: %s\n", str);
       break;
     default:
-      printf ("    Symbol %s ", str);
+      fprintf (output_file, "    Symbol %s ", str);
       squoze_to_ascii (block, str2);
       if (block != 0)
-	printf ("[%s] ", unpad (str2));
-      printf ("= %llo (%02o)\n", value, flags);
+	fprintf (output_file, "[%s] ", unpad (str2));
+      fprintf (output_file, "= %llo (%02o)\n", value, flags);
       add_symbol (str, value, 0); /* Don't know what flags mean. */
     }
 }
@@ -366,7 +367,7 @@ dmp_new_symbols (struct pdp10_memory *memory, int table)
   class4 = get_word_at (memory, table + 8);
   lastv = get_word_at (memory, table + 9);
 
-  printf ("\nSymbol table:\n");
+  fprintf (output_file, "\nSymbol table:\n");
 
   for (i = class1; i < class2; i += 2)
     {
@@ -407,12 +408,12 @@ dmp_info (struct pdp10_memory *memory, int cpu_model)
 
   /* For the PDP-6 monitor, JBSA is the start address. */
   jbsa = get_word_at (memory, 0120);
-  printf ("Start address (PDP-6): %06llo\n", jbsa & 0777777);
+  fprintf (output_file, "Start address (PDP-6): %06llo\n", jbsa & 0777777);
   start_instruction = JRST + (jbsa & 0777777);
 
   /* For WAITS, JBDA is a JRST to the start address. */
   jbda = get_word_at (memory, 0140);
-  printf ("Start address (WAITS): %06llo\n", jbda & 0777777);
+  fprintf (output_file, "Start address (WAITS): %06llo\n", jbda & 0777777);
 
   /* .JBSYM is an AOBJN pointer to DDT's symbol table.  If the
      executable doesn't have one, it may be an pointer past the end of
@@ -429,7 +430,7 @@ dmp_info (struct pdp10_memory *memory, int cpu_model)
       int i;
       int length = 01000000 - (jbsym >> 18);
 
-      printf ("\nSymbol table:\n");
+      fprintf (output_file, "\nSymbol table:\n");
 
       for (i = length - 2; i >= 0; i -= 2)
 	{
@@ -452,42 +453,42 @@ dec_info (struct pdp10_memory *memory,
       word = get_word_at (memory, 0120) & 0777777;
       if (word != 0)
 	{
-	  printf ("Start address: %06llo\n", word);
+	  fprintf (output_file, "Start address: %06llo\n", word);
 	  start_instruction = JRST + word;
 	}
 
       word = get_word_at (memory, 0124) & 0777777;
       if (word != 0)
-	printf ("Reentry address: %06llo\n", word);
+	fprintf (output_file, "Reentry address: %06llo\n", word);
 
       word = get_word_at (memory, 0137);
       if (word != 0)
-	printf ("Version: %012llo\n", word);
+	fprintf (output_file, "Version: %012llo\n", word);
     }
   else
     {
-      printf ("Entry vector at %06llo length %llo:\n",
+      fprintf (output_file, "Entry vector at %06llo length %llo:\n",
 	      entry_vec_addr, entry_vec_len);
 
       if (entry_vec_len == 1)
 	{
-	  printf ("Start address: %06llo\n", entry_vec_addr);
+	  fprintf (output_file, "Start address: %06llo\n", entry_vec_addr);
 	}
       else if (entry_vec_len == 3)
 	{
 	  int addr;
 
-	  printf ("Start instruction:\n");
+	  fprintf (output_file, "Start instruction:\n");
 	  addr = entry_vec_addr;
 	  disassemble_word (memory, get_word_at (memory, addr),
 			    addr, cpu_model);
 
-	  printf ("Reentry instruction:\n");
+	  fprintf (output_file, "Reentry instruction:\n");
 	  addr = entry_vec_addr + 1;
 	  disassemble_word (memory, get_word_at (memory, addr),
 			    addr, cpu_model);
 
-	  printf ("Version: %012llo\n",
+	  fprintf (output_file, "Version: %012llo\n",
 		  get_word_at (memory, entry_vec_addr + 2));
 	}
     }
@@ -542,7 +543,7 @@ ntsddt_info (struct pdp10_memory *memory, int ddt)
   syms = -syms;
   a &= 0777777;
 
-  printf ("Symbol table:\n");
+  fprintf (output_file, "Symbol table:\n");
 
   for (i = 0; i < syms; i += 2)
     {
@@ -553,7 +554,7 @@ ntsddt_info (struct pdp10_memory *memory, int ddt)
       else
 	{
 	  squoze_to_ascii (w, name);
-	  printf ("  Header: %s (%012llo)\n", name, v);
+	  fprintf (output_file, "  Header: %s (%012llo)\n", name, v);
 	}
       a += 2;
     }

@@ -49,13 +49,13 @@ read_pdump (FILE *f, struct pdp10_memory *memory, int cpu_model)
   word_t word;
   int i, j;
 
-  printf ("PDUMP format\n\n");
+  fprintf (output_file, "PDUMP format\n\n");
 
   /* zero word */
   word = get_word (f);
 
-  printf ("Page map:\n");
-  printf ("Page  Address  Page description\n");
+  fprintf (output_file, "Page map:\n");
+  fprintf (output_file, "Page  Address  Page description\n");
   for (i = 0; i < 256; i++)
     {
       word = get_word (f);
@@ -63,18 +63,18 @@ read_pdump (FILE *f, struct pdp10_memory *memory, int cpu_model)
 
       if (word != 0)
 	{
-	  printf ("%03o   %06o   %06o,,%06o  ",
+	  fprintf (output_file, "%03o   %06o   %06o,,%06o  ",
 		  i, ITS_PAGESIZE * i, (int)(word >> 18), (int)word & 0777777);
 
-	  printf (word & PAGE_ABS ? "a" : "-");
-	  printf (word & PAGE_CBCPY ? "c" : "-");
-	  printf (word & PAGE_SHARE ? "s" : "-");
-	  printf (word & PAGE_WRITE ? "w" : "-");
-	  printf (word & PAGE_READ ? "r" : "-");
+	  fprintf (output_file, word & PAGE_ABS ? "a" : "-");
+	  fprintf (output_file, word & PAGE_CBCPY ? "c" : "-");
+	  fprintf (output_file, word & PAGE_SHARE ? "s" : "-");
+	  fprintf (output_file, word & PAGE_WRITE ? "w" : "-");
+	  fprintf (output_file, word & PAGE_READ ? "r" : "-");
 	  if (word & PAGE_NUM)
-	    printf (" %03o", (int)(word & PAGE_NUM));
+	    fprintf (output_file, " %03o", (int)(word & PAGE_NUM));
 
-	  printf ("\n");
+	  fprintf (output_file, "\n");
 	}
     }
 
@@ -107,7 +107,7 @@ read_pdump (FILE *f, struct pdp10_memory *memory, int cpu_model)
       add_memory (memory, ITS_PAGESIZE * i, ITS_PAGESIZE, data);
     }
 
-  printf ("\n");
+  fprintf (output_file, "\n");
   word = get_word (f);
   start_instruction = word;
   sblk_info (f, word, cpu_model);

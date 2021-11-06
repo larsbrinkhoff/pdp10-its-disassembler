@@ -22,7 +22,7 @@
 static void
 read_dmp (FILE *f, struct pdp10_memory *memory, int cpu_model)
 {
-  printf ("DMP format\n");
+  fprintf (output_file, "DMP format\n");
 
   read_raw_at (f, memory, 074);
 

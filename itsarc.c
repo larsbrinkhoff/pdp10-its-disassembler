@@ -179,6 +179,7 @@ main (int argc, char **argv)
 
   input_word_format = &its_word_format;
   output_word_format = &its_word_format;
+  output_file = stdout;
 
   if (argc != 3)
     usage (argv[0]);

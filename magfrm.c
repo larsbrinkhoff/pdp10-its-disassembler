@@ -170,6 +170,7 @@ main (int argc, char **argv)
   int i = 1;
 
   input_word_format = &its_word_format;
+  output_file = stdout;
 
   /* Default to 9-track tape. */
   nine_tracks ();

@@ -47,7 +47,7 @@ strip_spaces (char *string)
 static void
 add_global (const char *name, word_t value)
 {
-  printf ("    Symbol %-6s = %llo\n", name, value);
+  fprintf (output_file, "    Symbol %-6s = %llo\n", name, value);
 
   add_symbol (name, value, SYMBOL_GLOBAL);
 }
@@ -161,17 +161,17 @@ read_mdl (FILE *f, struct pdp10_memory *memory, int cpu_model)
   word_t partop_v, purtop_v, hibot, pmapb;
   int i;
 
-  printf ("Muddle save format\n\n");
+  fprintf (output_file, "Muddle save format\n\n");
 
   word_to_ascii7 (get_word (f), version);
   strip_spaces (version);
-  printf ("Muddle version: \"%s\"\n\n", version);
+  fprintf (output_file, "Muddle version: \"%s\"\n\n", version);
 
-  printf ("Interpreter symbols:\n");
+  fprintf (output_file, "Interpreter symbols:\n");
   define_mdl_symbols (version);
 
   word = get_word (f);
-  printf ("\nValue of p.top  = %llo\n", word);
+  fprintf (output_file, "\nValue of p.top  = %llo\n", word);
 
   word = get_word (f);
   if (word != 0)
@@ -180,13 +180,13 @@ read_mdl (FILE *f, struct pdp10_memory *memory, int cpu_model)
       fprintf (stderr, "Muddle slow save format not supported\n");
       exit (1);
     }
-  printf ("Fast save format\n");
+  fprintf (output_file, "Fast save format\n");
 
   word = get_word (f);
-  printf ("Value of vectop = %llo\n", word);
+  fprintf (output_file, "Value of vectop = %llo\n", word);
 
   partop_v = get_word (f);
-  printf ("Value of partop = %llo\n", partop_v);
+  fprintf (output_file, "Value of partop = %llo\n", partop_v);
 
   /* Impure memory, from location 5 to partop. */
   load_to_memory (f, memory, 5, partop_v - 5, "impure memory");
@@ -198,7 +198,7 @@ read_mdl (FILE *f, struct pdp10_memory *memory, int cpu_model)
   /* Pure memory in the page map. Only pages that are marked in the
      page map as purified are written out. The page map has two bits
      per page. */
-  printf ("\nPage map:\n");
+  fprintf (output_file, "\nPage map:\n");
   for (i = purtop_v / MDL_PAGESIZE; i < (hibot / MDL_PAGESIZE); i++)
     {
       word_t entry, mask;
@@ -207,7 +207,7 @@ read_mdl (FILE *f, struct pdp10_memory *memory, int cpu_model)
       entry = get_word_at (memory, pmapb + (i / 16));
       mask = (1ll << 35) >> ((2 * (i % 16)) + 1);
       purified = (entry & mask) != 0;
-      printf ("Page %03o: %s\n", i, purified ? "pure" : "not pure");
+      fprintf (output_file, "Page %03o: %s\n", i, purified ? "pure" : "not pure");
 
       if (purified)
 	{
@@ -216,7 +216,7 @@ read_mdl (FILE *f, struct pdp10_memory *memory, int cpu_model)
 	}
     }
 
-  printf ("\n");
+  fprintf (output_file, "\n");
 }
 
 struct file_format mdl_file_format = {

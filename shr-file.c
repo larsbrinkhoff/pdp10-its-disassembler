@@ -35,7 +35,7 @@ read_shr (FILE *f, struct pdp10_memory *memory, int cpu_model)
   for (i = 0; i < FILE_MAX_PAGES; i++)
     file_map[i] = -1;
 
-  printf ("DEC sharable format\n\n");
+  fprintf (output_file, "DEC sharable format\n\n");
 
   /* Read the directory */
   for (;;)
@@ -51,8 +51,8 @@ read_shr (FILE *f, struct pdp10_memory *memory, int cpu_model)
       switch (block_type)
 	{
 	case 01776: /* directory block */
-	  printf ("Directory:\n");
-	  printf ("Prot  File page  Memory page  Count\n");
+	  fprintf (output_file, "Directory:\n");
+	  fprintf (output_file, "Prot  File page  Memory page  Count\n");
 	  for (i = 1; i < block_len; i += 2)
 	    {
 	      word_t access_bits, file_page, mem_page, count;
@@ -69,12 +69,12 @@ read_shr (FILE *f, struct pdp10_memory *memory, int cpu_model)
 	      mem_page = word & ((1 << 27) - 1);
 	      count = (word >> 27) + 1;
 
-	      printf ("%03llo   ", access_bits);
+	      fprintf (output_file, "%03llo   ", access_bits);
 	      if (file_page == 0)
-		printf ("none       ");
+		fprintf (output_file, "none       ");
 	      else
-		printf ("%09llo  ", file_page);
-	      printf ("%09llo    %llo\n", mem_page, count);
+		fprintf (output_file, "%09llo  ", file_page);
+	      fprintf (output_file, "%09llo    %llo\n", mem_page, count);
 
 	      if (file_page != 0)
 		{
@@ -83,11 +83,11 @@ read_shr (FILE *f, struct pdp10_memory *memory, int cpu_model)
 		      if (file_page + j < FILE_MAX_PAGES)
 			file_map[file_page + j] = mem_page + j;
 		      else
-			printf ("  (too many pages; not loaded)\n");
+			fprintf (output_file, "  (too many pages; not loaded)\n");
 		    }
 		}
 	    }
-	  printf ("\n");
+	  fprintf (output_file, "\n");
 	  break;
 
 	case 01775: /* entry vector block */
@@ -103,7 +103,7 @@ read_shr (FILE *f, struct pdp10_memory *memory, int cpu_model)
 	  goto enddir;
 
 	default:
-	  printf ("Unknown block type %06llo\n\n", block_type);
+	  fprintf (output_file, "Unknown block type %06llo\n\n", block_type);
 	  /* fall through */
 
 	case 01774: /* PDV block - ignore */
