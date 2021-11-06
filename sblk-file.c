@@ -18,6 +18,12 @@
 
 #include "dis.h"
 #include "memory.h"
+#include "symbols.h"
+
+#define SYHKL       0400000000000
+#define SYKIL       0200000000000
+#define SYLCL       0100000000000
+#define SYGBL       0040000000000
 
 static void
 read_sblk (FILE *f, struct pdp10_memory *memory, int cpu_model)
@@ -74,8 +80,102 @@ read_sblk (FILE *f, struct pdp10_memory *memory, int cpu_model)
   sblk_info (f, word, cpu_model);
 }
 
+static void
+write_block (FILE *f, struct pdp10_memory *memory, int start, int end)
+{
+  word_t word, cksum;
+  int i, length;
+
+  length = end - start;
+  word = -length << 18;
+  word |= start;
+  word &= WORDMASK;
+  write_word (f, word);
+
+  cksum = word;
+  for (i = start; i < end; i++)
+    {
+      cksum = (cksum << 1) | (cksum >> 35);
+      word = get_word_at (memory, i);
+      cksum += word;
+      cksum &= WORDMASK;
+      write_word (f, word);
+    }
+
+  write_word (f, cksum);
+}
+
+void
+write_sblk_core (FILE *f, struct pdp10_memory *memory)
+{
+  int start, length;
+  int i, n;
+
+  for (i = 0; i < memory->areas; i++)
+    {
+      start = memory->area[i].start;
+      length = memory->area[i].end - start;
+      while (length > 0)
+	{
+	  n = length > 512 ? 512 : length;
+	  write_block (f, memory, start, start + n);
+	  start += n;
+	  length -= n;
+	}
+    }
+}
+
+void
+write_sblk_symbols (FILE *f)
+{
+  word_t word, cksum;
+  int i, length;
+
+  length = 2 * num_symbols;
+  word = length;
+  word = (-word) << 18;
+  word &= WORDMASK;
+  write_word (f, word);
+
+  cksum = word;
+  for (i = 0; i < num_symbols; i++)
+    {
+      cksum = (cksum << 1) | (cksum >> 35);
+      word = ascii_to_sixbit (symbols[i].name);
+      if (symbols[i].flags & SYMBOL_KILLED)
+	word |= SYKIL;
+      if (symbols[i].flags & SYMBOL_HALFKILLED)
+	word |= SYHKL;
+      if (symbols[i].flags & SYMBOL_GLOBAL)
+	word |= SYGBL;
+      else
+	word |= SYLCL;
+      cksum += word;
+      cksum &= WORDMASK;
+      write_word (f, word);
+
+      cksum = (cksum << 1) | (cksum >> 35);
+      word = symbols[i].value;
+      cksum += word;
+      cksum &= WORDMASK;
+      write_word (f, word);
+    }
+
+  write_word (f, cksum);
+}
+
+static void
+write_sblk (FILE *f, struct pdp10_memory *memory)
+{
+  write_word (f, JRST_1);
+  write_sblk_core (f, memory);
+  write_word (f, start_instruction);
+  write_sblk_symbols (f);
+  write_word (f, start_instruction);
+}
+
 struct file_format sblk_file_format = {
   "sblk",
   read_sblk,
-  NULL
+  write_sblk
 };

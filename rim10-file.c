@@ -38,6 +38,26 @@
 #define OP_CONO_PTR   071060
 #define OP_DATAI_PTR  071044
 
+static word_t midas_rim10[] =
+{
+  /*00*/ 0777761000000LL, /* -17,,0 */
+  /*01*/ 0710600000060LL, /* CONO PTR,60 */
+  /*02*/ 0541440000004LL, /* HRRI 11,4 */
+  /*03*/ 0710740000010LL, /* CONSO PTR,10 */
+  /*04*/ 0254000000003LL, /* JRST 3 */
+  /*05*/ 0241011777776LL, /* ROT 0,-2(11) */
+  /*06*/ 0710471000010LL, /* DATAI PTR,@10(11) */
+  /*07*/ 0256011000010LL, /* XCT 10(11) */
+  /*10*/ 0256011000013LL, /* XCT 13(11) */
+  /*11*/ 0364440000000LL, /* SOJA 11,0 */
+  /*12*/ 0312000000017LL, /* CAME 0,17 */
+  /*13*/ 0270017000000LL, /* ADD 0,(17) */
+  /*14*/ 0331740000000LL, /* SKIPL 17,0 */
+  /*15*/ 0254200000001LL, /* JRST 4,1 */
+  /*16*/ 0253740000003LL, /* AOBJN 17,3 */
+  /*17*/ 0254000000002LL  /* JRST 2 */
+};
+  
 static int
 effective_address (word_t insn, struct pdp10_memory *memory)
 {
@@ -235,8 +255,20 @@ read_rim10 (FILE *f, struct pdp10_memory *memory, int cpu_model)
   printf ("Start address: %o\n", address);
 }
 
+static void
+write_rim10 (FILE *f, struct pdp10_memory *memory)
+{
+  int i;
+
+  for (i = 0; i < sizeof midas_rim10 / sizeof midas_rim10[0]; i++)
+    write_word (f, midas_rim10[i]);
+
+  write_sblk_core (f, memory);
+  write_word (f, start_instruction);
+}
+
 struct file_format rim10_file_format = {
   "rim10",
   read_rim10,
-  NULL
+  write_rim10
 };
