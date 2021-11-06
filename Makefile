@@ -11,7 +11,7 @@ WORDS =  aa-word.o bin-word.o cadr-word.o core-word.o data8-word.o \
 OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o weenix.o
 
-UTILS =	cat36 itsarc magdmp magfrm dskdmp \
+UTILS =	cat36 itsarc magdmp magfrm dskdmp dump \
 	macdmp macro-tapes tape-dir harscntopbm palx cross \
 	ipak kldcp klfedr scrmbl unscr tvpic tito dart od10
 
@@ -35,6 +35,9 @@ libwords.a: word.o $(WORDS)
 	ar -crs $@ $^
 
 cat36: cat36.o libwords.a
+	$(CC) $(CFLAGS) $^ -o $@
+
+dump: dump.c $(OBJS) libfiles.a libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
 dskdmp: dskdmp.c $(OBJS) libwords.a
@@ -120,7 +123,8 @@ check: \
 	out/thirty.scrmbl out/sixbit.scrmbl out/pdpten.scrmbl \
 	out/aaaaaa.scrmbl out/0s.scrmbl \
 	out/dart.tape.dart out/two.tapes.dasm \
-	out/chars.pub.oct.sail out/chars.pub.sail.ascii
+	out/chars.pub.oct.sail out/chars.pub.sail.ascii \
+	out/pt.rim.dump out/system.dmp.dump
 
 samples/ts.obs = -Wits
 samples/ts.ksfedr = -Wits
@@ -128,7 +132,7 @@ samples/ts.name = -Wits -Sall
 samples/ts.srccom = -Wits
 samples/atsign.tcp = -Wits
 samples/macro.low = -r -Wascii
-samples/pt.rim = -Frim10 -Wpt -mka10its
+samples/pt.rim = -Frim10 -Wpt
 samples/visib1.bin = -Wits -Sddt
 samples/visib2.bin = -Wits -Sddt
 samples/visib3.bin = -Wits -Sall
@@ -136,15 +140,19 @@ samples/@.midas = -D774000 -Sall
 samples/stink.-ipak- = -Wascii
 samples/srccom.exe = -mka10 -Wascii
 samples/dart.dmp = -6 -mka10sail -Wdata8
-samples/system.dmp = -6 -mka10sail -Woct -Sall
+samples/system.dmp = -Fdmp -Woct
 samples/dired.dmp = -6 -mka10sail -Wascii -Sddt
 samples/two.tapes = -r -Wtape
 samples/@.its = -Sall -mka10_its
 samples/its.bin = -mkl10_its
 samples/its.rp06 = -mks10_its
+out/pt.rim.dasm = -mka10its
+out/system.dmp.dasm = -mka10sail -Sall
+out/pt.rim.dump = -Osblk
+out/system.dmp.dump = -Xoct -Odmp
 
 out/%.dasm: samples/% dis10 test/%.dasm
-	./dis10 $($<) $< > $@
+	./dis10 $($<) $($@) $< > $@
 	cmp $@ test/$*.dasm || rm $@ /no-such-file
 
 out/%.list: samples/% itsarc test/%.list
@@ -169,6 +177,10 @@ out/%.oct.sail: samples/%.oct cat36
 out/%.sail.ascii: samples/%.sail cat36
 	./cat36 -Wsail -Xascii $< > $@
 	cmp $@ test/$*.sail.ascii
+
+out/%.dump: samples/% dump
+	./dump $($<) $($@) $< > $@ 2> /dev/null
+	cmp $@ test/$*.dump
 
 FIX_TIME=sed 's/RECORDED ....-..-.. ..:..,/RECORDED XXXX-XX-XX XX:XX/'
 

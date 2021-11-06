@@ -69,7 +69,7 @@ int
 parse_output_file_format (const char *string)
 {
   output_file_format = parse_file_format (string);
-  return input_file_format == NULL ? -1 : 0;
+  return output_file_format == NULL ? -1 : 0;
 }
 
 void
