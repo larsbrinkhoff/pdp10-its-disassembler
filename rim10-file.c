@@ -25,18 +25,18 @@
 #include "memory.h"
 
 /* Instructions used by the ITS RIM10 and DEC RIM10B loaders. */
-#define ROT        0241
-#define JRST       0254
-#define XCT        0256
-#define AOBJN      0253
-#define ADD        0270
-#define CAME       0312
-#define SKIPL      0331
-#define SOJA       0364
-#define HRRI       0541
-#define CONSO_PTR  071074
-#define CONO_PTR   071060
-#define DATAI_PTR  071044
+#define OP_ROT        0241
+#define OP_JRST       0254
+#define OP_XCT        0256
+#define OP_AOBJN      0253
+#define OP_ADD        0270
+#define OP_CAME       0312
+#define OP_SKIPL      0331
+#define OP_SOJA       0364
+#define OP_HRRI       0541
+#define OP_CONSO_PTR  071074
+#define OP_CONO_PTR   071060
+#define OP_DATAI_PTR  071044
 
 static int
 effective_address (word_t insn, struct pdp10_memory *memory)
@@ -59,15 +59,15 @@ execute_iot (word_t insn, int ea, struct pdp10_memory *memory, FILE *f)
 {
   switch ((insn >> 21) & 077774)
     {
-    case DATAI_PTR:
+    case OP_DATAI_PTR:
       insn = get_word (f);
       //fprintf (stderr, "DATAI PTR, %012llo -> %06o\n", insn, ea);
       set_word_at (memory, ea, insn);
       break;
-    case CONO_PTR:
+    case OP_CONO_PTR:
       //fprintf (stderr, "CONO PTR,\n");
       break;
-    case CONSO_PTR:
+    case OP_CONSO_PTR:
       //fprintf (stderr, "CONSO PTR,\n");
       return 1;
     }
@@ -86,7 +86,7 @@ execute (word_t insn, int pc, struct pdp10_memory *memory, FILE *f)
   ac = (insn >> 23) & 017;
 
   switch (insn >> 27) {
-  case ROT:
+  case OP_ROT:
     ma = get_word_at (memory, ac);
     //fprintf (stderr, "ROT %o, %012llo -> ", ac, ma);
     if (ea & 0400000)
@@ -100,7 +100,7 @@ execute (word_t insn, int pc, struct pdp10_memory *memory, FILE *f)
     //fprintf (stderr, "%012llo\n", ma);
     set_word_at (memory, ac, ma);
     break;
-  case AOBJN:
+  case OP_AOBJN:
     ma = get_word_at (memory, ac);
     //fprintf (stderr, "AOBJN %o, %012llo -> ", ac, ma);
     ma += 01000001LL;
@@ -110,7 +110,7 @@ execute (word_t insn, int pc, struct pdp10_memory *memory, FILE *f)
     if (ma & 0400000000000LL)
       pc = ea;
     break;
-  case JRST:
+  case OP_JRST:
     //fprintf (stderr, "JRST\n");
     switch ((insn >> 23) & 017)
       {
@@ -119,12 +119,12 @@ execute (word_t insn, int pc, struct pdp10_memory *memory, FILE *f)
       default: exit (1);
       }
     break;
-  case XCT:
+  case OP_XCT:
     insn = get_word_at (memory, ea);
     //fprintf (stderr, "XCT ");
     pc = execute (insn, pc, memory, f);
     break;
-  case ADD:
+  case OP_ADD:
     ma = get_word_at (memory, ea);
     //fprintf (stderr, "ADD %o, %012llo + %012llo -> ", ac, get_word_at (memory, ac), ma);
     ma += get_word_at (memory, ac);
@@ -132,13 +132,13 @@ execute (word_t insn, int pc, struct pdp10_memory *memory, FILE *f)
     //fprintf (stderr, "%012llo\n", ma);
     set_word_at (memory, ac, ma);
     break;
-  case CAME:
+  case OP_CAME:
     ma = get_word_at (memory, ea);
     //fprintf (stderr, "CAME %o, %012llo\n", ac, ma);
     if (ma == get_word_at (memory, ac))
       pc++;
     break;
-  case SKIPL:
+  case OP_SKIPL:
     ma = get_word_at (memory, ea);
     //fprintf (stderr, "SKIPL %o,%012llo\n", ac, ma);
     if (ac)
@@ -146,7 +146,7 @@ execute (word_t insn, int pc, struct pdp10_memory *memory, FILE *f)
     if (ma & 0400000000000LL)
       pc++;
     break;
-  case SOJA:
+  case OP_SOJA:
     ma = get_word_at (memory, ac);
     //fprintf (stderr, "SOJA %o, %012llo -> ", ac, ma);
     ma--;
@@ -155,7 +155,7 @@ execute (word_t insn, int pc, struct pdp10_memory *memory, FILE *f)
     set_word_at (memory, ac, ma);
     pc = ea;
     break;
-  case HRRI:
+  case OP_HRRI:
     ma = get_word_at (memory, ac);
     //fprintf (stderr, "HRRI %o, %012llo ->", ac, ma);
     ma &= 0777777000000LL;
@@ -222,6 +222,16 @@ read_rim10 (FILE *f, struct pdp10_memory *memory, int cpu_model)
       address = execute (insn, address, memory, f);
     }
 
+  switch (insn & 0777777000000LL)
+    {
+    case JRST:
+    case JUMPA:
+      start_instruction = insn;
+      break;
+    default:
+      start_instruction = JRST + address;
+      break;
+    }
   printf ("Start address: %o\n", address);
 }
 

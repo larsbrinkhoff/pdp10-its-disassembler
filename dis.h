@@ -30,11 +30,14 @@
 
 typedef long long word_t;
 
-#define JRST_1 ((word_t)(0254000000001LL))
+#define JRST   ((word_t)(0254000000000LL))
+#define JRST_1 (JRST + 1)
+#define JUMPA  ((word_t)(0324000000000LL))
 
 struct FILE;
 struct pdp10_file;
 struct pdp10_memory;
+extern word_t start_instruction;
 
 struct file_format {
   const char *name;

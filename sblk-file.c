@@ -70,6 +70,7 @@ read_sblk (FILE *f, struct pdp10_memory *memory, int cpu_model)
     }
 
   printf ("\n");
+  start_instruction = word;
   sblk_info (f, word, cpu_model);
 }
 
