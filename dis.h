@@ -109,6 +109,8 @@ extern word_t	get_core_word (FILE *f);
 extern void	write_core_word (FILE *f, word_t word);
 extern void	read_raw_at (FILE *f, struct pdp10_memory *memory,
 			     int address);
+extern void	write_raw_at (FILE *f, struct pdp10_memory *memory,
+			      int address);
 extern void	sblk_info (FILE *f, word_t word0, int cpu_model);
 extern void     dmp_info (struct pdp10_memory *memory, int cpu_model);
 extern void     dec_info (struct pdp10_memory *memory,

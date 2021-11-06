@@ -29,8 +29,18 @@ read_dmp (FILE *f, struct pdp10_memory *memory, int cpu_model)
   dmp_info (memory, cpu_model);
 }
 
+static void
+write_dmp (FILE *f, struct pdp10_memory *memory)
+{
+  word_t jbsa = get_word_at (memory, 0120);
+  jbsa &= 0777777000000;
+  jbsa |= start_instruction & 0777777;
+  set_word_at (memory, 0120, jbsa);
+  write_raw_at (f, memory, 074);
+}
+
 struct file_format dmp_file_format = {
   "dmp",
   read_dmp,
-  NULL
+  write_dmp
 };
