@@ -50,5 +50,7 @@ extern void add_symbol (const char *name, word_t value, int flags);
 extern const struct symbol *get_symbol_by_name (const char *name);
 extern const struct symbol *get_symbol_by_value (word_t value, int hint);
 extern word_t get_symbol_value (const char *name);
+extern struct symbol symbols[];
+extern int num_symbols;
 
 #endif

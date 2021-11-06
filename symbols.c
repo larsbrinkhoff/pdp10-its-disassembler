@@ -47,8 +47,8 @@ parse_symbols_mode (const char *string)
   return 0;
 }
 
-static struct symbol symbols[MAX_SYMBOLS];
-static int num_symbols = 0;
+struct symbol symbols[MAX_SYMBOLS];
+int num_symbols = 0;
 
 typedef enum {
   SORT_NONE,
