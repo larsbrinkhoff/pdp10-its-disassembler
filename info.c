@@ -37,7 +37,7 @@
 word_t start_instruction;
 
 word_t
-ascii_to_sixbit (char *ascii)
+ascii_to_sixbit (const char *ascii)
 {
   int i;
   char c;

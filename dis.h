@@ -111,6 +111,8 @@ extern void	read_raw_at (FILE *f, struct pdp10_memory *memory,
 			     int address);
 extern void	write_raw_at (FILE *f, struct pdp10_memory *memory,
 			      int address);
+extern void	write_sblk_core (FILE *f, struct pdp10_memory *memory);
+extern void	write_sblk_symbols (FILE *f);
 extern void	sblk_info (FILE *f, word_t word0, int cpu_model);
 extern void     dmp_info (struct pdp10_memory *memory, int cpu_model);
 extern void     dec_info (struct pdp10_memory *memory,
@@ -124,7 +126,7 @@ extern int      parse_machine (const char *string, int *machine);
 extern void	dis (struct pdp10_memory *memory, int cpu_model);
 extern void	disassemble_word (struct pdp10_memory *memory, word_t word,
 				  int address, int cpu_model);
-extern word_t   ascii_to_sixbit (char *ascii);
+extern word_t   ascii_to_sixbit (const char *ascii);
 extern void	sixbit_to_ascii (word_t sixbit, char *ascii);
 extern void	squoze_to_ascii (word_t squoze, char *ascii);
 extern void	print_date (FILE *, word_t t);
