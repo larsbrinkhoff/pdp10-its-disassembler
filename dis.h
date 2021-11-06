@@ -39,6 +39,7 @@ struct pdp10_memory;
 struct file_format {
   const char *name;
   void (*read) (FILE *f, struct pdp10_memory *memory, int cpu);
+  void (*write) (FILE *f, struct pdp10_memory *memory);
 };
 
 struct word_format {
@@ -58,6 +59,7 @@ enum {
 };
 
 extern struct file_format *input_file_format;
+extern struct file_format *output_file_format;
 extern struct file_format dmp_file_format;
 extern struct file_format mdl_file_format;
 extern struct file_format pdump_file_format;
@@ -84,6 +86,7 @@ extern struct word_format x_word_format;
 
 extern void     usage_file_format (void);
 extern int      parse_input_file_format (const char *);
+extern int      parse_output_file_format (const char *);
 extern void     guess_input_file_format (FILE *);
 extern void     usage_word_format (void);
 extern int      parse_input_word_format (const char *);

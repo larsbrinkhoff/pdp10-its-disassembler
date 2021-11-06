@@ -75,5 +75,6 @@ read_sblk (FILE *f, struct pdp10_memory *memory, int cpu_model)
 
 struct file_format sblk_file_format = {
   "sblk",
-  read_sblk
+  read_sblk,
+  NULL
 };

@@ -221,5 +221,6 @@ read_mdl (FILE *f, struct pdp10_memory *memory, int cpu_model)
 
 struct file_format mdl_file_format = {
   "mdl",
-  read_mdl
+  read_mdl,
+  NULL
 };

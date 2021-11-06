@@ -49,5 +49,6 @@ read_raw (FILE *f, struct pdp10_memory *memory, int cpu_model)
 
 struct file_format raw_file_format = {
   "raw",
-  read_raw
+  read_raw,
+  NULL
 };

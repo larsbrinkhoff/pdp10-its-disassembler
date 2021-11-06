@@ -160,5 +160,6 @@ read_shr (FILE *f, struct pdp10_memory *memory, int cpu_model)
 
 struct file_format shr_file_format = {
   "shr",
-  read_shr
+  read_shr,
+  NULL
 };

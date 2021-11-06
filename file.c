@@ -20,6 +20,7 @@
 #include "dis.h"
 
 struct file_format *input_file_format = NULL;
+struct file_format *output_file_format = NULL;
 
 static struct file_format *file_formats[] = {
   &dmp_file_format,
@@ -43,19 +44,32 @@ usage_file_format (void)
   fprintf (stderr, "\n");
 }
 
-int
-parse_input_file_format (const char *string)
+static struct file_format *
+parse_file_format (const char *string)
 {
   int i;
 
   for (i = 0; file_formats[i] != NULL; i++)
     if (strcmp (string, file_formats[i]->name) == 0)
       {
-        input_file_format = file_formats[i];
-        return 0;
+        return file_formats[i];
       }
 
-  return -1;
+  return NULL;
+}
+
+int
+parse_input_file_format (const char *string)
+{
+  input_file_format = parse_file_format (string);
+  return input_file_format == NULL ? -1 : 0;
+}
+
+int
+parse_output_file_format (const char *string)
+{
+  output_file_format = parse_file_format (string);
+  return input_file_format == NULL ? -1 : 0;
 }
 
 void
