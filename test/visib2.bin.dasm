@@ -21,7 +21,7 @@ Symbol table:
 
 Duplicate start instruction:
          254000000100  jrst     beg             ;"5@  ! "
-(extra word: 254000000100)
+(After parsed data, there was one more word: 254000000100)
 
 Disassembly:
 

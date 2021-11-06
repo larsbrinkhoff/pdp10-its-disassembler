@@ -7118,7 +7118,7 @@ Symbol table:
 
 Duplicate start instruction:
          254000172000  jrst     172000          ;"5@ /0 "
-(extra word: 254000172000)
+(After parsed data, there was one more word: 254000172000)
 
 Disassembly:
 

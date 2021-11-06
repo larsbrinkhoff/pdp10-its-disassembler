@@ -39,9 +39,10 @@ main (int argc, char **argv)
   int cpu_model = PDP10_KA10_ITS;
   struct pdp10_memory memory;
   FILE *file;
-  word_t word;
+  word_t word, data;
   int opt;
   int ddt = 0;
+  int extra;
 
   while ((opt = getopt (argc, argv, "6rF:S:W:m:D:")) != -1)
     {
@@ -94,8 +95,17 @@ main (int argc, char **argv)
     guess_input_file_format (file);
   input_file_format->read (file, &memory, cpu_model);
 
+  extra = 0;
   while ((word = get_word (file)) != -1)
-    printf ("(extra word: %012llo)\n", word);
+    {
+      data = word;
+      extra++;
+    }
+  if (extra == 1)
+    printf ("(After parsed data, there was one more word: %012llo)\n",
+	    data);
+  else if (extra > 1)
+    printf ("(After parsed data, there were %d more words.)\n", extra);
 
   if (ddt)
     ntsddt_info (&memory, ddt);
