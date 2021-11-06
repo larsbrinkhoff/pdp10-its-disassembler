@@ -12,6 +12,7 @@
 - Convert files to a RP04 bootable KLDCP disk image.
 - Scramble or unscramble an encrypted file.
 - Make a picture file suitable for displaying on a Knight TV.
+- Write out a core image in some of the supported executable formats.
 
 A Linux FUSE implementation of the networking filesystem protocol MLDEV
 is elsewhere: http://github.com/larsbrinkhoff/mldev
