@@ -47,8 +47,31 @@ read_raw (FILE *f, struct pdp10_memory *memory, int cpu_model)
   read_raw_at (f, memory, 0);
 }
 
+void
+write_raw_at (FILE *f, struct pdp10_memory *memory, int address)
+{
+  int i, end = memory->area[memory->areas-1].end;
+  word_t word;
+
+  for (i = address; i < end; i++)
+    {
+      word = get_word_at (memory, i);
+      if (word == -1)
+	word = 0;
+      write_word (f, word);
+    }
+
+  flush_word (f);
+}
+
+static void
+write_raw (FILE *f, struct pdp10_memory *memory)
+{
+  write_raw_at (f, memory, 0);
+}
+
 struct file_format raw_file_format = {
   "raw",
   read_raw,
-  NULL
+  write_raw
 };
