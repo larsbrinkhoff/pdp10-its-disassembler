@@ -133,7 +133,7 @@ write_hri (FILE *f, const char *file)
   for (;;)
     {
       word = get_word (in);
-      if (word == 0254000000001LL)
+      if (word == JRST_1)
         break;
       if (word == -1)
         exit (1);

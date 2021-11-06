@@ -34,6 +34,8 @@
 #define STBFIL      2
 #define STBINF      3
 
+word_t start_instruction;
+
 word_t
 ascii_to_sixbit (char *ascii)
 {
@@ -406,6 +408,7 @@ dmp_info (struct pdp10_memory *memory, int cpu_model)
   /* For the PDP-6 monitor, JBSA is the start address. */
   jbsa = get_word_at (memory, 0120);
   printf ("Start address (PDP-6): %06llo\n", jbsa & 0777777);
+  start_instruction = JRST + (jbsa & 0777777);
 
   /* For WAITS, JBDA is a JRST to the start address. */
   jbda = get_word_at (memory, 0140);
@@ -448,7 +451,10 @@ dec_info (struct pdp10_memory *memory,
 
       word = get_word_at (memory, 0120) & 0777777;
       if (word != 0)
-	printf ("Start address: %06llo\n", word);
+	{
+	  printf ("Start address: %06llo\n", word);
+	  start_instruction = JRST + word;
+	}
 
       word = get_word_at (memory, 0124) & 0777777;
       if (word != 0)

@@ -109,6 +109,7 @@ read_pdump (FILE *f, struct pdp10_memory *memory, int cpu_model)
 
   printf ("\n");
   word = get_word (f);
+  start_instruction = word;
   sblk_info (f, word, cpu_model);
 }
 
