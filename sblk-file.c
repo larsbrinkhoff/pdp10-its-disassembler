@@ -34,7 +34,7 @@ read_sblk (FILE *f, struct pdp10_memory *memory, int cpu_model)
 
   int block_length, block_address;
 
-  printf ("SBLK format\n");
+  fprintf (output_file, "SBLK format\n");
 
   address = 0;
   while ((word = get_word (f)) != JRST_1)
@@ -75,7 +75,7 @@ read_sblk (FILE *f, struct pdp10_memory *memory, int cpu_model)
       check_checksum (word);
     }
 
-  printf ("\n");
+  fprintf (output_file, "\n");
   start_instruction = word;
   sblk_info (f, word, cpu_model);
 }

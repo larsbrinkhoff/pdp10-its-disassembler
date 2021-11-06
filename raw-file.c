@@ -42,7 +42,7 @@ read_raw_at (FILE *f, struct pdp10_memory *memory, int address)
 static void
 read_raw (FILE *f, struct pdp10_memory *memory, int cpu_model)
 {
-  printf ("Raw format\n");
+  fprintf (output_file, "Raw format\n");
 
   read_raw_at (f, memory, 0);
 }

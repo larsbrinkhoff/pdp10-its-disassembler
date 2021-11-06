@@ -44,6 +44,8 @@ main (int argc, char **argv)
   int ddt = 0;
   int extra;
 
+  output_file = stdout;
+
   while ((opt = getopt (argc, argv, "6rF:S:W:m:D:")) != -1)
     {
       switch (opt)

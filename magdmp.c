@@ -32,6 +32,7 @@ main (int argc, char **argv)
       exit (1);
     }
 
+  output_file = stdout;
   f = fopen (argv[1], "rb");
 
   for (;;)
