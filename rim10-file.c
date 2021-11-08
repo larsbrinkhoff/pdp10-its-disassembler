@@ -208,7 +208,7 @@ read_rim10 (FILE *f, struct pdp10_memory *memory, int cpu_model)
 {
   word_t insn;
   word_t *loader;
-  int address, length;
+  int pc, address, length;
   word_t word;
   int i;
 
@@ -234,12 +234,12 @@ read_rim10 (FILE *f, struct pdp10_memory *memory, int cpu_model)
     loader[i] = get_word (f);
   add_memory (memory, 0, 16, loader);
 
-  address = address + length - 1;
-  while (address < 16)
+  pc = address + length - 1;
+  while (pc < 16)
     {
-      //fprintf (stderr, "\n%06o: ", address);
-      insn = get_word_at (memory, address++);
-      address = execute (insn, address, memory, f);
+      //fprintf (stderr, "\n%06o: ", pc);
+      insn = get_word_at (memory, pc++);
+      pc = execute (insn, pc, memory, f);
     }
 
   switch (insn & 0777777000000LL)
@@ -249,10 +249,15 @@ read_rim10 (FILE *f, struct pdp10_memory *memory, int cpu_model)
       start_instruction = insn;
       break;
     default:
-      start_instruction = JRST + address;
+      start_instruction = JRST + pc;
       break;
     }
-  fprintf (output_file, "Start address: %o\n", address);
+  fprintf (output_file, "Start instruction: %012llo\n", start_instruction);
+
+  /* Remove IOWD. */
+  remove_memory (memory, 0, 1);
+  /* Remove loader. */
+  remove_memory (memory, address, length);
 }
 
 static void
