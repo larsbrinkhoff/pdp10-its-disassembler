@@ -36,6 +36,8 @@ struct pdp10_memory
 extern void	init_memory (struct pdp10_memory *memory);
 extern int	add_memory (struct pdp10_memory *memory,
 			    int address, int length, word_t *data);
+extern void	remove_memory (struct pdp10_memory *memory,
+			       int address, int length);
 extern int	set_address (struct pdp10_memory *memory, int address);
 extern int	get_address (struct pdp10_memory *memory);
 extern word_t	get_next_word (struct pdp10_memory *memory);
