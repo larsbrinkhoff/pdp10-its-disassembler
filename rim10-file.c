@@ -58,6 +58,25 @@ static word_t midas_rim10[] =
   /*17*/ 0254000000002LL  /* JRST 2 */
 };
   
+static word_t macro_rim10b[] =
+{
+  /*00*/ 0777762000000LL, /* -16,,0 */
+  /*01*/ 0710600000060LL, /* ST:   CONO PTR,60 */
+  /*02*/ 0541400000004LL, /* ST1:  HRRI A,RD+1 */
+  /*03*/ 0710740000010LL, /* RD:   CONSO PTR,10 */
+  /*04*/ 0254000000003LL, /*        JRST .-1 */
+  /*05*/ 0710470000007LL, /*       DATAI PTR,@TBL1-RD+1(A) */
+  /*06*/ 0256010000007LL, /*       XCT TBL1-RD+1(A) */
+  /*07*/ 0256010000012LL, /*        XCT TBL2-RD+1(A) */
+  /*10*/ 0364400000000LL, /* A:    SOJA A, */
+  /*11*/ 0312740000016LL, /* TBL1: CAME CKSM,ADR */
+  /*12*/ 0270756000001LL, /*        ADD CKSM,1(ADR) */
+  /*13*/ 0331740000016LL, /*       SKIPL CKSM,ADR */
+  /*14*/ 0254200000001LL, /* TBL2: JRST 4,ST */
+  /*15*/ 0253700000003LL, /*       AOBJN ADR,RD */
+  /*16*/ 0254000000002LL  /* ADR:  JRST ST1 */
+};
+  
 static int
 effective_address (word_t insn, struct pdp10_memory *memory)
 {
