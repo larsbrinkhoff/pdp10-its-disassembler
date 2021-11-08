@@ -34,9 +34,9 @@
 #define OP_SKIPL      0331
 #define OP_SOJA       0364
 #define OP_HRRI       0541
-#define OP_CONSO_PTR  071074
-#define OP_CONO_PTR   071060
-#define OP_DATAI_PTR  071044
+#define OP_DATAI      070004
+#define OP_CONO       070020
+#define OP_CONSO      070034
 
 static word_t midas_rim10[] =
 {
@@ -77,18 +77,18 @@ effective_address (word_t insn, struct pdp10_memory *memory)
 static int
 execute_iot (word_t insn, int ea, struct pdp10_memory *memory, FILE *f)
 {
-  switch ((insn >> 21) & 077774)
+  switch ((insn >> 21) & 070034)
     {
-    case OP_DATAI_PTR:
+    case OP_DATAI:
       insn = get_word (f);
-      //fprintf (stderr, "DATAI PTR, %012llo -> %06o\n", insn, ea);
+      //fprintf (stderr, "DATAI %012llo -> %06o\n", insn, ea);
       set_word_at (memory, ea, insn);
       break;
-    case OP_CONO_PTR:
-      //fprintf (stderr, "CONO PTR,\n");
+    case OP_CONO:
+      //fprintf (stderr, "CONO\n");
       break;
-    case OP_CONSO_PTR:
-      //fprintf (stderr, "CONSO PTR,\n");
+    case OP_CONSO:
+      //fprintf (stderr, "CONSO\n");
       return 1;
     }
 
