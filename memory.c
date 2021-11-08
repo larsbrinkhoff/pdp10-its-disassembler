@@ -105,6 +105,52 @@ add_memory (struct pdp10_memory *memory, int address, int length, word_t *data)
   return 0;
 }
 
+static void
+remove_area (struct pdp10_memory *memory, int i)
+{
+  free (memory->area[i].data);  
+  memmove (&memory->area[i], &memory->area[i+1],
+	   (memory->areas - i - 1) * sizeof (struct pdp10_area));
+  memory->areas--;
+}
+
+void
+remove_memory (struct pdp10_memory *memory, int address, int length)
+{
+  struct pdp10_area *area;
+  int end = address + length;
+  int i;
+
+  for (i = 0; i < memory->areas; )
+    {
+      area = &memory->area[i];
+      if (area->start >= address && area->end <= end)
+	/* The area is entirely within the range, so remove it completely */
+	remove_area (memory, i);
+      else if (area->end <= address || area->start >= end)
+	/* The area is entirely outside the range; leave it alone. */
+	i++;
+      else if (area->start < address)
+	{
+	  /* The area is partly inside the range; remove last part. */
+	  area->end = address;
+	  i++;
+	}
+      else if (area->end > end)
+	{
+	  /* The area is partly inside the range; remove first part. */
+	  area->start = end;
+	  i++;
+	}
+      else
+	{
+	  /* Above should cover all cases! */
+	  fprintf (stderr, "Bug!  Sholdn't get here.\n");
+	  exit (1);
+	}
+    }
+}
+
 int
 set_address (struct pdp10_memory *memory, int address)
 {
