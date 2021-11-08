@@ -222,6 +222,11 @@ read_rim10 (FILE *f, struct pdp10_memory *memory, int cpu_model)
       fprintf (stderr, "RIM10 loader longer than 16 words.\n");
       exit (1);
     }
+  if (address + length > 16)
+    {
+      fprintf (stderr, "RIM10 loader doesn't fit in accumulators.\n");
+      exit (1);
+    }
 
   loader = malloc (16 * sizeof (word_t));
   if (loader == NULL)
