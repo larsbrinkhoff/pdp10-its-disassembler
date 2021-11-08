@@ -247,6 +247,10 @@ read_rim10 (FILE *f, struct pdp10_memory *memory, int cpu_model)
       pc = execute (insn, pc, memory, f);
     }
 
+  /* Try to find start instruction even if was executed by XCT. */
+  if ((insn >> 27) == OP_XCT)
+    insn = get_word_at (memory, effective_address (insn, memory));
+
   switch (insn & 0777777000000LL)
     {
     case JRST:
