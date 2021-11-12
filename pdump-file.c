@@ -105,6 +105,8 @@ read_pdump (FILE *f, struct pdp10_memory *memory, int cpu_model)
 	}
 
       add_memory (memory, ITS_PAGESIZE * i, ITS_PAGESIZE, data);
+      if ((page_map[i] & PAGE_WRITE) == 0)
+	purify_memory (memory, ITS_PAGESIZE * i, ITS_PAGESIZE);
     }
 
   fprintf (output_file, "\n");
