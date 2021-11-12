@@ -80,6 +80,92 @@ sixbit_to_ascii (word_t sixbit, char *ascii)
   ascii[6] = 0;
 }
 
+word_t
+ascii_to_squoze (const char *ascii)
+{
+  int i;
+  word_t word = 0;
+
+  for (i = 0; i < 6; i++)
+    {
+      word *= 40;
+      switch (*ascii)
+	{
+	default:
+	case ' ': word += 000; break;
+	case '0': word += 001; break;
+	case '1': word += 002; break;
+	case '2': word += 003; break;
+	case '3': word += 004; break;
+	case '4': word += 005; break;
+	case '5': word += 006; break;
+	case '6': word += 007; break;
+	case '7': word += 010; break;
+	case '8': word += 011; break;
+	case '9': word += 012; break;
+	case 'A':
+	case 'a': word += 013; break;
+	case 'B':
+	case 'b': word += 014; break;
+	case 'C':
+	case 'c': word += 015; break;
+	case 'D':
+	case 'd': word += 016; break;
+	case 'E':
+	case 'e': word += 017; break;
+	case 'F':
+	case 'f': word += 020; break;
+	case 'G':
+	case 'g': word += 021; break;
+	case 'H':
+	case 'h': word += 022; break;
+	case 'I':
+	case 'i': word += 023; break;
+	case 'J':
+	case 'j': word += 024; break;
+	case 'K':
+	case 'k': word += 025; break;
+	case 'L':
+	case 'l': word += 026; break;
+	case 'M':
+	case 'm': word += 027; break;
+	case 'N':
+	case 'n': word += 030; break;
+	case 'O':
+	case 'o': word += 031; break;
+	case 'P':
+	case 'p': word += 032; break;
+	case 'Q':
+	case 'q': word += 033; break;
+	case 'R':
+	case 'r': word += 034; break;
+	case 'S':
+	case 's': word += 035; break;
+	case 'T':
+	case 't': word += 036; break;
+	case 'U':
+	case 'u': word += 037; break;
+	case 'V':
+	case 'v': word += 040; break;
+	case 'W':
+	case 'w': word += 041; break;
+	case 'X':
+	case 'x': word += 042; break;
+	case 'Y':
+	case 'y': word += 043; break;
+	case 'Z':
+	case 'z': word += 044; break;
+	case '.': word += 045; break;
+	case '$': word += 046; break;
+	case '%': word += 047; break;
+	}
+      if (*ascii != 0)
+	ascii++;
+    }
+
+  return word;
+}
+
 void
 squoze_to_ascii (word_t squoze, char *ascii)
 {

@@ -141,7 +141,7 @@ write_sblk_symbols (FILE *f)
   for (i = 0; i < num_symbols; i++)
     {
       cksum = (cksum << 1) | (cksum >> 35);
-      word = ascii_to_sixbit (symbols[i].name);
+      word = ascii_to_squoze (symbols[i].name);
       if (symbols[i].flags & SYMBOL_KILLED)
 	word |= SYKIL;
       if (symbols[i].flags & SYMBOL_HALFKILLED)
