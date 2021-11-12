@@ -18,6 +18,8 @@
 #include <string.h>
 #include "memory.h"
 
+#define IMPURE(area) (((area)->flags & MEMORY_PURE) == 0)
+
 static struct pdp10_area *
 find_area (struct pdp10_memory *memory, int address)
 {
@@ -53,6 +55,21 @@ init_memory (struct pdp10_memory *memory)
   memory->current_address = 0;
 }
 
+static void
+insert_area (struct pdp10_memory *memory, int i)
+{
+  memory->areas++;
+  memory->area = realloc (memory->area, memory->areas * sizeof (struct pdp10_area));
+  if (memory->area == NULL)
+    {
+      fprintf (stderr, "realloc failed\n");
+      exit (1);
+    }
+
+  memmove (&memory->area[i+1], &memory->area[i],
+	   (memory->areas - i - 1) * sizeof (struct pdp10_area));
+}
+
 int
 add_memory (struct pdp10_memory *memory, int address, int length, word_t *data)
 {
@@ -69,7 +86,7 @@ add_memory (struct pdp10_memory *memory, int address, int length, word_t *data)
       break;
     }
 
-  if (i > 0 && address == memory->area[i-1].end)
+  if (i > 0 && address == memory->area[i-1].end && IMPURE(&memory->area[i-1]))
     {
       int new_length;
       area = &memory->area[i-1];
@@ -86,20 +103,12 @@ add_memory (struct pdp10_memory *memory, int address, int length, word_t *data)
       return 0;
     }
 
-  memory->areas++;
-  memory->area = realloc (memory->area, memory->areas * sizeof (struct pdp10_area));
-  if (memory->area == NULL)
-    {
-      fprintf (stderr, "realloc failed\n");
-      exit (1);
-    }
-
-  memmove (&memory->area[i+1], &memory->area[i],
-	   (memory->areas - i - 1) * sizeof (struct pdp10_area));
+  insert_area (memory, i);
 
   area = &memory->area[i];
   area->start = address;
   area->end = address + length;
+  area->flags = 0;
   area->data = data;
 
   return 0;
@@ -147,6 +156,61 @@ remove_memory (struct pdp10_memory *memory, int address, int length)
 	  /* Above should cover all cases! */
 	  fprintf (stderr, "Bug!  Sholdn't get here.\n");
 	  exit (1);
+	}
+    }
+}
+
+void
+purify_memory (struct pdp10_memory *memory, int address, int length)
+{
+  struct pdp10_area *area;
+  word_t *data;
+  int i, end;
+
+  end = address + length;
+  for (i = address; i < end; i = area->end)
+    {
+      area = find_area (memory, i);
+      if (area == NULL)
+	return;
+      if (!IMPURE (area)) /* Is the area already pure? */
+	continue;
+
+      if (area->start < i)
+	{
+	  /* Impure area needs to split off first part. */
+	  insert_area (memory, area - memory->area);
+	  area->end = i;
+	  data = area->data + area->end - area->start;
+
+	  /* New pure area. */
+	  area++;
+	  area->start = i;
+	  area->flags |= MEMORY_PURE;
+	  length = area->end - area->start;
+	  area->data = malloc (length * sizeof (word_t));
+	  memcpy (area->data, data, length);
+	}
+      if (area->end > end)
+	{
+	  /* Impure area needs to split off last part. */
+	  insert_area (memory, area - memory->area);
+	  area->end = i;
+	  area->flags |= MEMORY_PURE;
+
+	  /* New impure area. */
+	  area++;
+	  area->start = end;
+	  length = area->end - area->start;
+	  area->data = malloc (length * sizeof (word_t));
+	  area->flags = 0;
+	  memcpy (area->data, area[-1].data + area[-1].end - area[-1].start,
+		  length);
+	}
+      else
+	{
+	  /* Whole area is inside the pure range. */
+	  area->flags |= MEMORY_PURE;
 	}
     }
 }
@@ -243,4 +307,16 @@ set_word_at (struct pdp10_memory *memory, int address, word_t word)
   }
 
   setword (area, address, word);
+}
+
+int
+pure_word_at (struct pdp10_memory *memory, int address)
+{
+  struct pdp10_area *area;
+
+  area = find_area (memory, address);
+  if (area == NULL)
+    return 0;
+
+  return !IMPURE (area);
 }
