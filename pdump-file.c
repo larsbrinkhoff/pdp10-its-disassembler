@@ -28,7 +28,7 @@
 #define PAGE_BITS	(PAGE_ABS & PAGE_CBCPY & PAGE_SHARE & \
 			 PAGE_WRITE & PAGE_READ & PAGE_NUM)
 
-static int read_page (word_t info)
+static int page_present (word_t info)
 {
   /* If the page map slot is zero, there is no page. */
   if (info == 0)
@@ -88,7 +88,7 @@ read_pdump (FILE *f, struct pdp10_memory *memory, int cpu_model)
     {
       word_t *data, *ptr;
 
-      if (!read_page(page_map[i]))
+      if (!page_present (page_map[i]))
 	continue;
 
       data = malloc (ITS_PAGESIZE * sizeof *data);
@@ -115,8 +115,48 @@ read_pdump (FILE *f, struct pdp10_memory *memory, int cpu_model)
   sblk_info (f, word, cpu_model);
 }
 
+static void
+write_pdump (FILE *f, struct pdp10_memory *memory)
+{
+  word_t page_map[256];
+  int i, j;
+
+  /* First word must be zero. */
+  write_word (f, 0);
+
+  /* Page map follows. */
+  for (i = 0; i < 256; i++)
+    {
+      if (get_word_at (memory, i * ITS_PAGESIZE) == -1)
+	page_map[i] = 0;
+      else if (pure_word_at (memory, i * ITS_PAGESIZE))
+	page_map[i] = PAGE_READ;
+      else
+	page_map[i] = PAGE_READ | PAGE_WRITE;
+      write_word (f, page_map[i]);
+    }
+
+  /* Last part of first page is unused. */
+  for (; i < 1023; i++)
+    write_word (f, 0);
+
+  /* Page contents follows. */
+  for (i = 0; i < 256; i++)
+    {
+      if (!page_present (page_map[i]))
+	continue;
+      for (j = 0; j < ITS_PAGESIZE; j++)
+	write_word (f, get_word_at (memory, ITS_PAGESIZE * i + j));
+    }
+
+  /* Round off like an SBLK file. */
+  write_word (f, start_instruction);
+  write_sblk_symbols (f);
+  write_word (f, start_instruction);
+}
+
 struct file_format pdump_file_format = {
   "pdump",
   read_pdump,
-  NULL
+  write_pdump
 };
