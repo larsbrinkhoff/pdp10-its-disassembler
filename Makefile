@@ -124,7 +124,7 @@ check: \
 	out/aaaaaa.scrmbl out/0s.scrmbl \
 	out/dart.tape.dart out/two.tapes.dasm \
 	out/chars.pub.oct.sail out/chars.pub.sail.ascii \
-	out/pt.rim.dump out/system.dmp.dump
+	out/pt.rim.dump out/system.dmp.dump out/ts.srccom.dump
 
 samples/ts.obs = -Wits
 samples/ts.ksfedr = -Wits
@@ -150,6 +150,7 @@ out/pt.rim.dasm = -mka10its
 out/system.dmp.dasm = -mka10sail -Sall
 out/pt.rim.dump = -Osblk
 out/system.dmp.dump = -Xoct -Odmp
+out/ts.srccom.dump = -Opdump
 
 out/%.dasm: samples/% dis10 test/%.dasm
 	./dis10 $($<) $($@) $< > $@
