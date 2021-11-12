@@ -18,10 +18,12 @@
 
 #include "dis.h"
 
+#define MEMORY_PURE     0001
+
 struct pdp10_area
 {
-  int	  start;
-  int	  end;
+  int start, end;
+  unsigned flags;
   word_t *data;
 };
 
@@ -38,10 +40,13 @@ extern int	add_memory (struct pdp10_memory *memory,
 			    int address, int length, word_t *data);
 extern void	remove_memory (struct pdp10_memory *memory,
 			       int address, int length);
+extern void     purify_memory (struct pdp10_memory *memory, int address,
+			       int length);
 extern int	set_address (struct pdp10_memory *memory, int address);
 extern int	get_address (struct pdp10_memory *memory);
 extern word_t	get_next_word (struct pdp10_memory *memory);
 extern word_t	get_word_at (struct pdp10_memory *memory, int address);
 extern void	set_word_at (struct pdp10_memory *memory, int address, word_t);
+extern int	pure_word_at (struct pdp10_memory *memory, int address);
 
 #endif /* MEMORY_H */
