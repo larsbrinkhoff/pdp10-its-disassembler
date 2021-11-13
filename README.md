@@ -22,3 +22,27 @@ is elsewhere: http://github.com/larsbrinkhoff/mldev
 
 - List or extract files from a TITO tape (Tymshare TYMCOM-X).
 - List, extract, or write files on a DART tape (SAIL WAITS).
+
+## File formats supported.
+
+Most tools support these PDP-10 36-bit word encodings:
+
+- ASCII text, with an additional bit stored in every fifth character.
+- Binary image.
+- Core dump 9-track tape format.
+- DATA8, one 36-bit word stored right alinged per little endian 64-bit word.
+- DTA, DECtape image.
+- ITS evacuate format.
+- Octal digits.
+- Paper tape image.
+- Saildart.org UTF-8.
+- Tape images, 7 or 9 track.
+
+Most tools that work with executable programs support these formats:
+
+- ITS PDUMP and SBLK.
+- Muddle/MDL save files.
+- Raw files.
+- Read-in mode.
+- Stanford WAITS .DMP files.
+- TOPS-10 sharable hi-seg.
