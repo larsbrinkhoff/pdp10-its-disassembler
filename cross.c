@@ -14,6 +14,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include <stdio.h>
+#include <getopt.h>
 #include "dis.h"
 
 /* The binary output from CROSS is formatted into blocks, with a
@@ -27,6 +28,7 @@ address (inclusive). */
 
 static unsigned char buf[4];
 static int n = 0;
+static int checksum;
 
 static void refill (FILE *f)
 {
@@ -68,7 +70,7 @@ static void out_16 (int word)
   out_8 (word >> 8);
 }
 
-static void block (FILE *f)
+static void binary_block (FILE *f)
 {
   int i, type, length, address;
 
@@ -88,10 +90,110 @@ static void block (FILE *f)
   get_8 (f);
 }
 
-int main (void)
+static int get_hex (FILE *f)
+{
+  int c;
+
+  c = fgetc (f);
+  if (c == EOF)
+    {
+      fprintf (stderr, "Unexpected end of input file.\n");
+      exit (1);
+    }
+
+  switch (c)
+    {
+    case '0': case '1': case '2': case '3': case '4':
+    case '5': case '6': case '7': case '8': case '9':
+      return c - '0';
+    case 'A': case 'B': case 'C': case 'D': case 'E': case 'F':
+      return c - 'A' + 10;
+    case 'a': case 'b': case 'c': case 'd': case 'e': case 'f':
+      return c - 'a' + 10;
+    default:
+      fprintf (stderr, "Bad hex digit: %c\n", c);
+      exit (1);
+    }
+}
+
+static int get_a8 (FILE *f)
+{
+  int data = (get_hex (f) << 4) | get_hex (f);
+  checksum += data;
+  return data;
+}
+
+static int get_a16 (FILE *f)
+{
+  return (get_a8 (f) << 8) | get_a8 (f);
+}
+
+static void ascii_block (FILE *f)
+{
+  int length, address, data;
+  int c, i;
+
+  do
+    {
+      c = fgetc (f);
+      if (c == EOF)
+	exit (0);
+    }
+  while (c != ';');
+
+  checksum = 0;
+  length = get_a8 (f);
+  address = get_a16 (f);
+
+  out_16 (address);
+  out_16 (address + length - 1);
+
+  for (i = 0; i < length; i++)
+    {
+      data = get_a8 (f);
+      out_8 (data);
+    }
+
+  checksum &= 0xFFFF;
+  data = checksum;
+  if (data != get_a16 (f))
+    fprintf (stderr, "Bad checksum: %04X.\n", data);
+}
+
+static void usage (const char *argv0)
+{
+  fprintf (stderr, "Usage: %s [-ab -W<word format>]\n", argv0);
+  usage_word_format ();
+  exit (1);
+}
+
+int main (int argc, char **argv)
 {
   input_word_format = &its_word_format;
-  
+  void (*block) (FILE *);
+  int opt;
+
+  block = binary_block;
+
+  while ((opt = getopt (argc, argv, "abW:")) != -1)
+    {
+      switch (opt)
+	{
+	case 'a':
+	  block = ascii_block;
+	  break;
+	case 'b':
+	  block = binary_block;
+	  break;
+	case 'W':
+	  if (parse_input_word_format (optarg))
+	    usage (argv[0]);
+	  break;
+	default:
+	  usage (argv[0]);
+	}
+    }
+
   out_16 (0xFFFF);
 
   for (;;)
