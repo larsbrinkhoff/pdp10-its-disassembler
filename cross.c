@@ -14,6 +14,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include <stdio.h>
+#include <string.h>
 #include <getopt.h>
 #include "dis.h"
 
@@ -26,9 +27,14 @@ An Atari DOS binary file is also formatted into blocks.  The file
 begins with two FF bytes, and then each block header has start and end
 address (inclusive). */
 
+#define MEMORY_SIZE   65536
+
 static unsigned char buf[4];
 static int n = 0;
 static int checksum;
+static unsigned char memory[MEMORY_SIZE];
+static void (*output) (int address, int length);
+static int start = MEMORY_SIZE, end = 0;
 
 static void refill (FILE *f)
 {
@@ -92,15 +98,14 @@ static void binary_block (FILE *f)
   fprintf (stderr, "Type %d, length %d, address %04x\n",
 	   type, length, address);
 
-  out_16 (address);
-  out_16 (address + length - 1);
-
   for (i = 0; i < length; i++)
-    out_8 (get_8 (f));
+    memory[address + i] = get_8 (f);
 
   type = -checksum & 0xFF;
   if (type != get_8 (f))
     fprintf (stderr, "Bad checksum: %04X.\n", type);
+
+  output (address, length);
 }
 
 static int get_hex (FILE *f)
@@ -158,24 +163,49 @@ static void ascii_block (FILE *f)
   length = get_a8 (f);
   address = get_a16 (f);
 
-  out_16 (address);
-  out_16 (address + length - 1);
+  if (length == 0)
+    exit (0);
 
   for (i = 0; i < length; i++)
-    {
-      data = get_a8 (f);
-      out_8 (data);
-    }
+    memory[address + i] = get_a8 (f);
 
   checksum &= 0xFFFF;
   data = checksum;
   if (data != get_a16 (f))
     fprintf (stderr, "Bad checksum: %04X.\n", data);
+
+  output (address, length);
+}
+
+static void atari_output (int address, int length)
+{
+  int i;
+  out_16 (address);
+  out_16 (address + length - 1);
+  for (i = 0; i < length; i++)
+    out_8 (memory[address + i]);
+}
+
+static void image_output (int address, int length)
+{
+  if (address < start)
+    start = address;
+  if (address + length > end)
+    end = address + length;
+}
+
+static void image_write (void)
+{
+  int i;
+  for (i = start; i < end; i++)
+    out_8 (memory[i]);
+  fprintf (stderr, "Memory image from %04X to %04X (%d bytes)\n",
+	   start, end, end - start);
 }
 
 static void usage (const char *argv0)
 {
-  fprintf (stderr, "Usage: %s [-ab -W<word format>]\n", argv0);
+  fprintf (stderr, "Usage: %s [-abAI -W<word format>]\n", argv0);
   usage_word_format ();
   exit (1);
 }
@@ -186,9 +216,11 @@ int main (int argc, char **argv)
   void (*block) (FILE *);
   int opt;
 
+  memset (memory, 0, sizeof memory);
   block = binary_block;
+  output = atari_output;
 
-  while ((opt = getopt (argc, argv, "abW:")) != -1)
+  while ((opt = getopt (argc, argv, "abAIW:")) != -1)
     {
       switch (opt)
 	{
@@ -198,6 +230,14 @@ int main (int argc, char **argv)
 	case 'b':
 	  block = binary_block;
 	  break;
+	case 'A':
+	  out_16 (0xFFFF);
+	  output = atari_output;
+	  break;
+	case 'I':
+	  output = image_output;
+	  atexit (image_write);
+	  break;
 	case 'W':
 	  if (parse_input_word_format (optarg))
 	    usage (argv[0]);
@@ -206,8 +246,6 @@ int main (int argc, char **argv)
 	  usage (argv[0]);
 	}
     }
-
-  out_16 (0xFFFF);
 
   for (;;)
     block (stdin);
