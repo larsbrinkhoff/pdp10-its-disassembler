@@ -45,10 +45,12 @@ static void refill (FILE *f)
 
 static int get_8 (FILE *f)
 {
+  int data;
   if (n == 0)
     refill (f);
-
-  return buf[--n];
+  data = buf[--n];
+  checksum += data;
+  return data;
 }
 
 static int get_16 (FILE *f)
@@ -74,9 +76,18 @@ static void binary_block (FILE *f)
 {
   int i, type, length, address;
 
-  type = get_16 (f);
-  length = get_16 (f);
+  checksum = 0;
+
+  do
+    type = get_8 (f);
+  while (type == 0);
+  type |= get_8 (f) << 8;
+
+  length = get_16 (f) - 6; /* Subtract header length. */
   address = get_16 (f);
+
+  if (length == 0)
+    exit (0);
 
   fprintf (stderr, "Type %d, length %d, address %04x\n",
 	   type, length, address);
@@ -87,7 +98,9 @@ static void binary_block (FILE *f)
   for (i = 0; i < length; i++)
     out_8 (get_8 (f));
 
-  get_8 (f);
+  type = -checksum & 0xFF;
+  if (type != get_8 (f))
+    fprintf (stderr, "Bad checksum: %04X.\n", type);
 }
 
 static int get_hex (FILE *f)
