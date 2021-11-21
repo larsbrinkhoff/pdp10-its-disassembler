@@ -56,3 +56,4 @@ In addition, some mini and micro computer program formats are supported:
 - CROSS binaries.
 - CROSS "ASCII HEX" files.
 - Atari DOS executables.
+- Imlac "speciall TTY" files.
