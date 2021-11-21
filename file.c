@@ -23,6 +23,7 @@ struct file_format *input_file_format = NULL;
 struct file_format *output_file_format = NULL;
 
 static struct file_format *file_formats[] = {
+  &cross_file_format,
   &dmp_file_format,
   &fasl_file_format,
   &lda_file_format,
