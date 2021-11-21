@@ -24,6 +24,7 @@ clean:
 	rm -f main.o dmp.o raw.o das.o crypt.o
 	for f in $(UTILS); do rm -f $${f}.o; done
 	rm -f out/*
+	rm -f check
 
 dis10: main.o $(OBJS) libfiles.a libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
@@ -111,85 +112,8 @@ test/test_write: test/test_write.o $(OBJS) libwords.a
 test/test_read: test/test_read.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
-check: \
-	out/ts.obs.dasm out/ts.ksfedr.dasm out/ts.name.dasm \
-	out/ts.srccom.dasm out/atsign.tcp.dasm out/arc.code.list \
-	out/macro.low.dasm out/pt.rim.dasm out/visib1.bin.dasm \
-	out/visib2.bin.dasm out/visib3.bin.dasm out/@.midas.dasm \
-	out/srccom.exe.dasm out/dart.dmp.dasm out/@.its.dasm \
-	out/its.bin.dasm out/its.rp06.dasm out/system.dmp.dasm \
-	out/dired.dmp.dasm \
-	out/stink.-ipak-.ipak \
-	out/thirty.scrmbl out/sixbit.scrmbl out/pdpten.scrmbl \
-	out/aaaaaa.scrmbl out/0s.scrmbl \
-	out/dart.tape.dart out/two.tapes.dasm \
-	out/chars.pub.oct.sail out/chars.pub.sail.ascii \
-	out/pt.rim.dump out/system.dmp.dump out/ts.srccom.dump
-
-samples/ts.obs = -Wits
-samples/ts.ksfedr = -Wits
-samples/ts.name = -Wits -Sall
-samples/ts.srccom = -Wits
-samples/atsign.tcp = -Wits
-samples/macro.low = -r -Wascii
-samples/pt.rim = -Frim10 -Wpt
-samples/visib1.bin = -Wits -Sddt
-samples/visib2.bin = -Wits -Sddt
-samples/visib3.bin = -Wits -Sall
-samples/@.midas = -D774000 -Sall
-samples/stink.-ipak- = -Wascii
-samples/srccom.exe = -mka10 -Wascii
-samples/dart.dmp = -6 -mka10sail -Wdata8
-samples/system.dmp = -Fdmp -Woct
-samples/dired.dmp = -6 -mka10sail -Wascii -Sddt
-samples/two.tapes = -r -Wtape
-samples/@.its = -Sall -mka10_its
-samples/its.bin = -mkl10_its
-samples/its.rp06 = -mks10_its
-out/pt.rim.dasm = -mka10its
-out/system.dmp.dasm = -mka10sail -Sall
-out/pt.rim.dump = -Osblk
-out/system.dmp.dump = -Xoct -Odmp
-out/ts.srccom.dump = -Opdump
-
-out/%.dasm: samples/% dis10 test/%.dasm
-	./dis10 $($<) $($@) $< > $@
-	cmp $@ test/$*.dasm || rm $@ /no-such-file
-
-out/%.list: samples/% itsarc test/%.list
-	./itsarc -t $< 2> $@
-	cmp $@ test/$*.list || rm $@ /no-such-file
-
-out/%.ipak: samples/% ipak test/%.ipak
-	./ipak -t $($<) $< 2> $@
-	cmp $@ test/$*.ipak || rm $@ /no-such-file
-
-out/%.scrmbl: samples/zeros.%.scrmbl scrmbl cat36 samples/zeros.scrmbl
-	./scrmbl -Wbin $* samples/zeros.scrmbl $@
-	./cat36 -Wits -Xbin $@ | cmp - $< || rm $@ /no-such-file
-	./scrmbl -d -Wits $* $@ out/$*.unscrm
-	./cat36 -Wits -Xbin out/$*.unscrm | cmp - samples/zeros.scrmbl \
-		|| rm $@ /no-such-file
-
-out/%.oct.sail: samples/%.oct cat36
-	./cat36 -Woct -Xsail $< > $@
-	cmp $@ test/$*.oct.sail
-
-out/%.sail.ascii: samples/%.sail cat36
-	./cat36 -Wsail -Xascii $< > $@
-	cmp $@ test/$*.sail.ascii
-
-out/%.dump: samples/% dump
-	./dump $($<) $($@) $< > $@ 2> /dev/null
-	cmp $@ test/$*.dump
-
-FIX_TIME=sed 's/RECORDED ....-..-.. ..:..,/RECORDED XXXX-XX-XX XX:XX/'
-
-out/%.dart: samples/% dart test/%.dart
-	./dart -x9f $< -C.tmp.
-	(cd .tmp.; ../dart -c7 reg/1/*) | ./dart -t7 | $(FIX_TIME) > $@
-	rm -rf .tmp.
-	cmp $@ test/$*.dart || rm $@ /no-such-file
+check: check.sh
+	sh check.sh && touch $@
 
 #dependencies
 bin-word.o: bin-word.c dis.h
