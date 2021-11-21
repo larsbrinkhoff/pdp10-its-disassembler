@@ -66,6 +66,7 @@ extern struct file_format *output_file_format;
 extern struct file_format dmp_file_format;
 extern struct file_format fasl_file_format;
 extern struct file_format mdl_file_format;
+extern struct file_format palx_file_format;
 extern struct file_format pdump_file_format;
 extern struct file_format raw_file_format;
 extern struct file_format rim10_file_format;

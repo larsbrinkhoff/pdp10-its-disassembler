@@ -89,5 +89,6 @@ test_cat36 chars.pub sail ascii
 test_dump pt.rim      "-Frim10 -Wpt -Osblk"
 test_dump system.dmp  "-Fdmp -Woct -Xoct -Odmp"
 test_dump ts.srccom   "-Wits -Opdump"
+test_dump l.bin       "-Fpalx -Xoct -Oraw"
 
 exit 0

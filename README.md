@@ -48,3 +48,7 @@ Most tools that work with executable programs support these formats:
 - Read-in mode.
 - Stanford WAITS .DMP files.
 - TOPS-10 sharable hi-seg.
+
+In addition, some mini and micro computer program formats are supported:
+
+- PDP-11 PALX binaries.

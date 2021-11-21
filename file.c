@@ -26,6 +26,7 @@ static struct file_format *file_formats[] = {
   &dmp_file_format,
   &fasl_file_format,
   &mdl_file_format,
+  &palx_file_format,
   &pdump_file_format,
   &raw_file_format,
   &rim10_file_format,
