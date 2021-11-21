@@ -26,6 +26,7 @@ static struct file_format *file_formats[] = {
   &cross_file_format,
   &dmp_file_format,
   &fasl_file_format,
+  &hex_file_format,
   &lda_file_format,
   &mdl_file_format,
   &palx_file_format,

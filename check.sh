@@ -91,5 +91,6 @@ test_dump system.dmp  "-Fdmp -Woct -Xoct -Odmp"
 test_dump ts.srccom   "-Wits -Opdump"
 test_dump l.bin       "-Fpalx -Xoct -Oraw"
 test_dump logo.ptp    "-Fhex -Xoct -Oraw"
+test_dump supdup.bin  "-Wits -Fcross -Xoct -Oraw"
 
 exit 0
