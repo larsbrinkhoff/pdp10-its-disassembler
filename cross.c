@@ -35,6 +35,7 @@ static int checksum;
 static unsigned char memory[MEMORY_SIZE];
 static void (*output) (int address, int length);
 static int start = MEMORY_SIZE, end = 0;
+static int image_start = -1, image_end = -1;
 
 static void refill (FILE *f)
 {
@@ -197,6 +198,10 @@ static void image_output (int address, int length)
 static void image_write (void)
 {
   int i;
+  if (image_start != -1)
+    start = image_start;
+  if (image_end != -1)
+    end = image_end;
   for (i = start; i < end; i++)
     out_8 (memory[i]);
   fprintf (stderr, "Memory image from %04X to %04X (%d bytes)\n",
@@ -205,7 +210,7 @@ static void image_write (void)
 
 static void usage (const char *argv0)
 {
-  fprintf (stderr, "Usage: %s [-abAI -W<word format>]\n", argv0);
+  fprintf (stderr, "Usage: %s [-abAEIS -W<word format>]\n", argv0);
   usage_word_format ();
   exit (1);
 }
@@ -220,7 +225,7 @@ int main (int argc, char **argv)
   block = binary_block;
   output = atari_output;
 
-  while ((opt = getopt (argc, argv, "abAIW:")) != -1)
+  while ((opt = getopt (argc, argv, "abAEISW:")) != -1)
     {
       switch (opt)
 	{
@@ -237,6 +242,12 @@ int main (int argc, char **argv)
 	case 'I':
 	  output = image_output;
 	  atexit (image_write);
+	  break;
+	case 'S':
+	  image_start = atoi (optarg);
+	  break;
+	case 'E':
+	  image_end = atoi (optarg);
 	  break;
 	case 'W':
 	  if (parse_input_word_format (optarg))
