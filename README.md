@@ -52,3 +52,4 @@ Most tools that work with executable programs support these formats:
 In addition, some mini and micro computer program formats are supported:
 
 - PDP-11 PALX binaries.
+- PDP-11 absolute loader tapes.
