@@ -1,4 +1,4 @@
-/* Copyright (C) 2018 Lars Brinkhoff <lars@nocrew.org>
+/* Copyright (C) 2018, 2021 Lars Brinkhoff <lars@nocrew.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -109,6 +109,7 @@ static void local_symbols (int count)
       char str[7];
       squoze_to_ascii (block[i], str);
       printf ("    %s = %12o (local)\n", str, block[i+1]);
+      add_symbol (str, block[i+1], 0);
     }
 }
 
@@ -121,6 +122,7 @@ static void global_symbols (int count)
       char str[7];
       squoze_to_ascii (block[i], str);
       printf ("    %s = %12o (global)\n", str, block[i+1]);
+      add_symbol (str, block[i+1], 0);
     }
 }
 
@@ -145,26 +147,31 @@ read_stink (FILE *f, struct pdp10_memory *memory, int cpu_model)
 
       checksum = word;
 
-      //printf ("Block type %o, address %o\n", type, adr);
       if (eof)
         printf ("  End Of File\n");
       else
         {
+	  printf ("COUNT %d\n", count);
           for (i = 0; i < count; i++)
             {
               block[i] = get_stink_checksummed_word (f);
+	      printf ("{%012llo}\n", block[i]);
               if (block[i] < 0)
                 break;
-              //printf ("  %012llo\n", block[i]);
             }
-
 
           switch (type)
             {
             case 000: printf ("  Type: illegal\n"); break;
             case 001: printf ("  Type: loader command\n"); break;
-            case 002: printf ("  Type: code (absolute)\n"); break;
-            case 003: printf ("  Type: code (relocated)\n"); break;
+            case 002:
+              printf ("  Type: code (absolute)\n");
+              standard_data (count);
+              break;
+            case 003:
+              printf ("  Type: code (relocated), address %06o\n", adr);
+              standard_data (count);
+              break;
             case 004: 
               squoze_to_ascii (block[0], str);
               printf ("  Program name: %s\n", str);
