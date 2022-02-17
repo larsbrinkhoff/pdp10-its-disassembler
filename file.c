@@ -1,4 +1,4 @@
-/* Copyright (C) 2013 Lars Brinkhoff <lars@nocrew.org>
+/* Copyright (C) 2013, 2022 Lars Brinkhoff <lars@nocrew.org>
    Copyright (C) 2020 Adam Sampson <ats@offog.org>
 
     This program is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ struct file_format *output_file_format = NULL;
 
 static struct file_format *file_formats[] = {
   &dmp_file_format,
+  &fasl_file_format,
   &mdl_file_format,
   &pdump_file_format,
   &raw_file_format,
