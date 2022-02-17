@@ -1,4 +1,4 @@
-/* Copyright (C) 2013, 2021 Lars Brinkhoff <lars@nocrew.org>
+/* Copyright (C) 2013, 2021-2022 Lars Brinkhoff <lars@nocrew.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -64,6 +64,7 @@ enum {
 extern struct file_format *input_file_format;
 extern struct file_format *output_file_format;
 extern struct file_format dmp_file_format;
+extern struct file_format fasl_file_format;
 extern struct file_format mdl_file_format;
 extern struct file_format pdump_file_format;
 extern struct file_format raw_file_format;
