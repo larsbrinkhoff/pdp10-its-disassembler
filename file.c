@@ -31,6 +31,7 @@ static struct file_format *file_formats[] = {
   &rim10_file_format,
   &sblk_file_format,
   &shr_file_format,
+  &stink_file_format,
   NULL
 };
 

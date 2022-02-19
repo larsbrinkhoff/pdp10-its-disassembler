@@ -71,6 +71,7 @@ extern struct file_format raw_file_format;
 extern struct file_format rim10_file_format;
 extern struct file_format sblk_file_format;
 extern struct file_format shr_file_format;
+extern struct file_format stink_file_format;
 
 extern struct word_format *input_word_format;
 extern struct word_format *output_word_format;

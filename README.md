@@ -48,3 +48,4 @@ Most tools that work with executable programs support these formats:
 - Read-in mode.
 - Stanford WAITS .DMP files.
 - TOPS-10 sharable hi-seg.
+- STINK relocatable format.
