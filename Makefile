@@ -14,7 +14,7 @@ OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 UTILS =	cat36 itsarc magdmp magfrm dskdmp dump \
 	macdmp macro-tapes tape-dir harscntopbm palx cross \
 	ipak kldcp klfedr scrmbl unscr tvpic tito dart od10 \
-	constantinople
+	constantinople bsys
 
 all: dis10 $(UTILS) check
 
@@ -70,6 +70,9 @@ tito: tito.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
 dart: dart.o $(OBJS) libwords.a
+	$(CC) $(CFLAGS) $^ -o $@
+
+bsys: bsys.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
 od10: od10.o $(OBJS) libwords.a

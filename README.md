@@ -23,6 +23,7 @@ is elsewhere: http://github.com/larsbrinkhoff/mldev
 
 - List or extract files from a TITO tape (Tymshare TYMCOM-X).
 - List, extract, or write files on a DART tape (SAIL WAITS).
+- List, extract, or write files on a BSYS tape (BBN TENEX).
 
 ## File formats supported.
 
