@@ -17,6 +17,15 @@
 
 #include "dis.h"
 
+static int position = 0;
+
+static void
+rewind_dta_word (FILE *f)
+{
+  position = 0;
+  rewind (f);
+}
+
 static inline int
 get_byte (FILE *f)
 {
@@ -36,19 +45,18 @@ get_half (FILE *f)
 static word_t
 get_dta_word (FILE *f)
 {
-  word_t word, h1, h2;
+  word_t word;
 
   if (feof (f))
     return -1;
 
-  h1 = get_half (f);
-  h2 = get_half (f);
-  
-  //fprintf (stderr, "%06llo  %06llo\n", h1, h2);
-    word = (h1 << 18);
-    word += h2;
-    //word = (get_half (f) << 18);
-    //word += get_half (f);
+  word = (get_half (f) << 18);
+  word += get_half (f);
+
+  if ((position % 128) == 0)
+    word |= START_RECORD;
+
+  position++;
   return word;
 }
 
@@ -71,7 +79,7 @@ write_dta_word (FILE *f, word_t word)
 struct word_format dta_word_format = {
   "dta",
   get_dta_word,
-  NULL,
+  rewind_dta_word,
   write_dta_word,
   NULL
 };
