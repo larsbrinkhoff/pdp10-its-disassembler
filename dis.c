@@ -481,6 +481,13 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 	  if (sym != NULL)
 	    n += fprintf (output_file, "%s", sym->name);
 	}
+      else if ((word >> 18) != 0 && Y (word))
+	{
+	  /* No opcode found and right half is 0, print as symbol. */
+	  sym = get_symbol_by_value (word >> 18, HINT_ADDRESS);
+	  if (sym != NULL)
+	    n += fprintf (output_file, "%s,,", sym->name);
+	}
     }
   else if ((cpu_model & PDP10_ITS) && OPCODE (word) == ITS_OPER)
     {
