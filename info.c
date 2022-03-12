@@ -492,6 +492,8 @@ dmp_info (struct pdp10_memory *memory, int cpu_model)
   word_t jbsa, jbda, jbsym;
   int p;
 
+  (void)cpu_model;
+
   /* For the PDP-6 monitor, JBSA is the start address. */
   jbsa = get_word_at (memory, 0120);
   fprintf (output_file, "Start address (PDP-6): %06llo\n", jbsa & 0777777);
@@ -625,7 +627,7 @@ ntsddt_info (struct pdp10_memory *memory, int ddt)
   a = get_word_at (memory, a);
   syms = a >> 18;
   if (syms & 0400000)
-    syms |= -1 << 18;
+    syms |= ~0U << 18;
   syms = -syms;
   a &= 0777777;
 

@@ -339,8 +339,7 @@ lookup_device (int number, int cpu_model)
 static const struct its_oper *
 lookup_oper (word_t word, struct its_oper *table, int size)
 {
-  unsigned int i;
-  int e;
+  int i, e;
 
   e = E (word);
 
