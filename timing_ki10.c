@@ -240,19 +240,7 @@ instruction_execution (word_t instruction)
 	case 000: /* JRST */	return 110;
 	case 001: /* PORTAL */	return 110;
 	case 002: /* JRSTF */	return 220;
-	case 003:		return -1000000;
-	case 004:		return -1000000;
-	case 005:		return -1000000;
-	case 006:		return -1000000;
-	case 007:		return -1000000;
-	case 010:		return -1000000;
-	case 011:		return -1000000;
-	case 012:		return -1000000;
-	case 013:		return -1000000;
-	case 014:		return -1000000;
-	case 015:		return -1000000;
-	case 016:		return -1000000;
-	case 017:		return -1000000;
+	default:		return -1000000;
 	}
     case 0255: /* JFCL */	return 110;
     case 0256: /* XCT */	return 110;
