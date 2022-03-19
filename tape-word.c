@@ -23,6 +23,11 @@ static int reclen = 0;
 static int beginning_of_tape = 1;
 static int marks = 0;
 
+static void tape_special (int code);
+static int get_tape_record (FILE *f, word_t **buffer);
+
+void (*tape_hook) (int code) = tape_special;
+
 static int
 get_byte (FILE *f)
 {
@@ -84,6 +89,22 @@ static void write_reclen (FILE *f, int n)
     marks = 0;
 }
 
+static void tape_special (int code)
+{
+  switch ((code >> 24) & 0xFF)
+    {
+    case 0x80:
+      fprintf (stderr, "Tape error %06x.\n", code & 0xFFFFFF);
+      break;
+    case 0xFF:
+      fprintf (stderr, "Tape gap (%06x).\n", code & 0xFFFFFF);
+      break;
+    default:
+      fprintf (stderr, "Tape special (%08x).\n", code);
+      break;
+    }
+}
+
 int get_9track_record (FILE *f, word_t **buffer)
 {
   int i, x, reclen;
@@ -92,6 +113,12 @@ int get_9track_record (FILE *f, word_t **buffer)
   reclen = get_reclen (f);
   if (reclen == 0)
     return 0;
+  else if (reclen & 0x80000000)
+    {
+      tape_hook (reclen);
+      return get_tape_record (f, buffer);
+    }
+
   if (reclen % 5)
     {
       fprintf (stderr, "Not a CORE DUMP tape image.\n"
@@ -182,6 +209,12 @@ int get_7track_record (FILE *f, word_t **buffer)
   reclen = get_reclen (f);
   if (reclen == 0)
     return 0;
+  else if (reclen & 0x80000000)
+    {
+      tape_hook (reclen);
+      return get_tape_record (f, buffer);
+    }
+
   if (reclen % 6)
     {
       fprintf (stderr, "Not a 7-track tape image.\n"
@@ -308,6 +341,18 @@ write_tape_eot (FILE *f)
 {
   while (marks < 2)
     write_tape_mark (f);
+}
+
+void
+write_tape_gap (FILE *f, unsigned code)
+{
+  write_reclen (f, 0xFF000000 | (code & 0xFFFFFF));
+}
+
+void
+write_tape_error (FILE *f, unsigned code)
+{
+  write_reclen (f, 0x80000000 | (code & 0xFFFFFF));
 }
 
 static void
