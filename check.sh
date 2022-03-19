@@ -72,6 +72,7 @@ test_dis10 its.rp06       "-mks10_its"
 test_dis10 system.dmp     "-Fdmp -Woct -mka10sail -Sall"
 test_dis10 dired.dmp      "-6 -mka10sail -Wascii -Sddt"
 test_dis10 two.tapes      "-r -Wtape"
+test_dis10 boot.exb       "-Fexb -Wascii"
 
 test_itsarc arc.code
 test_ipak stink.-ipak-
