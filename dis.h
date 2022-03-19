@@ -66,6 +66,7 @@ extern struct file_format *output_file_format;
 extern struct file_format atari_file_format;
 extern struct file_format cross_file_format;
 extern struct file_format dmp_file_format;
+extern struct file_format exb_file_format;
 extern struct file_format fasl_file_format;
 extern struct file_format hex_file_format;
 extern struct file_format iml_file_format;
