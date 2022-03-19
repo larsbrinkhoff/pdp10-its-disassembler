@@ -14,6 +14,7 @@
 - Scramble or unscramble an encrypted file.
 - Make a picture file suitable for displaying on a Knight TV.
 - Write out a core image in some of the supported executable formats.
+- Copy, remove, insert tape records, files, marks.
 - Analyze a CONSTANTS area.
 
 A Linux FUSE implementation of the networking filesystem protocol MLDEV
