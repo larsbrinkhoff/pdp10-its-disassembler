@@ -124,6 +124,9 @@ extern int      get_7track_record (FILE *f, word_t **buffer);
 extern int      get_9track_record (FILE *f, word_t **buffer);
 extern void     write_7track_record (FILE *f, word_t *buffer, int);
 extern void     write_9track_record (FILE *f, word_t *buffer, int);
+extern void     write_tape_mark (FILE *f);
+extern void     write_tape_eof (FILE *f);
+extern void     write_tape_eot (FILE *f);
 extern word_t	get_core_word (FILE *f);
 extern void	write_core_word (FILE *f, word_t word);
 extern void	read_raw_at (FILE *f, struct pdp10_memory *memory,

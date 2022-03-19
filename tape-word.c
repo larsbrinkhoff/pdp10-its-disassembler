@@ -1,4 +1,4 @@
-/* Copyright (C) 2009, 2021 Lars Brinkhoff <lars@nocrew.org>
+/* Copyright (C) 2009, 2021-2022 Lars Brinkhoff <lars@nocrew.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 static word_t record[65536];
 static int reclen = 0;
 static int beginning_of_tape = 1;
+static int marks = 0;
 
 static int
 get_byte (FILE *f)
@@ -76,6 +77,11 @@ static void write_reclen (FILE *f, int n)
   fputc ((n >> 8) & 0377, f);
   fputc ((n >> 16) & 0377, f);
   fputc ((n >> 24) & 0377, f);
+
+  if (n == 0)
+    marks++;
+  else
+    marks = 0;
 }
 
 int get_9track_record (FILE *f, word_t **buffer)
@@ -291,10 +297,17 @@ write_tape_mark (FILE *f)
 }
 
 void
+write_tape_eof (FILE *f)
+{
+  while (marks < 1)
+    write_tape_mark (f);
+}
+
+void
 write_tape_eot (FILE *f)
 {
-  write_tape_mark (f);
-  write_tape_mark (f);
+  while (marks < 2)
+    write_tape_mark (f);
 }
 
 static void
@@ -311,10 +324,10 @@ write_tape_word (FILE *f, word_t word)
     {
       if (word & (START_RECORD|START_FILE|START_TAPE))
 	flush_record (f);
-      if (word & (START_FILE|START_TAPE))
-	write_tape_mark (f);
+      if (word & START_FILE)
+	write_tape_eof (f);
       if (word & START_TAPE)
-	write_tape_mark (f);
+	write_tape_eot (f);
     }
   beginning_of_tape = 0;
 
@@ -327,6 +340,7 @@ flush_tape_word (FILE *f)
   flush_record (f);
   write_tape_eot (f);
   beginning_of_tape = 1;
+  marks = 0;
 }
 
 struct word_format tape_word_format = {
