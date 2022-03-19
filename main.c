@@ -23,6 +23,23 @@
 #include "memory.h"
 
 static void
+tape_special (int code)
+{
+  switch ((code >> 24) & 0xFF)
+    {
+    case 0x80:
+      fprintf (output_file, "Tape error %06x.\n", code & 0xFFFFFF);
+      break;
+    case 0xFF:
+      fprintf (output_file, "Tape gap (%06x).\n", code & 0xFFFFFF);
+      break;
+    default:
+      fprintf (output_file, "Tape special (%08x).\n", code);
+      break;
+    }
+}
+
+static void
 usage (char **argv)
 {
   fprintf (stderr, "Usage: %s [-6] [-r] [-F<file format>] [-S<symbol mode>] [-W<word format>] [-D<DDT address>] <file>\n\n", argv[0]);
@@ -92,6 +109,8 @@ main (int argc, char **argv)
     }
 
   init_memory (&memory);
+
+  tape_hook = tape_special;
 
   if (!input_file_format)
     guess_input_file_format (file);
