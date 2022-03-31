@@ -48,7 +48,7 @@ Most tools that work with executable programs support these formats:
 - Raw files.
 - Read-in mode.
 - Stanford WAITS .DMP files.
-- TOPS-10 sharable hi-seg.
+- TOPS-20 and TOPS-10 sharable save .EXE files.
 
 In addition, some mini and micro computer program formats are supported:
 
