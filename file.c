@@ -89,6 +89,8 @@ guess_input_file_format (FILE *file)
 
   if ((word >> 18) == 01776)
     input_file_format = &exe_file_format;
+  else if ((word >> 18) == 01000)
+    input_file_format = &tenex_file_format;
   else if (word == 0)
     input_file_format = &pdump_file_format;
   else
