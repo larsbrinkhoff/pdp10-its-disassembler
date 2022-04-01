@@ -9,6 +9,9 @@
 #define JBCOR  0133
 #define JBVER  0137
 
+/* Normal address for high segment. */
+#define JBHGH  0400000
+
 /* High segment vestigial job area.  These are offsets. */
 #define JBHSA  0000
 #define JBH41  0001

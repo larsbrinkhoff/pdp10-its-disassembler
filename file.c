@@ -30,6 +30,7 @@ static struct file_format *file_formats[] = {
   &exb_file_format,
   &fasl_file_format,
   &hex_file_format,
+  &hiseg_file_format,
   &iml_file_format,
   &lda_file_format,
   &mdl_file_format,
