@@ -67,6 +67,7 @@ extern struct file_format atari_file_format;
 extern struct file_format cross_file_format;
 extern struct file_format dmp_file_format;
 extern struct file_format exb_file_format;
+extern struct file_format exe_file_format;
 extern struct file_format fasl_file_format;
 extern struct file_format hex_file_format;
 extern struct file_format iml_file_format;
@@ -77,7 +78,6 @@ extern struct file_format pdump_file_format;
 extern struct file_format raw_file_format;
 extern struct file_format rim10_file_format;
 extern struct file_format sblk_file_format;
-extern struct file_format shr_file_format;
 extern struct file_format tenex_file_format;
 
 extern struct word_format *input_word_format;

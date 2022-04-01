@@ -37,7 +37,7 @@ static struct file_format *file_formats[] = {
   &raw_file_format,
   &rim10_file_format,
   &sblk_file_format,
-  &shr_file_format,
+  &exe_file_format,
   &tenex_file_format,
   NULL
 };
@@ -88,7 +88,7 @@ guess_input_file_format (FILE *file)
   rewind_word (file);
 
   if ((word >> 18) == 01776)
-    input_file_format = &shr_file_format;
+    input_file_format = &exe_file_format;
   else if (word == 0)
     input_file_format = &pdump_file_format;
   else

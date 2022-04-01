@@ -1,7 +1,7 @@
 
 CFLAGS = -g -W -Wall
 
-FILES =  sblk-file.o pdump-file.o dmp-file.o raw-file.o shr-file.o \
+FILES =  sblk-file.o pdump-file.o dmp-file.o raw-file.o exe-file.o \
 	 mdl-file.o rim10-file.o fasl-file.o palx-file.o lda-file.o \
 	 cross-file.o hex-file.o atari-file.o iml-file.o exb-file.o \
 	 tenex-file.o
