@@ -163,3 +163,9 @@ struct file_format exe_file_format = {
   read_exe,
   NULL
 };
+
+struct file_format nsave_file_format = {
+  "nsave",
+  read_exe,
+  NULL
+};
