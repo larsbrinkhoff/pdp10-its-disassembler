@@ -35,6 +35,12 @@
 #define STBFIL      2
 #define STBINF      3
 
+/* Most metadata is not valid if all zeros or all ones. */
+#define GOOD(WORD)  ((WORD) != -1 && \
+                     (WORD) != 0 && \
+                     (WORD) != 0777777LL && \
+                     (WORD) != 0777777777777LL)
+
 word_t start_instruction;
 FILE *output_file;
 
@@ -233,11 +239,13 @@ print_datime (FILE *f, word_t t)
 static void
 print_symbol (word_t word1, word_t word2)
 {
-  char str[7];
+  char str[7], *p;
   int flags = 0;
 
   squoze_to_ascii (word1, str);
-  fprintf (output_file, "    Symbol %s = ", str);
+  for (p = str; *p == ' '; p++)
+    ;
+  fprintf (output_file, "    Symbol %s = ", p);
   fprintf (output_file, "%llo   (", word2);
 
   if (word1 & SYHKL)
@@ -259,7 +267,7 @@ print_symbol (word_t word1, word_t word2)
     }
   fprintf (output_file, ")\n");
 
-  add_symbol (str, word2, flags);
+  add_symbol (p, word2, flags);
 }
 
 void
@@ -531,27 +539,42 @@ dmp_info (struct pdp10_memory *memory, int cpu_model)
 }
 
 void
+dec_symbols (struct pdp10_memory *memory, int address, int length)
+{
+  fprintf (output_file, "Symbol table:\n");
+
+  while (length > 0)
+    {
+      word_t word1, word2;
+      word1 = get_word_at (memory, address++);
+      word2 = get_word_at (memory, address++);
+      print_symbol (word1, word2);
+      length -= 2;
+    }
+}
+
+void
 dec_info (struct pdp10_memory *memory,
 	  word_t entry_vec_len, word_t entry_vec_addr,
 	  int cpu_model)
 {
+  word_t word;
+
   if (entry_vec_addr == -1 || entry_vec_len == 0254000)
     {
-      word_t word;
-
       word = get_word_at (memory, JBSA) & 0777777;
-      if (word != 0)
+      if (GOOD (word))
 	{
 	  fprintf (output_file, "Start address: %06llo\n", word);
 	  start_instruction = JRST + word;
 	}
 
       word = get_word_at (memory, JBREN) & 0777777;
-      if (word != 0)
+      if (GOOD (word))
 	fprintf (output_file, "Reentry address: %06llo\n", word);
 
       word = get_word_at (memory, JBVER);
-      if (word != 0)
+      if (GOOD (word))
 	fprintf (output_file, "Version: %012llo\n", word);
     }
   else
@@ -572,15 +595,25 @@ dec_info (struct pdp10_memory *memory,
 	  disassemble_word (memory, get_word_at (memory, addr),
 			    addr, cpu_model);
 
-	  fprintf (output_file, "Reentry instruction:\n");
-	  addr = entry_vec_addr + 1;
-	  disassemble_word (memory, get_word_at (memory, addr),
-			    addr, cpu_model);
+	  word = get_word_at (memory, ++addr);
+	  if (GOOD (word))
+	    {
+	      fprintf (output_file, "Reentry instruction:\n");
+	      disassemble_word (memory, word, addr, cpu_model);
+	    }
 
-	  fprintf (output_file, "Version: %012llo\n",
-		  get_word_at (memory, entry_vec_addr + 2));
+	  word = get_word_at (memory, ++addr);
+	  if (GOOD (word))
+	    {
+	      fprintf (output_file, "Version: %012llo\n", word);
+	    }
 	}
     }
+
+  word = get_word_at (memory, 0116);
+  if (GOOD (word))
+    dec_symbols (memory, word & 0777777,
+		 01000000 - ((word >> 18) & 0777777));
 }
 
 int
