@@ -49,6 +49,7 @@ Most tools that work with executable programs support these formats:
 - Read-in mode.
 - Stanford WAITS .DMP files.
 - TOPS-10 and TOPS-20 nonsharable/compressed save .SAV files.
+- TOPS-10 highseg sharable .SHR and nonsharable .HGH format.
 - TOPS-20 and TOPS-10 sharable save .EXE files.
 - TENEX sharable save .SAV files.
 
