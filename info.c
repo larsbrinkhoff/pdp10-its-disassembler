@@ -562,16 +562,35 @@ dec_info (struct pdp10_memory *memory,
 
   if (entry_vec_addr == -1 || entry_vec_len == 0254000)
     {
-      word = get_word_at (memory, JBSA) & 0777777;
+      word = get_word_at (memory, JBREL);
+      if (word != -1 && (word & 0777777) != 0)
+	fprintf (output_file, "Highest lowseg location: %llo\n",
+		 word & 0777777);
+
+      word = get_word_at (memory, JBREL);
+      if (GOOD (word))
+	fprintf (output_file, "DDT from %o to %o\n",
+		 word & 0777777, (word >> 18) & 0777777);
+
+      word = get_word_at (memory, JBHRL);
+      if (word != -1 && (word & 0777777) != 0)
+	fprintf (output_file, "Highest hiseg location: %llo\n",
+		 word & 0777777);
+
+      if (entry_vec_addr != 0)
+	word = entry_vec_addr;
+      else
+	word = get_word_at (memory, JBSA);
       if (GOOD (word))
 	{
+	  word &= 0777777;
 	  fprintf (output_file, "Start address: %06llo\n", word);
 	  start_instruction = JRST + word;
 	}
 
-      word = get_word_at (memory, JBREN) & 0777777;
+      word = get_word_at (memory, JBREN);
       if (GOOD (word))
-	fprintf (output_file, "Reentry address: %06llo\n", word);
+	fprintf (output_file, "Reentry address: %06llo\n", word & 0777777);
 
       word = get_word_at (memory, JBVER);
       if (GOOD (word))

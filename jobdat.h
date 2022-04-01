@@ -1,5 +1,7 @@
 /* Low segment job area. */
 #define JB41   0041
+#define JBREL  0044
+#define JBDDT  0074
 #define JBHRL  0115
 #define JBSYM  0116
 #define JBSA   0120
