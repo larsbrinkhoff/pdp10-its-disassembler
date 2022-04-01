@@ -65,6 +65,7 @@ extern struct file_format *input_file_format;
 extern struct file_format *output_file_format;
 extern struct file_format atari_file_format;
 extern struct file_format cross_file_format;
+extern struct file_format csave_file_format;
 extern struct file_format dmp_file_format;
 extern struct file_format exb_file_format;
 extern struct file_format exe_file_format;
@@ -123,6 +124,7 @@ extern void	write_raw_at (FILE *f, struct pdp10_memory *memory,
 			      int address);
 extern void	write_sblk_core (FILE *f, struct pdp10_memory *memory);
 extern void	write_sblk_symbols (FILE *f);
+extern void	write_dec_symbols (struct pdp10_memory *memory);
 extern void	sblk_info (FILE *f, word_t word0, int cpu_model);
 extern void     dmp_info (struct pdp10_memory *memory, int cpu_model);
 extern void     dec_info (struct pdp10_memory *memory,
