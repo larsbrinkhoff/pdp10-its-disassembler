@@ -34,6 +34,7 @@ static struct file_format *file_formats[] = {
   &lda_file_format,
   &mdl_file_format,
   &nsave_file_format,
+  &osave_file_format,
   &palx_file_format,
   &pdump_file_format,
   &raw_file_format,

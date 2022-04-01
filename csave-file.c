@@ -107,3 +107,10 @@ struct file_format csave_file_format = {
   read_csave,
   write_csave
 };
+
+/* Alias for csave. */
+struct file_format osave_file_format = {
+  "osave",
+  read_csave,
+  write_csave
+};

@@ -75,6 +75,7 @@ extern struct file_format iml_file_format;
 extern struct file_format lda_file_format;
 extern struct file_format mdl_file_format;
 extern struct file_format nsave_file_format;
+extern struct file_format osave_file_format;
 extern struct file_format palx_file_format;
 extern struct file_format pdump_file_format;
 extern struct file_format raw_file_format;
