@@ -24,7 +24,7 @@
 #define FILE_MAX_PAGES ((1 << 18) / DEC_PAGESIZE)
 
 static void
-read_shr (FILE *f, struct pdp10_memory *memory, int cpu_model)
+read_exe (FILE *f, struct pdp10_memory *memory, int cpu_model)
 {
   int position = 0;
   word_t word;
@@ -158,8 +158,8 @@ read_shr (FILE *f, struct pdp10_memory *memory, int cpu_model)
   dec_info (memory, entry_vec_len, entry_vec_addr, cpu_model);
 }
 
-struct file_format shr_file_format = {
-  "shr",
-  read_shr,
+struct file_format exe_file_format = {
+  "exe",
+  read_exe,
   NULL
 };
