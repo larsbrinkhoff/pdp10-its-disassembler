@@ -114,6 +114,8 @@ write_sblk_core (FILE *f, struct pdp10_memory *memory)
   for (i = 0; i < memory->areas; i++)
     {
       start = memory->area[i].start;
+      if (start < 020)
+	start = 020;
       length = memory->area[i].end - start;
       while (length > 0)
 	{
