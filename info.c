@@ -20,6 +20,7 @@
 #include "dis.h"
 #include "memory.h"
 #include "symbols.h"
+#include "jobdat.h"
 
 #define SQUOZE_MASK 0037777777777
 #define SYHKL       0400000000000
@@ -538,18 +539,18 @@ dec_info (struct pdp10_memory *memory,
     {
       word_t word;
 
-      word = get_word_at (memory, 0120) & 0777777;
+      word = get_word_at (memory, JBSA) & 0777777;
       if (word != 0)
 	{
 	  fprintf (output_file, "Start address: %06llo\n", word);
 	  start_instruction = JRST + word;
 	}
 
-      word = get_word_at (memory, 0124) & 0777777;
+      word = get_word_at (memory, JBREN) & 0777777;
       if (word != 0)
 	fprintf (output_file, "Reentry address: %06llo\n", word);
 
-      word = get_word_at (memory, 0137);
+      word = get_word_at (memory, JBVER);
       if (word != 0)
 	fprintf (output_file, "Version: %012llo\n", word);
     }
