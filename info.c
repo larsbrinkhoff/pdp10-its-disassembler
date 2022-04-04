@@ -569,7 +569,7 @@ dec_info (struct pdp10_memory *memory,
 
       word = get_word_at (memory, JBREL);
       if (GOOD (word))
-	fprintf (output_file, "DDT from %o to %o\n",
+	fprintf (output_file, "DDT from %llo to %llo\n",
 		 word & 0777777, (word >> 18) & 0777777);
 
       word = get_word_at (memory, JBHRL);
