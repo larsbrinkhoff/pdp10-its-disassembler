@@ -663,7 +663,6 @@ byte_size (int code, int *leftovers)
 void
 ntsddt_info (struct pdp10_memory *memory, int ddt)
 {
-  extern word_t get_word_at ();
   char name[7];
   word_t a, w, v;
   int i, syms;
