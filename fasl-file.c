@@ -43,13 +43,14 @@ read_atomtable (FILE *f, word_t header)
   char string[100];
   int length;
   word_t data;
+  char *p;
 
   //fprintf (stderr, "Atomtable type %llo:  ", (header >> 33) & 7);
   type[atom_index] = (header >> 33) & 7;
   switch (type[atom_index])
     {
     case 0: //Atom.
-      char *p = string;
+      p = string;
       length = header & 0777777;
       while (length--)
         {
