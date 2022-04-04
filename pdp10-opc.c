@@ -393,7 +393,7 @@ const struct pdp10_instruction pdp10_instruction[] =
   { "ashc",	0244,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
   { "rotc",	0245,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
   { "lshc",	0246,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
-  { "fix",	0247,	PDP10_BASIC,	PDP10_KA10_SAIL },
+  { "fix",	0247,	PDP10_BASIC,	PDP10_KA10_SAIL, 0, 0 },
   { "exch",	0250,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
   { "blt",	0251,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
   { "aobjp",	0252,	PDP10_BASIC,	PDP10_ALL, 0, 0 },
