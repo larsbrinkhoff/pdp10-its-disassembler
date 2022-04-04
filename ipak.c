@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lars Brinkhoff <lars@nocrew.org>
+/* Copyright (C) 2019, 2022 Lars Brinkhoff <lars@nocrew.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -160,6 +160,11 @@ main (int argc, char **argv)
       sixbit_to_ascii (buffer[1] ^ UMASK, string);
       fprintf (stderr, "User: %s\n", string);
       i = 5;
+    }
+  else
+    {
+      fprintf (stderr, "Unknown IPAK format.\n");
+      exit (1);
     }
 
   fprintf (stderr, "\nFile name       Words  Timestamp\n");
