@@ -1,4 +1,4 @@
-/* Copyright (C) 2018 Lars Brinkhoff <lars@nocrew.org>
+/* Copyright (C) 2018, 2022 Lars Brinkhoff <lars@nocrew.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -79,6 +79,8 @@ static void image_out (FILE *in, FILE *out, int first, int address, int count)
 {
   int i, c;
   
+  (void)first;
+
   count -= 6;
 
   if (count == 0)
@@ -162,6 +164,8 @@ symtab (FILE *in, FILE *out)
 static void
 no_symtab (FILE *in, FILE *out)
 {
+  (void)in;
+  (void)out;
   exit (0);
 }
 
