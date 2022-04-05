@@ -48,3 +48,10 @@ struct file_format hiseg_file_format = {
   read_hiseg,
   write_hiseg
 };
+
+/* Alias for hiseg. */
+struct file_format shr_file_format = {
+  "shr",
+  read_hiseg,
+  write_hiseg
+};

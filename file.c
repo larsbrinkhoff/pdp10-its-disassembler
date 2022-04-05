@@ -28,6 +28,7 @@ static struct file_format *file_formats[] = {
   &csave_file_format,
   &dmp_file_format,
   &exb_file_format,
+  &exe_file_format,
   &fasl_file_format,
   &hex_file_format,
   &hiseg_file_format,
@@ -41,7 +42,7 @@ static struct file_format *file_formats[] = {
   &raw_file_format,
   &rim10_file_format,
   &sblk_file_format,
-  &exe_file_format,
+  &shr_file_format,
   &tenex_file_format,
   NULL
 };
