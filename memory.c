@@ -55,7 +55,7 @@ init_memory (struct pdp10_memory *memory)
   memory->current_address = 0;
 }
 
-static void
+static struct pdp10_area *
 insert_area (struct pdp10_memory *memory, int i)
 {
   memory->areas++;
@@ -68,6 +68,7 @@ insert_area (struct pdp10_memory *memory, int i)
 
   memmove (&memory->area[i+1], &memory->area[i],
 	   (memory->areas - i - 1) * sizeof (struct pdp10_area));
+  return &memory->area[i];
 }
 
 int
@@ -103,9 +104,7 @@ add_memory (struct pdp10_memory *memory, int address, int length, word_t *data)
       return 0;
     }
 
-  insert_area (memory, i);
-
-  area = &memory->area[i];
+  area = insert_area (memory, i);
   area->start = address;
   area->end = address + length;
   area->flags = 0;
@@ -179,7 +178,7 @@ purify_memory (struct pdp10_memory *memory, int address, int length)
       if (area->start < i)
 	{
 	  /* Impure area needs to split off first part. */
-	  insert_area (memory, area - memory->area);
+	  area = insert_area (memory, area - memory->area);
 	  area->end = i;
 	  data = area->data + area->end - area->start;
 
@@ -194,7 +193,7 @@ purify_memory (struct pdp10_memory *memory, int address, int length)
       if (area->end > end)
 	{
 	  /* Impure area needs to split off last part. */
-	  insert_area (memory, area - memory->area);
+	  area = insert_area (memory, area - memory->area);
 	  area->end = i;
 	  area->flags |= MEMORY_PURE;
 
