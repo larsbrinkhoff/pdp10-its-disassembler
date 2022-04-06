@@ -40,6 +40,7 @@ Most tools support these PDP-10 36-bit word encodings:
 - Paper tape image.
 - Saildart.org UTF-8.
 - Tape images, 7 or 9 track.
+- Files stored in an Alto file system.
 
 Most tools that work with executable programs support these formats:
 
