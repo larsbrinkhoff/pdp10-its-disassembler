@@ -23,6 +23,7 @@ struct word_format *output_word_format = &its_word_format;
 
 static struct word_format *word_formats[] = {
   &aa_word_format,
+  &alto_word_format,
   &bin_word_format,
   &cadr_word_format,
   &core_word_format,
