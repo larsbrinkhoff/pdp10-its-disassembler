@@ -88,6 +88,7 @@ extern struct file_format tenex_file_format;
 extern struct word_format *input_word_format;
 extern struct word_format *output_word_format;
 extern struct word_format aa_word_format;
+extern struct word_format alto_word_format;
 extern struct word_format bin_word_format;
 extern struct word_format cadr_word_format;
 extern struct word_format core_word_format;
