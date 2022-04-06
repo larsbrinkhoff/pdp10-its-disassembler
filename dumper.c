@@ -555,21 +555,27 @@ write_record (FILE *f, int type, word_t flags)
   memset (block, 0, sizeof block);
 }
 
-static void
+static int
 get_page (FILE *f)
 {
   word_t word;
+  int ok = 0;
   int i;
 
   memset (block + 6, 0, 512 * sizeof (word_t));
 
+  /* If the first word indicates EOF, return "no page".
+     In other cases, return a partial or full page. */
   for (i = 0; i < 512; i++)
     {
       word = get_word (f);
       if (word == -1)
-	break;
+	return ok;
       block[6 + i] = word;
+      ok = 1;
     }
+
+  return 1;
 }
 
 static void
@@ -626,11 +632,8 @@ write_file (FILE *f, char *name)
   page_number = 0;
   write_record (f, FLHD, 0);
 
-  while (!feof (input))
+  while (get_page (input))
     {
-      get_page (input);
-      if (feof (input))
-	break;
       write_record (f, DATA, 0);
       page_number++;
     }
