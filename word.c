@@ -35,7 +35,6 @@ static struct word_format *word_formats[] = {
   &sail_word_format,
   &tape_word_format,
   &tape7_word_format,
-  &x_word_format,
   NULL
 };
 static word_t checksum;

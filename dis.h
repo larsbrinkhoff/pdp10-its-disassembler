@@ -100,7 +100,6 @@ extern struct word_format pt_word_format;
 extern struct word_format sail_word_format;
 extern struct word_format tape_word_format;
 extern struct word_format tape7_word_format;
-extern struct word_format x_word_format;
 
 extern void     usage_file_format (void);
 extern int      parse_input_file_format (const char *);
