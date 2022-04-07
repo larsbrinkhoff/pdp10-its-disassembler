@@ -8,7 +8,7 @@ FILES =  sblk-file.o pdump-file.o dmp-file.o raw-file.o exe-file.o \
 
 WORDS =  aa-word.o alto-word.o bin-word.o cadr-word.o core-word.o \
 	 data8-word.o dta-word.o its-word.o oct-word.o pt-word.o \
-	 sail-word.o tape-word.o x-word.o
+	 sail-word.o tape-word.o
 
 OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o weenix.o
