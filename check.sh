@@ -53,6 +53,11 @@ test_dump() {
     compare "$1.dump"
 }
 
+test_linum() {
+    ./linum -Wascii "$1" samples/"$2" > out/"$2$1"
+    compare "$2$1"
+}
+
 test_dis10 ts.obs
 test_dis10 ts.ksfedr
 test_dis10 ts.name        "-Sall"
@@ -95,5 +100,11 @@ test_dump ts.srccom   "-Wits -Opdump"
 test_dump l.bin       "-Fpalx -Xoct -Oraw"
 test_dump logo.ptp    "-Fhex -Xoct -Oraw"
 test_dump supdup.bin  "-Wits -Fcross -Xoct -Oraw"
+
+test_linum -a linum-1.txt
+test_linum -df linum-1.txt
+test_linum -af linum-2.txt
+test_linum -df linum-2.txt
+test_linum -d linum-3.txt
 
 exit 0
