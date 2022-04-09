@@ -25,6 +25,8 @@ is elsewhere: http://github.com/larsbrinkhoff/mldev
 - List, extract, or write files on a DART tape (SAIL WAITS).
 - Write files on a DUMPER tape (BBN TENEX, DEC TOPS-20).
 - Add or delete DEC-style text file line numbers.
+- Extract files from a DECtape image in TENDMP/DTBOOT format.
+- Create a TENDMP/DTBOOT image.
 
 ## File formats supported.
 
