@@ -71,7 +71,7 @@ tape-dir: tape-dir.o $(OBJS) libwords.a
 tito: tito.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
-dart: dart.o $(OBJS) libwords.a
+dart: dart.o dec.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
 dumper: dumper.o $(OBJS) libwords.a

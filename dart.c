@@ -55,26 +55,16 @@ static int tape_frames;
 static int tape_bpw; /* Tape frames per word. */
 static int tape_bpi;
 
-/* Convert a WAITS date to year, month, day. */
-static void
-compute_date (word_t date, int *year, int *month, int *day)
-{
-  *day = date % 31;
-  *month = (date / 31) % 12;
-  *year = (date / 31 / 12) + 1964;
-}
-
 /* Convert a WAITS date to a struct timeval. */
 static void
 unix_time (struct timeval *tv, word_t date, word_t minutes)
 {
   struct tm tm;
-  compute_date (date, &tm.tm_year, &tm.tm_mon, &tm.tm_mday);
+  timestamp_from_dec (&tm, date);
   tm.tm_sec = 0;
   tm.tm_min = minutes % 60;
   tm.tm_hour = minutes / 60;
   tm.tm_mday++;
-  tm.tm_year -= 1900;
   tm.tm_isdst = 0;
   tv->tv_sec = mktime (&tm);
   tv->tv_usec = 0;
@@ -84,11 +74,8 @@ unix_time (struct timeval *tv, word_t date, word_t minutes)
 static void
 print_timestamp (FILE *f, word_t date, word_t minutes)
 {
-  int year, month, day;
-  compute_date (date, &year, &month, &day);
-  fprintf (f, "%4d-%02d-%02d %02lld:%02lld",
-	   year, month + 1, day + 1,
-	   minutes / 60, minutes % 60);
+  print_dec_timestamp (f, date);
+  fprintf (f, " %02lld:%02lld", minutes / 60, minutes % 60);
 }
 
 /* Convert a Unix time_t to WAITS date and time. */
