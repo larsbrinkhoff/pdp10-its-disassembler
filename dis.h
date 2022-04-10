@@ -16,6 +16,7 @@
 #ifndef DIS_H
 #define DIS_H
 
+#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -148,6 +149,8 @@ extern void	squoze_to_ascii (word_t squoze, char *ascii);
 extern void	print_date (FILE *, word_t t);
 extern void	print_time (FILE *, word_t t);
 extern void	print_datime (FILE *, word_t t);
+extern void	print_dec_timestamp (FILE *f, word_t timestamp);
+extern void	timestamp_from_dec (struct tm *tm, word_t timestamp);
 extern int	byte_size (int, int *);
 extern void	scramble (int decrypt, int verbose, word_t password,
 		          const word_t *input, word_t *output, int count);
