@@ -509,10 +509,36 @@ create_file (char *name)
 }
 
 static void
+boot_block (char *name)
+{
+  word_t word, *ptr;
+  FILE *f;
+  int i;
+
+  f = fopen (name, "rb");
+  if (f == NULL)
+    {
+      fprintf (stderr, "Error opening file %s.\n", name);
+      exit (1);
+    }
+
+  ptr = get_block (0);
+  for (i = 0; i < 3 * BLOCK_WORDS; i++)
+    {
+      word = get_word (f);
+      if (word == -1)
+	break;
+      *ptr++ = word;
+    }
+
+  fclose (f);
+}
+
+static void
 usage (const char *x)
 {
   fprintf (stderr, "Usage: %s [-v] [-W<word format>] -x|-t <tape>,\n", x);
-  fprintf (stderr, "or [-L<label>] -c <tape> <files...>\n");
+  fprintf (stderr, "or [-L<label>] [-b<boot blocks>] -c <tape> <files...>\n");
   exit (1);
 }
 
@@ -520,7 +546,7 @@ int
 main (int argc, char **argv)
 {
   char *label = NULL;
-  char *image_file;
+  char *image_file, *boot_file = NULL;
   int i, create = 0;
   word_t *buffer;
   FILE *f;
@@ -534,7 +560,7 @@ main (int argc, char **argv)
 
   output_file = fopen ("/dev/null", "w");
 
-  while ((opt = getopt (argc, argv, "vc:t:x:W:L:")) != -1)
+  while ((opt = getopt (argc, argv, "vc:t:x:W:L:b:")) != -1)
     {
       switch (opt)
 	{
@@ -559,6 +585,11 @@ main (int argc, char **argv)
 	    usage (argv[0]);
 	  visit = extract_file;
 	  image_file = optarg;
+	  break;
+	case 'b':
+	  if (boot_file)
+	    usage (argv[0]);
+	  boot_file = optarg;
 	  break;
 	case 'W':
 	  if (parse_output_word_format (optarg))
@@ -601,6 +632,8 @@ main (int argc, char **argv)
       block_area[01103] = 037;
       block_area[01104] = 037;
 
+      if (boot_file)
+	boot_block (boot_file);
       for (; optind < argc; optind++)
 	create_file (argv[optind]);
       unprocess (label);
