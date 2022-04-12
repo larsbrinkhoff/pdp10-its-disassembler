@@ -265,6 +265,7 @@ close_file (word_t x)
 {
   checksum &= 0777777777777;
   fprintf (info, "Checksum: %012llo (%012llo)\n", checksum, x);
+  flush_word (output);
   fclose (output);
   output = NULL;
   utimes (file_path, timestamp);

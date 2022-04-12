@@ -211,6 +211,7 @@ static void
 close_file (void)
 {
   fprintf (debug, "\nCLOSE %s", file_path);
+  flush_word (output);
   fclose (output);
   output = NULL;
   utimes (file_path, timestamp);
