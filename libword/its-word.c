@@ -1,4 +1,4 @@
-/* Copyright (C) 2013 Lars Brinkhoff <lars@nocrew.org>
+/* Copyright (C) 2013, 2022 Lars Brinkhoff <lars@nocrew.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,6 +18,9 @@
 #include "libword.h"
 
 static int leftover, there_is_some_leftover = 0;
+static word_t output = -1;
+
+static void write_its_word (FILE *f, word_t word);
 
 #define WORDMASK	(0777777777777LL)
 #define SIGNBIT		(0400000000000LL)
@@ -158,6 +161,7 @@ static void
 rewind_its_word (FILE *f)
 {
   there_is_some_leftover = 0;
+  output = -1;
   rewind (f);
 }
 
@@ -171,7 +175,7 @@ fputc2 (int c1, int c2, FILE *f)
 static int previous_octet = -1;
 
 static void
-flush_its_word (FILE *f)
+end_word (FILE *f)
 {
   if (previous_octet == 015)
     fputc (0356, f);
@@ -183,7 +187,7 @@ flush_its_word (FILE *f)
 static void
 binary_word (FILE *f, word_t word)
 {
-  flush_its_word (f);
+  end_word (f);
 
   fputc (((word >> 32) &  017) + 0360, f);
   fputc (((word >> 24) & 0377), f);
@@ -193,7 +197,7 @@ binary_word (FILE *f, word_t word)
 }
 
 static void
-ascii_word (FILE *f, word_t word)
+ascii_word (FILE *f, word_t word, int n)
 {
   char c, octets[5];
   int i;
@@ -204,7 +208,7 @@ ascii_word (FILE *f, word_t word)
   octets[3] = (word >>  8) & 0177;
   octets[4] = (word >>  1) & 0177;
 
-  for (i = 0; i < 5; i++)
+  for (i = 0; i < n; i++)
     {
       c = octets[i];
 
@@ -252,13 +256,45 @@ ascii_word (FILE *f, word_t word)
     }
 }
 
+static int
+characters (word_t word)
+{
+  int i, n;
+  n = 0;
+  for (i = 0; i < 5; i++)
+    {
+      if (word == 0)
+	break;
+      word = (word << 7) & 0777777777777LL;
+      n++;
+    }
+  return n;
+}
+
+static void
+flush_its_word (FILE *f)
+{
+  end_word (f);
+  if (output == -1)
+    return;
+  if (output & 1)
+    binary_word (f, output);
+  else
+    ascii_word (f, output, characters (output));
+  output = -1;
+}
+
 static void
 write_its_word (FILE *f, word_t word)
 {
-  if (word & 1)
-    binary_word (f, word);
-  else
-    ascii_word (f, word);
+  if (output != -1)
+    {
+      if (output & 1)
+	binary_word (f, output);
+      else
+	ascii_word (f, output, 5);
+    }
+  output = word;
 }
 
 struct word_format its_word_format = {

@@ -1,4 +1,4 @@
-/* Copyright (C) 2018 Lars Brinkhoff <lars@nocrew.org>
+/* Copyright (C) 2018, 2022 Lars Brinkhoff <lars@nocrew.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@
 #include <stdio.h>
 
 #include "libword.h"
+
+static word_t output = -1;
 
 static inline int
 get_byte (FILE *f)
@@ -59,12 +61,38 @@ get_aa_word (FILE *f)
 static void
 write_aa_word (FILE *f, word_t word)
 {
-  fputc ((word >> 29) & 0177, f);
-  fputc ((word >> 22) & 0177, f);
-  fputc ((word >> 15) & 0177, f);
-  fputc ((word >>  8) & 0177, f);
-  fputc (((word >> 1) & 0177) +
-	 ((word << 7) & 0200), f);
+  if (output != -1)
+    {
+      fputc ((output >> 29) & 0177, f);
+      fputc ((output >> 22) & 0177, f);
+      fputc ((output >> 15) & 0177, f);
+      fputc ((output >>  8) & 0177, f);
+      fputc (((output >> 1) & 0177) +
+	     ((output << 7) & 0200), f);
+    }
+
+  output = word;
+}
+
+static void
+flush_aa_word (FILE *f)
+{
+  int i, c;
+  if (output == -1)
+    return;
+  fputc ((output >> 29) & 0177, f);
+  for (i = 0; i < 4; i++)
+    {
+      output &= 03777777777LL;
+      if (output == 0)
+	break;
+      c = (output >> 22) & 0177;
+      if (i == 3 && (output & 010000000LL) != 0)
+	c |= 0200;
+      fputc (c, f);
+      output <<= 7;
+    }
+  output = -1;
 }
 
 struct word_format aa_word_format = {
@@ -73,5 +101,5 @@ struct word_format aa_word_format = {
   NULL,
   by_five_octets,
   write_aa_word,
-  NULL
+  flush_aa_word
 };
