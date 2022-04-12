@@ -16,7 +16,7 @@ OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 UTILS =	cat36 itsarc magdmp magfrm dskdmp dump \
 	macdmp macro-tapes tape-dir harscntopbm palx cross \
 	ipak kldcp klfedr scrmbl unscr tvpic tito dart od10 \
-	constantinople dumper linum tendmp
+	constantinople dumper mini-dumper linum tendmp
 
 all: dis10 $(UTILS) check
 
@@ -79,6 +79,9 @@ dart: dart.o dec.o $(OBJS) libwords.a
 
 dumper: dumper.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
+
+mini-dumper: dumper
+	ln -f $< $@
 
 od10: od10.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
