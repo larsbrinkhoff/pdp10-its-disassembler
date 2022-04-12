@@ -14,6 +14,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include <time.h>
+#include <ctype.h>
 #include <utime.h>
 #include <stdio.h>
 #include <errno.h>
@@ -42,7 +43,9 @@ static const char *type_name[] =
 
 #define MAX  518
 static word_t block[MAX];
+static word_t *data = &block[6];
 static int extract = 0;
+static word_t tape_flags = 0;
 
 static FILE *list;
 static FILE *info;
@@ -58,8 +61,7 @@ static int tape_number;
 static int file_number;
 static int page_number;
 static int record_number;
-static int bfmsg = 3;
-static int format = 4;
+static int format;
 
 /*
 Format:
@@ -167,7 +169,7 @@ close_file (void)
   utimes (file_path, timestamp);
 }
 
-/* Convert WAITS file name to an acceptable Unix name. */
+/* Convert TENEX file name to an acceptable Unix name. */
 static char *
 mangle (char *string)
 {
@@ -181,6 +183,18 @@ mangle (char *string)
 	*p = 0;
       *p = tolower (*p);
     }      
+  return string;
+}
+
+static char *
+upcase (char *string)
+{
+  char *p = string;
+  while (*p)
+    {
+      *p = toupper (*p);
+      p++;
+    }
   return string;
 }
 
@@ -216,7 +230,7 @@ find (char **string, const char *required, char *fail)
 /* Convert a file name from the command line to a TOPS-20 file name. */
 static const char *
 unmangle (char *file_name, char *device, char *name,
-	  int protection, const char *author)
+	  int protection, const char *author, int *generation)
 {
   char original_name[100];
   char *directories[100];
@@ -230,12 +244,19 @@ unmangle (char *file_name, char *device, char *name,
     *d = find (&name, "/", NULL);
   while (*d++ != NULL);
 
-  if (d - directories > 1 && format == 0)
+  if (d - directories > 2 && format == 0)
     return "TENEX doesn't support subdirectories";
 
   file = find (&name, ".", name);
   type = find (&name, ".;", name);
   version = find (&name, ";", name);
+  if (version)
+    {
+      char *end;
+      long x = strtol (version, &end, 10);
+      if (end > version)
+	*generation = x;
+    }
 
   if (device)
     file_name += sprintf (file_name, "%s:", device);
@@ -243,15 +264,16 @@ unmangle (char *file_name, char *device, char *name,
     {
       file_name += sprintf (file_name, "<");
       for (d = &directories[0]; *d != NULL; d++, sep = ".")
-	file_name += sprintf (file_name, "%s%s", sep, *d);
+	file_name += sprintf (file_name, "%s%s", sep, upcase (*d));
       file_name += sprintf (file_name, ">");
     }
   if (file)
-    file_name += sprintf (file_name, "%s", file);
+    file_name += sprintf (file_name, "%s", upcase (file));
+  file_name += sprintf (file_name, ".");
   if (type)
-    file_name += sprintf (file_name, ".%s", type);
-  if (version)
-    file_name += sprintf (file_name, "%c%s", format == 0 ? ';' : '.', version);
+    file_name += sprintf (file_name, "%s", upcase (type));
+  file_name += sprintf (file_name, "%c%u",
+			format == 0 ? ';' : '.', *generation);
   file_name += sprintf (file_name, ";P%06o", protection);
   if (author)
     file_name += sprintf (file_name, ";A%s", author);
@@ -409,11 +431,11 @@ read_tape_header (FILE *f, word_t word)
 
   word = read_record (f, word);
 
-  //fprintf (stderr, "006: %012llo format\n", block[6]);
+  //fprintf (stderr, "006: %012llo format\n", data[0]);
 
-  read_asciz (name, &block[9]);
+  read_asciz (name, &data[3]);
   fprintf (stderr, "DUMPER tape #%d, %s, ", right (block[2]), name);
-  print_timestamp (stderr, block[8]);
+  print_timestamp (stderr, data[2]);
   fputc ('\n', stderr);
 
   return word;
@@ -428,7 +450,7 @@ read_file (int offset)
   if (offset != 0206)
     return;
 
-  read_asciz (name, &block[6]);
+  read_asciz (name, &data[0]);
   p = strchr (name, ';');
   if (p)
     *p = 0;
@@ -440,7 +462,7 @@ read_file (int offset)
 	   (block[offset + 011] >> 24) & 077);
 
 #if 0
-  fprintf (stderr, "006: %012llo file name\n", block[6]);
+  fprintf (stderr, "006: %012llo file name\n", data[0]);
   fprintf (stderr, "Timestamp, last write: ");
   print_timestamp (stderr, block[offset + 5]);
   fputc ('\n', stderr);
@@ -529,17 +551,29 @@ write_asciz (const char *string, word_t *data)
 }
 
 static void
-write_record (FILE *f, int type, word_t flags)
+write_mark (void)
+{
+  tape_flags = START_FILE;
+}
+
+static void
+write_record (FILE *f, int type)
 {
   word_t checksum = 0;
   int i;
 
-  fprintf (stderr, "\nWrite record %s", type_name[type]);
+  if (tape_flags & START_FILE)
+    fprintf (debug, "\nWrite mark");
 
-  block[1] = 0;
+  fprintf (debug, "\nWrite record %s", type_name[type]);
+
+  memset (block, 0, 6 * sizeof (word_t));
+
   block[2] = (saveset_number << 18) | tape_number;
+  if (format > 0)
+    block[2] |= saveset_number;
   block[3] = page_number;
-  fprintf (stderr, ", page %d", page_number);
+  fprintf (debug, ", page %d, record %d", page_number, record_number);
   if (0)
     block[3] |= file_number << 18;
   block[4] = (-type) & 0777777777777LL;
@@ -547,10 +581,12 @@ write_record (FILE *f, int type, word_t flags)
 
   for (i = 0; i < MAX; i++)
     checksum = sum (checksum, block[i]);
-  block[0] = (checksum ^ 0777777777777LL) | START_RECORD | flags;
+  block[0] = (checksum ^ 0777777777777LL) | START_RECORD | tape_flags;
+  tape_flags = 0;
 
-  for (i = 0; i < MAX; i++)
-    write_word (f, block[i]);
+  write_word (f, block[0]);
+  for (i = 1; i < MAX; i++)
+    write_word (f, block[i] & 0777777777777LL);
 
   memset (block, 0, sizeof block);
 }
@@ -562,7 +598,7 @@ get_page (FILE *f)
   int ok = 0;
   int i;
 
-  memset (block + 6, 0, 512 * sizeof (word_t));
+  memset (data, 0, 512 * sizeof (word_t));
 
   /* If the first word indicates EOF, return "no page".
      In other cases, return a partial or full page. */
@@ -571,7 +607,7 @@ get_page (FILE *f)
       word = get_word (f);
       if (word == -1)
 	return ok;
-      block[6 + i] = word;
+      data[i] = word;
       ok = 1;
     }
 
@@ -607,11 +643,11 @@ write_file (FILE *f, char *name)
   generation = 1;
   author = "OPERATOR";
 
-  error = unmangle (file_name, device, name, protection, author);
+  error = unmangle (file_name, device, name, protection, author, &generation);
   if (error)
-    fprintf (debug, "\nERROR: Bad file name \"%s\": %s", file_name, error);
+    fprintf (stderr, "\nERROR: Bad file name \"%s\": %s", file_name, error);
   else
-    fprintf (debug, "\nFILE: %s", file_name);
+    fprintf (list, "\n  %s", file_name);
 
   memset (fdb, 0, sizeof fdb);
   //000 //header word
@@ -626,37 +662,38 @@ write_file (FILE *f, char *name)
   fdb[013] = tops20_timestamp (st.st_ctime); //timestamp: creation
   fdb[014] = tops20_timestamp (st.st_mtime); //timestamp: last user write
   fdb[015] = tops20_timestamp (st.st_atime); //timestamp: last nonwrite access
-
-  write_asciz (file_name, block + 6);
-  memcpy (block + 0206, fdb, sizeof fdb);
+  write_asciz (file_name, data);
+  memcpy (data + 0200, fdb, sizeof fdb);
   page_number = 0;
-  write_record (f, FLHD, 0);
+  write_record (f, FLHD);
 
   while (get_page (input))
     {
-      write_record (f, DATA, 0);
+      write_record (f, DATA);
       page_number++;
     }
   fclose (input);
 
-  memcpy (block + 6, fdb, sizeof fdb);
+  memcpy (data, fdb, sizeof fdb);
   page_number = 0;
-  write_record (f, FLTR, 0);
+  write_record (f, FLTR);
+  if (format == 0)
+    write_mark ();
 }
 
 static void
 write_usr (FILE *f)
 {
-  write_record (f, USR, 0);
+  write_record (f, USR);
 }
 
 static void
 write_tape (FILE *f)
 {
-  int i;
   struct word_format *tmp = input_word_format;
   input_word_format = output_word_format;
   output_word_format = tmp;
+  int i, bfmsg = 0;
 
   if (f == NULL)
     f = stdout;
@@ -664,13 +701,27 @@ write_tape (FILE *f)
   saveset_number = 0;
   tape_number = 1;
   file_number = 1;
-  record_number = 1;
 
-  block[6] = format;
-  block[7] = bfmsg;
-  block[8] = tops20_timestamp (time (NULL));
-  write_asciz ("Saveset name", block + 6 + bfmsg);
-  write_record (f, TPHD, START_FILE);
+  if (format == 0)
+    {
+      record_number = 2;
+    }
+  else
+    {
+      record_number = 1;
+      data[bfmsg++] = format;
+      bfmsg++;
+      data[bfmsg++] = tops20_timestamp (time (NULL));
+      data[1] = bfmsg;
+    }
+  write_asciz ("Saveset name", data + bfmsg);
+
+  write_record (f, TPHD);
+  if (format == 0)
+    {
+      write_mark ();
+      record_number++;
+    }
 
   for (i = 0; i < file_argc; i++)
     {
@@ -678,7 +729,8 @@ write_tape (FILE *f)
       file_number++;
     }
 
-  write_record (f, TPTR, 0);
+  write_record (f, TPTR);
+  write_mark ();
   flush_word (f);
 }
 
@@ -686,7 +738,7 @@ static void
 usage (const char *x)
 {
   fprintf (stderr,
-	   "Usage: %s -c|-t|-x [-v789] [-Wformat] [-Cdir] [-f file]\n", x);
+	   "Usage: %s -c|-t|-x [-v0123456] [-Wformat] [-Cdir] [-f file]\n", x);
   usage_word_format ();
   exit (1);
 }
@@ -715,6 +767,14 @@ main (int argc, char **argv)
      output data and written to stdout.  Overriden by -c, see below. */
   list = stdout;
   info = debug = stderr;
+
+  /* If the program is called mini-something, default to mini-dumper
+     format.  Otherwise go with format 4 which is acceptable to a wide
+     range of DUMPER versions. */
+  if (strncasecmp (argv[0], "mini", 4) == 0)
+    format = 0;
+  else
+    format = 4;
 
   while ((opt = getopt (argc, argv, "ctvx012379f:W:C:")) != -1)
     {
