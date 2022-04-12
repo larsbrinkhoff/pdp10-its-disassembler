@@ -126,7 +126,7 @@ extern void	read_raw_at (FILE *f, struct pdp10_memory *memory,
 			     int address);
 extern void	write_raw_at (FILE *f, struct pdp10_memory *memory,
 			      int address);
-extern void	write_sblk_core (FILE *f, struct pdp10_memory *memory);
+extern void	write_sblk_core (FILE *f, struct pdp10_memory *, int begin);
 extern void	write_sblk_symbols (FILE *f);
 extern void	write_dec_symbols (struct pdp10_memory *memory);
 extern void	sblk_info (FILE *f, word_t word0, int cpu_model);
