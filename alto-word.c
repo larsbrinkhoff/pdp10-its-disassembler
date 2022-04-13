@@ -60,6 +60,7 @@ struct word_format alto_word_format = {
   "alto",
   get_alto_word,
   NULL,
+  by_five_octets,
   write_alto_word,
   NULL
 };

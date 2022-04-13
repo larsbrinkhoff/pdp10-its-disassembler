@@ -101,6 +101,34 @@ rewind_word (FILE *f)
 }
 
 void
+seek_word (FILE *f, int position)
+{
+  if (input_word_format->seek_word == NULL)
+    {
+      input_word_format->rewind_word (f);
+      while (position-- > 0)
+        get_word (f);
+      return;
+    }
+
+  input_word_format->rewind_word (f);
+}
+
+void
+by_five_octets (FILE *f, int position)
+{
+  input_word_format->rewind_word (f);
+  fseek (f, 5 * position, SEEK_SET);
+}
+
+void
+by_eight_octets (FILE *f, int position)
+{
+  input_word_format->rewind_word (f);
+  fseek (f, 8 * position, SEEK_SET);
+}
+
+void
 write_word (FILE *f, word_t word)
 {
   if (output_word_format->write_word == NULL)

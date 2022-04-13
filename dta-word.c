@@ -80,6 +80,7 @@ struct word_format dta_word_format = {
   "dta",
   get_dta_word,
   rewind_dta_word,
+  by_eight_octets,
   write_dta_word,
   NULL
 };

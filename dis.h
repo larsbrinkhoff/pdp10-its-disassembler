@@ -50,6 +50,7 @@ struct word_format {
   const char *name;
   word_t (*get_word) (FILE *);
   void (*rewind_word) (FILE *);		/* NULL means just rewind (f) */
+  void (*seek_word) (FILE *, int);	/* NULL means rewind and go forward. */
   void (*write_word) (FILE *, word_t);
   void (*flush_word) (FILE *);		/* NULL means do nothing */
 };
@@ -114,6 +115,9 @@ extern word_t	get_checksummed_word (FILE *f);
 extern void	reset_checksum (word_t);
 extern void	check_checksum (word_t);
 extern void	rewind_word (FILE *f);
+extern void	seek_word (FILE *f, int position);
+extern void	by_five_octets (FILE *f, int position);
+extern void	by_eight_octets (FILE *f, int position);
 extern void	write_word (FILE *, word_t);
 extern void	flush_word (FILE *);
 extern int      get_7track_record (FILE *f, word_t **buffer);
