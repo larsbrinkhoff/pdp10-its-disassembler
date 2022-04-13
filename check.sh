@@ -80,6 +80,7 @@ test_dis10 two.tapes      "-r -Wtape"
 test_dis10 boot.exb       "-Fexb -Wascii"
 test_dis10 cerber.sav     "-Sall -Fcsave -Wascii"
 test_dis10 eftp.sav       "-Ftenex -Walto"
+test_dis10 dtboot.oct     "-Fblki -Woct"
 
 test_itsarc arc.code
 test_ipak stink.-ipak-
