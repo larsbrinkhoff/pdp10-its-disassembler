@@ -14,7 +14,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include <stdio.h>
-#include "dis.h"
+#include "libword.h"
 
 /* Data files for CADR Lisp machines were apparently stored as 32 bits
    left aligned in a 36-bit word.  The 32-bit word is in PDP-11 endian

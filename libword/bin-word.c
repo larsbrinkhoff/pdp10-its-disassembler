@@ -14,8 +14,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include "libword.h"
 
-#include "dis.h"
+#define WORDMASK	(0777777777777LL)
+#define SIGNBIT		(0400000000000LL)
 
 static int leftover_input, have_leftover_input = 0;
 static int leftover_output, have_leftover_output = 0;

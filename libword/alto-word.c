@@ -1,4 +1,4 @@
-/* Copyright (C) 2013 Lars Brinkhoff <lars@nocrew.org>
+/* Copyright (C) 2022 Lars Brinkhoff <lars@nocrew.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 
 #include <stdio.h>
 
-#include "dis.h"
+#include "libword.h"
 
 static int
 get_byte (FILE *f)
@@ -25,37 +25,42 @@ get_byte (FILE *f)
 }
 
 word_t
-get_core_word (FILE *f)
+get_alto_word (FILE *f)
 {
+  word_t x1, x2, x3, x4, x5;
   word_t word;
 
   if (feof (f))
     return -1;
 
-  word = ((word_t)get_byte (f) << 28) |
-         ((word_t)get_byte (f) << 20) |
-         ((word_t)get_byte (f) << 12) |
-         ((word_t)get_byte (f) <<  4) |
-          (word_t)get_byte (f);
+  x1 = get_byte (f);
+  if (feof (f))
+    return -1;
+  x2 = get_byte (f);
+  x3 = get_byte (f);
+  x4 = get_byte (f);
+  x5 = get_byte (f);
+  word = (x1 << 32) | (x2 << 24) | (x3 << 16) | (x4 << 8) | x5;
+  word &= 0777777777777LL;
 
   return word;
 }
 
 void
-write_core_word (FILE *f, word_t word)
+write_alto_word (FILE *f, word_t word)
 {
-  fputc ((word >> 28) & 0xFF, f);
-  fputc ((word >> 20) & 0xFF, f);
-  fputc ((word >> 12) & 0xFF, f);
-  fputc ((word >>  4) & 0xFF, f);
-  fputc ( word        & 0x0F, f);
+  fputc ((word >> 32) & 0x0F, f);
+  fputc ((word >> 24) & 0xFF, f);
+  fputc ((word >> 16) & 0xFF, f);
+  fputc ((word >>  8) & 0xFF, f);
+  fputc ( word        & 0xFF, f);
 }
 
-struct word_format core_word_format = {
-  "core",
-  get_core_word,
+struct word_format alto_word_format = {
+  "alto",
+  get_alto_word,
   NULL,
   by_five_octets,
-  write_core_word,
+  write_alto_word,
   NULL
 };

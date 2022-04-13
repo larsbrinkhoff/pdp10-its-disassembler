@@ -14,9 +14,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include "dis.h"
+#include "libword.h"
 
 struct word_format *input_word_format = &its_word_format;
 struct word_format *output_word_format = &its_word_format;

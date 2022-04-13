@@ -21,7 +21,7 @@
 
 #include <stdio.h>
 
-#include "dis.h"
+#include "libword.h"
 
 static int
 get_byte (FILE *f)

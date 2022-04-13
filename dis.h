@@ -19,6 +19,7 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <libword.h>
 
 #define WORDMASK	(0777777777777LL)
 #define SIGNBIT		(0400000000000LL)
@@ -28,8 +29,6 @@
 
 /* DEC page size, in words */
 #define DEC_PAGESIZE 512
-
-typedef long long word_t;
 
 #define JRST   ((word_t)(0254000000000LL))
 #define JRST_1 (JRST + 1)
@@ -46,22 +45,7 @@ struct file_format {
   void (*write) (FILE *f, struct pdp10_memory *memory);
 };
 
-struct word_format {
-  const char *name;
-  word_t (*get_word) (FILE *);
-  void (*rewind_word) (FILE *);		/* NULL means just rewind (f) */
-  void (*seek_word) (FILE *, int);	/* NULL means rewind and go forward. */
-  void (*write_word) (FILE *, word_t);
-  void (*flush_word) (FILE *);		/* NULL means do nothing */
-};
-
 enum { SYMBOLS_NONE, SYMBOLS_DDT, SYMBOLS_ALL };
-
-enum {
-  START_FILE = 1LL << 36,
-  START_RECORD = 1LL << 37,
-  START_TAPE = 1LL << 38
-};
 
 extern struct file_format *input_file_format;
 extern struct file_format *output_file_format;
@@ -87,51 +71,10 @@ extern struct file_format sblk_file_format;
 extern struct file_format shr_file_format;
 extern struct file_format tenex_file_format;
 
-extern struct word_format *input_word_format;
-extern struct word_format *output_word_format;
-extern struct word_format aa_word_format;
-extern struct word_format alto_word_format;
-extern struct word_format bin_word_format;
-extern struct word_format cadr_word_format;
-extern struct word_format core_word_format;
-extern struct word_format data8_word_format;
-extern struct word_format dta_word_format;
-extern struct word_format its_word_format;
-extern struct word_format oct_word_format;
-extern struct word_format pt_word_format;
-extern struct word_format sail_word_format;
-extern struct word_format tape_word_format;
-extern struct word_format tape7_word_format;
-
 extern void     usage_file_format (void);
 extern int      parse_input_file_format (const char *);
 extern int      parse_output_file_format (const char *);
 extern void     guess_input_file_format (FILE *);
-extern void     usage_word_format (void);
-extern int      parse_input_word_format (const char *);
-extern int      parse_output_word_format (const char *);
-extern word_t	get_word (FILE *f);
-extern word_t	get_checksummed_word (FILE *f);
-extern void	reset_checksum (word_t);
-extern void	check_checksum (word_t);
-extern void	rewind_word (FILE *f);
-extern void	seek_word (FILE *f, int position);
-extern void	by_five_octets (FILE *f, int position);
-extern void	by_eight_octets (FILE *f, int position);
-extern void	write_word (FILE *, word_t);
-extern void	flush_word (FILE *);
-extern void     (*tape_hook) (int code);
-extern int      get_7track_record (FILE *f, word_t **buffer);
-extern int      get_9track_record (FILE *f, word_t **buffer);
-extern void     write_7track_record (FILE *f, word_t *buffer, int);
-extern void     write_9track_record (FILE *f, word_t *buffer, int);
-extern void     write_tape_mark (FILE *f);
-extern void     write_tape_eof (FILE *f);
-extern void     write_tape_eot (FILE *f);
-extern void     write_tape_gap (FILE *f, unsigned code);
-extern void     write_tape_error (FILE *f, unsigned code);
-extern word_t	get_core_word (FILE *f);
-extern void	write_core_word (FILE *f, word_t word);
 extern void	read_raw_at (FILE *f, struct pdp10_memory *memory,
 			     int address);
 extern void	write_raw_at (FILE *f, struct pdp10_memory *memory,
