@@ -262,6 +262,7 @@ struct word_format its_word_format = {
   "its",
   get_its_word,
   rewind_its_word,
+  NULL,
   write_its_word,
   flush_its_word
 };

@@ -36,6 +36,7 @@ struct word_format cadr_word_format = {
   "cadr",
   NULL,
   NULL,
+  NULL,
   write_cadr_word,
   NULL
 };

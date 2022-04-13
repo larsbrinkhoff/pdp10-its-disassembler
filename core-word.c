@@ -55,6 +55,7 @@ struct word_format core_word_format = {
   "core",
   get_core_word,
   NULL,
+  by_five_octets,
   write_core_word,
   NULL
 };

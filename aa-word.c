@@ -71,6 +71,7 @@ struct word_format aa_word_format = {
   "ascii",
   get_aa_word,
   NULL,
+  by_five_octets,
   write_aa_word,
   NULL
 };

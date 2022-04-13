@@ -55,6 +55,7 @@ struct word_format data8_word_format = {
   "data8",
   get_data8_word,
   NULL,
+  by_eight_octets,
   write_data8_word,
   NULL
 };

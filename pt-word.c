@@ -68,6 +68,7 @@ struct word_format pt_word_format = {
   "pt",
   get_pt_word,
   NULL,
+  NULL,
   write_pt_word,
   NULL
 };

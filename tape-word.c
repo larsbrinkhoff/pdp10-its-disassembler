@@ -333,6 +333,7 @@ struct word_format tape_word_format = {
   "tape",
   get_tape_word,
   rewind_tape_word,
+  NULL,
   write_tape_word,
   flush_tape_word
 };
@@ -341,6 +342,7 @@ struct word_format tape7_word_format = {
   "tape7",
   get_tape_word,
   rewind_tape_word,
+  NULL,
   write_tape_word,
   flush_tape_word
 };

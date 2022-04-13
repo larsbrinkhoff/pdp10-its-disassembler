@@ -76,6 +76,18 @@ rewind_bin_word (FILE *f)
 }
 
 static void
+seek_bin_word (FILE *f, int position)
+{
+  rewind_bin_word (f);
+  fseek (f, 9 * position / 2, SEEK_SET);
+  if (position & 1)
+    {
+      leftover_input = get_byte (f) & 0x0f;
+      have_leftover_input = 1;
+    }
+}
+
+static void
 write_bin_word (FILE *f, word_t word)
 {
   if (have_leftover_output)
@@ -112,6 +124,7 @@ struct word_format bin_word_format = {
   "bin",
   get_bin_word,
   rewind_bin_word,
+  seek_bin_word,
   write_bin_word,
   flush_bin_word
 };

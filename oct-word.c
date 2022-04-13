@@ -64,6 +64,7 @@ struct word_format oct_word_format = {
   "oct",
   get_oct_word,
   NULL,
+  NULL,
   write_oct_word,
   NULL
 };

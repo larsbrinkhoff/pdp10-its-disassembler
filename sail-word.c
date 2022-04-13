@@ -292,6 +292,7 @@ struct word_format sail_word_format = {
   "sail",
   get_sail_word,
   rewind_sail_word,
+  NULL,
   write_sail_word,
   flush_sail_word
 };
