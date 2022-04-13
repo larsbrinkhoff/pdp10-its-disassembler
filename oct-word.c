@@ -57,7 +57,7 @@ get_oct_word (FILE *f)
 static void
 write_oct_word (FILE *f, word_t word)
 {
-  fprintf (f, "%012llo\n", word);
+  fprintf (f, "%012llo\n", word & 0777777777777LL);
 }
 
 struct word_format oct_word_format = {
