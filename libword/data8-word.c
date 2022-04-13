@@ -13,58 +13,49 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
-/* This understands words as octal numbers, one word per line. */
+/* One 36-bit word stored right aligned per little endian 64-bit word. */
 
 #include <stdio.h>
-#include <string.h>
-
-#include "dis.h"
+#include "libword.h"
 
 static word_t
-get_oct_word (FILE *f)
+get_data8_word (FILE *f)
 {
-  static char line[100];
-  word_t word;
-  char *p;
-  int i;
+  word_t word = 0;
+  int c, i;
 
-  for (;;)
+  for (i = 0; i < 64; i += 8)
     {
-    next:
-      p = fgets (line, sizeof line, f);
-      if (p == NULL)
+      c = fgetc (f);
+      if (c == EOF)
         return -1;
-
-      while (strchr (" \t", *p))
-        p++;
-
-      word = 0;
-      for (i = 0; i < 12; i++)
-        {
-          if (!strchr ("01234567", *p))
-            goto next;
-          word <<= 3;
-          word += *p++ - '0';
-        }
-
-      if (strchr ("01234567", *p))
-        goto next;
-
-      return word;
+      word |= (word_t)(c & 0xff) << i;
     }
+
+  if (word & 0xFFFFFFF000000000LL)
+    fprintf (stderr, "WARNING: garbage in data8 word: %012llo.\n", word);
+
+  return word;
 }
 
 static void
-write_oct_word (FILE *f, word_t word)
+write_data8_word (FILE *f, word_t word)
 {
-  fprintf (f, "%012llo\n", word & 0777777777777LL);
+  fputc ((word >>  0) & 0xff, f);
+  fputc ((word >>  8) & 0xff, f);
+  fputc ((word >> 16) & 0xff, f);
+  fputc ((word >> 24) & 0xff, f);
+  fputc ((word >> 32) & 0xff, f);
+  fputc (0, f);
+  fputc (0, f);
+  fputc (0, f);
 }
 
-struct word_format oct_word_format = {
-  "oct",
-  get_oct_word,
+struct word_format data8_word_format = {
+  "data8",
+  get_data8_word,
   NULL,
-  NULL,
-  write_oct_word,
+  by_eight_octets,
+  write_data8_word,
   NULL
 };

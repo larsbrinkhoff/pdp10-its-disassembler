@@ -17,11 +17,14 @@
    This is not a data preserving transformation. */
 
 #include <stdio.h>
-
-#include "dis.h"
+#include <stdlib.h>
+#include "libword.h"
 
 static int leftover, there_is_some_leftover = 0;
 static int carriage_return = 0;
+
+#define WORDMASK	(0777777777777LL)
+#define SIGNBIT		(0400000000000LL)
 
 static int sail (int c)
 {

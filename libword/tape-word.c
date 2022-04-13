@@ -14,8 +14,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include <stdio.h>
-
-#include "dis.h"
+#include <stdlib.h>
+#include "libword.h"
 
 /* Buffer for write_word. */
 static word_t record[65536];

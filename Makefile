@@ -1,14 +1,12 @@
 
-CFLAGS = -g -W -Wall
+CFLAGS = -g -W -Wall -Ilibword
 
 FILES =  sblk-file.o pdump-file.o dmp-file.o raw-file.o exe-file.o \
 	 mdl-file.o rim10-file.o fasl-file.o palx-file.o lda-file.o \
 	 cross-file.o hex-file.o atari-file.o iml-file.o exb-file.o \
 	 tenex-file.o csave-file.o hiseg-file.o
 
-WORDS =  aa-word.o alto-word.o bin-word.o cadr-word.o core-word.o \
-	 data8-word.o dta-word.o its-word.o oct-word.o pt-word.o \
-	 sail-word.o tape-word.o
+LIBWORD = libword/libword.a
 
 OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o weenix.o
@@ -21,7 +19,8 @@ UTILS =	cat36 itsarc magdmp magfrm dskdmp dump \
 all: dis10 $(UTILS) check
 
 clean:
-	rm -f $(OBJS) $(WORDS) libfiles.a libwords.a
+	cd libword; make clean
+	rm -f $(OBJS) libfiles.a
 	rm -f dis10 core
 	rm -f $(UTILS)
 	rm -f main.o dmp.o raw.o das.o crypt.o
@@ -29,88 +28,88 @@ clean:
 	rm -f out/*
 	rm -f check
 
-dis10: main.o $(OBJS) libfiles.a libwords.a
+dis10: main.o $(OBJS) libfiles.a $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
 libfiles.a: file.o $(FILES)
 	ar -crs $@ $^
 
-libwords.a: word.o $(WORDS)
-	ar -crs $@ $^
+$(LIBWORD):
+	cd libword && make
 
-cat36: cat36.o libwords.a
+cat36: cat36.o $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-dump: dump.c $(OBJS) libfiles.a libwords.a
+dump: dump.c $(OBJS) libfiles.a $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-dskdmp: dskdmp.c $(OBJS) libwords.a
+dskdmp: dskdmp.c $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-macdmp: macdmp.c $(OBJS) libwords.a
+macdmp: macdmp.c $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-tendmp: tendmp.o dec.o $(OBJS) libfiles.a libwords.a
+tendmp: tendmp.o dec.o $(OBJS) libfiles.a $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-magdmp: magdmp.c core-word.o $(OBJS) libwords.a
+magdmp: magdmp.c $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-magfrm: magfrm.c core-word.o $(OBJS) libwords.a
+magfrm: magfrm.c $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-ipak: ipak.o $(OBJS) libwords.a
+ipak: ipak.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-itsarc: itsarc.o $(OBJS) libwords.a
+itsarc: itsarc.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-macro-tapes: macro-tapes.o $(OBJS) libwords.a
+macro-tapes: macro-tapes.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-tape-dir: tape-dir.o $(OBJS) libwords.a
+tape-dir: tape-dir.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-tito: tito.o $(OBJS) libwords.a
+tito: tito.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-dart: dart.o dec.o $(OBJS) libwords.a
+dart: dart.o dec.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-dumper: dumper.o $(OBJS) libwords.a
+dumper: dumper.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
 mini-dumper: dumper
 	ln -f $< $@
 
-od10: od10.o $(OBJS) libwords.a
+od10: od10.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-linum: linum.o $(OBJS) libwords.a
+linum: linum.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-constantinople: constantinople.o $(OBJS) libfiles.a libwords.a
+constantinople: constantinople.o $(OBJS) libfiles.a $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-harscntopbm: harscntopbm.o libwords.a
+harscntopbm: harscntopbm.o $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-palx: palx.o $(OBJS) libwords.a
+palx: palx.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-cross: cross.o $(OBJS) libwords.a
+cross: cross.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-kldcp: kldcp.o $(OBJS) das.o libwords.a
+kldcp: kldcp.o $(OBJS) das.o $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-klfedr: klfedr.o $(OBJS) libwords.a
+klfedr: klfedr.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-scrmbl: scrmbl.o crypt.o $(OBJS) libwords.a
+scrmbl: scrmbl.o crypt.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-unscr: unscr.o crypt.o $(OBJS) libwords.a
+unscr: unscr.o crypt.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
 lodepng.c: lodepng/lodepng.cpp
@@ -121,13 +120,13 @@ lodepng.h: lodepng/lodepng.h
 
 tvpic.o: tvpic.c lodepng.h
 
-tvpic: tvpic.o lodepng.o $(OBJS) libwords.a
+tvpic: tvpic.o lodepng.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-test/test_write: test/test_write.o $(OBJS) libwords.a
+test/test_write: test/test_write.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-test/test_read: test/test_read.o $(OBJS) libwords.a
+test/test_read: test/test_read.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
 check: check.sh

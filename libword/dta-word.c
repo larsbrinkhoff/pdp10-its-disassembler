@@ -15,7 +15,7 @@
 
 #include <stdio.h>
 
-#include "dis.h"
+#include "libword.h"
 
 static int position = 0;
 
