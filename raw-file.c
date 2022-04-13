@@ -20,11 +20,11 @@
 #include "memory.h"
 
 void
-read_raw_at (FILE *f, struct pdp10_memory *memory, int address)
+read_raw_region (FILE *f, struct pdp10_memory *memory, int start, int end)
 {
   word_t word;
 
-  while ((word = get_word (f)) != -1)
+  while ((word = get_word (f)) != -1 && start < end)
     {
       word_t *data = malloc (sizeof *data);
       if (data == NULL)
@@ -32,28 +32,32 @@ read_raw_at (FILE *f, struct pdp10_memory *memory, int address)
 	  fprintf (stderr, "out of memory\n");
 	  exit (1);
 	}
-
       data[0] = word;
-
-      add_memory (memory, address++, 1, data);
+      add_memory (memory, start++, 1, data);
     }
+}
+
+void
+read_raw_at (FILE *f, struct pdp10_memory *memory, int address)
+{
+  read_raw_region (f, memory, address, 01000000);
 }
 
 static void
 read_raw (FILE *f, struct pdp10_memory *memory, int cpu_model)
 {
+  (void)cpu_model;
   fprintf (output_file, "Raw format\n");
-
   read_raw_at (f, memory, 0);
 }
 
 void
-write_raw_at (FILE *f, struct pdp10_memory *memory, int address)
+write_raw_region (FILE *f, struct pdp10_memory *memory, int start, int end)
 {
-  int i, end = memory->area[memory->areas-1].end;
   word_t word;
+  int i;
 
-  for (i = address; i < end; i++)
+  for (i = start; i < end; i++)
     {
       word = get_word_at (memory, i);
       if (word == -1)
@@ -62,6 +66,12 @@ write_raw_at (FILE *f, struct pdp10_memory *memory, int address)
     }
 
   flush_word (f);
+}
+
+void
+write_raw_at (FILE *f, struct pdp10_memory *memory, int address)
+{
+  write_raw_region (f, memory, address, memory->area[memory->areas-1].end);
 }
 
 static void

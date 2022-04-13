@@ -132,6 +132,10 @@ extern void     write_tape_gap (FILE *f, unsigned code);
 extern void     write_tape_error (FILE *f, unsigned code);
 extern word_t	get_core_word (FILE *f);
 extern void	write_core_word (FILE *f, word_t word);
+extern void	read_raw_region (FILE *f, struct pdp10_memory *memory,
+				 int start, int end);
+extern void	write_raw_region (FILE *f, struct pdp10_memory *memory,
+				  int start, int end);
 extern void	read_raw_at (FILE *f, struct pdp10_memory *memory,
 			     int address);
 extern void	write_raw_at (FILE *f, struct pdp10_memory *memory,
