@@ -38,6 +38,7 @@ typedef long long word_t;
 struct pdp10_file;
 struct pdp10_memory;
 extern word_t start_instruction;
+extern int memory_region_start, memory_region_end;
 extern FILE *output_file;
 
 struct file_format {

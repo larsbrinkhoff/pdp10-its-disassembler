@@ -8,7 +8,9 @@ static void
 usage (char **argv)
 {
   fprintf (stderr, "Usage: %s [-F<input file format>] [-W<input word format>]\n"
-                   "   [-O<output file format>] [-X<output word format>] [<file>]\n\n", argv[0]);
+                   "   [-O<output file format>] [-X<output word format>]\n"
+                   "   [-S<start>] [-E<end>] [-S<start>] [<file>]\n\n",
+           argv[0]);
   usage_file_format ();
   usage_word_format ();
   exit (1);
@@ -24,7 +26,7 @@ main (int argc, char **argv)
   output_file = stderr;
   file = stdin;
 
-  while ((opt = getopt (argc, argv, "W:X:F:O:")) != -1)
+  while ((opt = getopt (argc, argv, "W:X:F:O:S:E:")) != -1)
     {
       switch (opt)
         {
@@ -43,6 +45,12 @@ main (int argc, char **argv)
         case 'O':
           if (parse_output_file_format (optarg))
             usage (argv);
+          break;
+        case 'S':
+          memory_region_start = strtol (optarg, NULL, 010);
+          break;
+        case 'E':
+          memory_region_end = strtol (optarg, NULL, 010);
           break;
         default:
           usage (argv);

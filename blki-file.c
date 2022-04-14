@@ -19,6 +19,8 @@
 #include "dis.h"
 #include "memory.h"
 
+int memory_region_start, memory_region_end;
+
 static void
 read_blki (FILE *f, struct pdp10_memory *memory, int cpu_model)
 {
@@ -40,7 +42,7 @@ read_blki (FILE *f, struct pdp10_memory *memory, int cpu_model)
 static void
 write_blki (FILE *f, struct pdp10_memory *memory)
 {
-  int start, end;
+  int start = memory_region_start, end = memory_region_end;
   word_t word = start - end;
 
   if (start_instruction > 0)
