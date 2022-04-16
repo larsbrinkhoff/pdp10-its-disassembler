@@ -401,22 +401,27 @@ allocate_dir (word_t fn1, word_t fn2)
 static int
 allocate_block (int i)
 {
-  int block;
-  while (block_ptr > 0 && block_ptr < TAPE_BLOCKS)
+  int block, pass;
+
+  for (pass = 0; pass < 3; pass++)
     {
-      if (block_area[block_ptr] == 0)
+      while (block_ptr > 0 && block_ptr < TAPE_BLOCKS)
 	{
-	  block = block_ptr;
-	  block_area[block] = i;
-	  block_ptr += spacing * direction;
-	  return block;
+	  if (block_area[block_ptr] == 0)
+	    {
+	      block = block_ptr;
+	      block_area[block] = i;
+	      block_ptr += spacing * direction;
+	      return block;
+	    }
+	  block_ptr += direction;
 	}
-      block_ptr += direction;
+      direction = -direction;
+      block_ptr += 2*direction;
     }
 
-  direction = -direction;
-  block_ptr += 2*direction;
-  return allocate_block (i);
+  fprintf (stderr, "File %d doesn't fit: out of blocks\n", i);
+  exit (1);
 }
 
 static void
