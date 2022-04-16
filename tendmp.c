@@ -44,6 +44,7 @@ static int blocks;
 static void (*visit) (int, char *);
 static int verbose;
 static int spacing;
+static void (*start_alloc) (void);
 
 static int timestamp[TAPE_FILES];
 static int block_area[TAPE_BLOCKS + 4];
@@ -477,6 +478,30 @@ csave_type (FILE *f, word_t name)
 }
 
 static void
+start_temdmp (void)
+{
+  /* TENDMP can only load files with increasing block numbers.
+     Might as well begin from the start of the tape. */
+  direction = 1;
+  block_ptr = 1;
+
+  /* I order to fit TENEX files without changing direction, use
+     a smaller spacing than default. */
+  spacing = 2;
+}
+
+static void
+start_default (void)
+{
+  /* The standard format says to start allocating below the directory,
+     going towards the start of the tape. */
+  direction = -1;
+  block_ptr = DIRECTORY_BLOCK - 1;
+  /* Standard spacing. */
+  spacing = 4;
+}
+
+static void
 create_file (char *name)
 {
   word_t fn1, fn2;
@@ -491,9 +516,7 @@ create_file (char *name)
       exit (1);
     }
 
-  direction = 1;
-  block_ptr = DIRECTORY_BLOCK + direction;
-  spacing = 2;
+  start_alloc ();
 
   p = strrchr (name, '/');
   if (p)
@@ -538,7 +561,7 @@ static void
 usage (const char *x)
 {
   fprintf (stderr, "Usage: %s [-v] [-W<word format>] -x|-t <tape>,\n", x);
-  fprintf (stderr, "or [-L<label>] [-b<boot blocks>] -c <tape> <files...>\n");
+  fprintf (stderr, "or [-T] [-L<label>] [-b<boot blocks>] -c <tape> <files...>\n");
   exit (1);
 }
 
@@ -556,11 +579,12 @@ main (int argc, char **argv)
   input_file_format = &csave_file_format;
   input_word_format = &dta_word_format;
   output_word_format = &aa_word_format;
+  start_alloc = start_default;
   verbose = 0;
 
   output_file = fopen ("/dev/null", "w");
 
-  while ((opt = getopt (argc, argv, "vc:t:x:W:L:b:")) != -1)
+  while ((opt = getopt (argc, argv, "vc:t:x:W:L:b:T")) != -1)
     {
       switch (opt)
 	{
@@ -597,6 +621,9 @@ main (int argc, char **argv)
 	  break;
 	case 'L':
 	  label = optarg;
+	  break;
+	case 'T':
+	  start_alloc = start_temdmp;
 	  break;
 	default:
 	  usage (argv[0]);
