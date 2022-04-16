@@ -46,7 +46,7 @@ static int verbose;
 static int spacing;
 
 static int timestamp[TAPE_FILES];
-static int block_area[TAPE_BLOCKS + 3];
+static int block_area[TAPE_BLOCKS + 4];
 static int block_ptr;
 static int direction;
 
@@ -100,9 +100,9 @@ process (void)
     return;
 
   printf ("BLOCK AREA:");
-  for (i = 0; i < TAPE_BLOCKS; i++)
+  for (i = 1; i < TAPE_BLOCKS + 4; i++)
     {
-      if ((i & 017) == 0)
+      if ((i % (2*7)) == 1)
 	printf ("\n %04o: ", i);
       printf (" %02o", block_area[i]);
     }
@@ -627,10 +627,10 @@ main (int argc, char **argv)
       block_area[1] = 036;
       block_area[2] = 036;
       block_area[DIRECTORY_BLOCK] = 036;
-      block_area[01101] = 037;
       block_area[01102] = 037;
       block_area[01103] = 037;
       block_area[01104] = 037;
+      block_area[01105] = 037;
 
       if (boot_file)
 	boot_block (boot_file);
