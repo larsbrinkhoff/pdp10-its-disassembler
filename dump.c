@@ -8,7 +8,7 @@ static void
 usage (char **argv)
 {
   fprintf (stderr, "Usage: %s [-F<input file format>] [-W<input word format>]\n"
-                   "   [-O<output file format>] [-X<output word format>] [<file>]\n\n", argv[0]);
+                   "   [-O<output file format>] [-X<output word format>] [<files...>]\n\n", argv[0]);
   usage_file_format ();
   usage_word_format ();
   exit (1);
@@ -59,28 +59,32 @@ main (int argc, char **argv)
       exit (1);
     }
 
-  if (optind < argc)
+  init_memory (&memory);
+
+  while (optind < argc)
     {
+      fprintf (stderr, "File: %s\n", argv[optind]);
       file = fopen (argv[optind], "rb");
       if (file == NULL)
         {
           fprintf (stderr, "Error opening input file %s\n", argv[optind]);
           exit (1);
         }
+      optind++;
+
+      if (!input_file_format)
+        guess_input_file_format (file);
+
+      input_file_format->read (file, &memory, 0);
+      fclose (file);
     }
-
-  if (!input_file_format)
-    guess_input_file_format (file);
-
-  init_memory (&memory);
-
-  input_file_format->read (file, &memory, 0);
 
   fprintf (stderr, "Core image address range: %o - %o\n",
            memory.area[0].start, memory.area[memory.areas-1].end);
   fprintf (stderr, "Writing file format: %s\n", output_file_format->name);
 
   output_file_format->write (stdout, &memory);
+  flush_word (stdout);
 
   return 0;
 }
