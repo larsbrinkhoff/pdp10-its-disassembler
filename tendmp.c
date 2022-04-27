@@ -323,6 +323,11 @@ list_file (int i, char *name)
 }
 
 static void
+delete_file (int i, char *name)
+{
+}
+
+static void
 show_label ()
 {
   word_t word = get_block (DIRECTORY_BLOCK)[TAPE_LABEL];
@@ -566,13 +571,14 @@ static void
 usage (const char *x)
 {
   fprintf (stderr, "Usage: %s [-v] [-W<word format>] -x|-t <tape>,\n", x);
-  fprintf (stderr, "or [-T] [-L<label>] [-b<boot blocks>] -c <tape> <files...>\n");
+  fprintf (stderr, "or [-T] [-L<label>] [-b<boot blocks>] -[cdu] <tape> <files...>\n");
   exit (1);
 }
 
 int
 main (int argc, char **argv)
 {
+  const char *mode = NULL;
   char *label = NULL;
   char *image_file, *boot_file = NULL;
   int i, create = 0;
@@ -599,12 +605,30 @@ main (int argc, char **argv)
 	case 'c':
 	  if (image_file)
 	    usage (argv[0]);
+	  mode = "wb";
 	  create = 1;
+	  image_file = optarg;
+	  break;
+	case 'd':
+	  if (image_file)
+	    usage (argv[0]);
+	  /* delete */
+	  mode = "r+b";
+	  visit = delete_file;
+	  image_file = optarg;
+	  break;
+	case 'u':
+	  if (image_file)
+	    usage (argv[0]);
+	  /* update */
+	  mode = "r+b";
+	  visit = delete_file;
 	  image_file = optarg;
 	  break;
 	case 't':
 	  if (image_file)
 	    usage (argv[0]);
+	  mode = "rb";
 	  verbose++;
 	  visit = list_file;
 	  image_file = optarg;
@@ -612,6 +636,7 @@ main (int argc, char **argv)
 	case 'x':
 	  if (image_file)
 	    usage (argv[0]);
+	  mode = "rb";
 	  visit = extract_file;
 	  image_file = optarg;
 	  break;
@@ -639,7 +664,7 @@ main (int argc, char **argv)
   if (!create && optind != argc)
     usage (argv[0]);
 
-  f = fopen (image_file, create ? "wb" : "rb");
+  f = fopen (image_file, create ? mode);
   if (f == NULL)
     {
       fprintf (stderr, "Error opening tape image file %s\n", image_file);
