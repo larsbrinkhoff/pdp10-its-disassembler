@@ -230,7 +230,7 @@ find (char **string, const char *required, char *fail)
 /* Convert a file name from the command line to a TOPS-20 file name. */
 static const char *
 unmangle (char *file_name, char *device, char *name,
-	  int protection, const char *author, int *generation)
+	  int protection, const char *account, int *generation)
 {
   char original_name[100];
   char *directories[100];
@@ -275,8 +275,8 @@ unmangle (char *file_name, char *device, char *name,
   file_name += sprintf (file_name, "%c%u",
 			format == 0 ? ';' : '.', *generation);
   file_name += sprintf (file_name, ";P%06o", protection);
-  if (author)
-    file_name += sprintf (file_name, ";A%s", author);
+  if (account)
+    file_name += sprintf (file_name, ";A%s", account);
 
   return NULL;
 }
@@ -622,7 +622,7 @@ write_file (FILE *f, char *name)
   struct stat st;
   int size, byte_size;
   int protection, generation;
-  const char *author;
+  const char *account;
   const char *error;
   FILE *input = fopen (name, "rb");
   if (input == NULL)
@@ -637,13 +637,14 @@ write_file (FILE *f, char *name)
 	     name, strerror (errno));
 
   size = file_size (name);
-  strcpy (device, "PS");
+  if (0)
+    strcpy (device, "PS");
   byte_size = 36;
   protection = 0777777;
   generation = 1;
-  author = "OPERATOR";
+  account = "1";
 
-  error = unmangle (file_name, device, name, protection, author, &generation);
+  error = unmangle (file_name, NULL, name, protection, account, &generation);
   if (error)
     fprintf (stderr, "\nERROR: Bad file name \"%s\": %s", file_name, error);
   else
@@ -654,7 +655,7 @@ write_file (FILE *f, char *name)
   fdb[004] = protection;
   fdb[004] |= 0500000LL << 18;
   fdb[005] = tops20_timestamp (st.st_mtime); //timestamp: last write
-  //006 //pointer to string: author
+  //006 //pointer to string: account
   fdb[007] = (word_t)generation << 18;
   fdb[011] = (word_t)byte_size << 24;
   fdb[011] |= (size + 511) / 512;
@@ -678,7 +679,10 @@ write_file (FILE *f, char *name)
   page_number = 0;
   write_record (f, FLTR);
   if (format == 0)
-    write_mark ();
+    {
+      write_mark ();
+      record_number++;
+    }
 }
 
 static void
@@ -771,12 +775,12 @@ main (int argc, char **argv)
   /* If the program is called mini-something, default to mini-dumper
      format.  Otherwise go with format 4 which is acceptable to a wide
      range of DUMPER versions. */
-  if (strncasecmp (argv[0], "mini", 4) == 0)
-    format = 0;
-  else
+  if (strstr (argv[0], "mini") == 0)
     format = 4;
+  else
+    format = 0;
 
-  while ((opt = getopt (argc, argv, "ctvx012379f:W:C:")) != -1)
+  while ((opt = getopt (argc, argv, "ctvx0123456f:W:C:")) != -1)
     {
       switch (opt)
 	{
