@@ -286,7 +286,7 @@ const struct pdp10_instruction pdp10_instruction[] =
   { "gfsb",	0103,	PDP10_BASIC,	PDP10_KL10_271, 0, 0 },
 
   /* TOPS-20 instruction */
-  { "jsys",	0104,	PDP10_BASIC,	PDP10_KI10up, 0, 0 },
+  { "jsys",	0104,	PDP10_BASIC,	PDP10_T20,   0, 0 },
 
   { "adjsp",	0105,	PDP10_BASIC,	PDP10_KL10up, 0, 0 },
   { "gfmp",	0106,	PDP10_BASIC,	PDP10_KL10_271, 0, 0 },

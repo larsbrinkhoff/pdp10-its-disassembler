@@ -95,6 +95,7 @@ the Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307
 #define PDP10_XKL1     0x080000	/* XKL TOAD-1 XKL-1 */
 #define PDP10_KA10_SAIL     0x100000	/* Modifications at Stanford. */
 #define PDP10_KL10_SAIL     0x200000
+#define PDP10_T20      0x400000 /* TENEX and TOP-20 JSYS, UMOVE, etc. */
 #define PDP10_ALL      0xffffff
 
 /* Useful combinations of the above. */

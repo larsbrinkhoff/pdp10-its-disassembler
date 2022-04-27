@@ -38,6 +38,7 @@
 #define ITS_OPER 042
 #define ITS_CALL 04300
 #define CALLI    047
+#define JSYS     0104
 
 struct its_oper
 {
@@ -287,6 +288,258 @@ static struct its_oper waits_callis[] =
   { "rdline",	0400123, 0 },
 };
 
+static struct its_oper jsyses[] =
+{
+  { "reset",	0000000, 0 },
+  { "login",    01, 0 },
+  { "crjob",    02, 0 },
+  { "lgout",    03, 0 },
+  { "cacct",    04, 0 },
+  { "efact",    05, 0 },
+  { "smon",    06, 0 },
+  { "tmon",    07, 0 },
+  { "getab",    010, 0 },
+  { "erstr",    011, 0 },
+  { "geter",    012, 0 },
+  { "gjinf",    013, 0 },
+  { "time",    014, 0 },
+  { "runtm",    015, 0 },
+  { "sysgt",    016, 0 },
+  { "gnjfn",    017, 0 },
+  { "gtjfn",    020, 0 },
+  { "openf",    021, 0 },
+  { "closf",    022, 0 },
+  { "rljfn",    023, 0 },
+  { "gtsts",    024, 0 },
+  { "ststs",    025, 0 },
+  { "delf",    026, 0 },
+  { "sfptr",    027, 0 },
+  { "jfns",    030, 0 },
+  { "ffffp",    031, 0 },
+  { "rddir",    032, 0 },
+  { "cprtf",    033, 0 },
+  { "clzff",    034, 0 },
+  { "rnamf",    035, 0 },
+  { "sizef",    036, 0 },
+  { "gactf",    037, 0 },
+  { "stdir",    040, 0 },
+  { "dirst",    041, 0 },
+  { "bkjfn",    042, 0 },
+  { "rfptr",    043, 0 },
+  { "cndir",    044, 0 },
+  { "rfbsz",    045, 0 },
+  { "sfbsz",    046, 0 },
+  { "swjfn",    047, 0 },
+  { "bin",    050, 0 },
+  { "bout",    051, 0 },
+  { "sin",    052, 0 },
+  { "sout",    053, 0 },
+  { "rin",    054, 0 },
+  { "rout",    055, 0 },
+  { "pmap",    056, 0 },
+  { "rpacs",    057, 0 },
+  { "spacs",    060, 0 },
+  { "rmap",    061, 0 },
+  { "sactf",    062, 0 },
+  { "gtfdb",    063, 0 },
+  { "chfdb",    064, 0 },
+  { "dumpi",    065, 0 },
+  { "dumpo",    066, 0 },
+  { "deldf",    067, 0 },
+  { "asnd",    070, 0 },
+  { "reld",    071, 0 },
+  { "csyno",    072, 0 },
+  { "pbin",    073, 0 },
+  { "pbout",    074, 0 },
+  { "psin",    075, 0 },
+  { "psout",    076, 0 },
+  { "mtopr",    077, 0 },
+  { "cfibf",    0100, 0 },
+  { "cfobf",    0101, 0 },
+  { "sibe",    0102, 0 },
+  { "sobe",    0103, 0 },
+  { "dobe",    0104, 0 },
+  { "gtabs",    0105, 0 },
+  { "stabs",    0106, 0 },
+  { "rfmod",    0107, 0 },
+  { "sfmod",    0110, 0 },
+  { "rfpos",    0111, 0 },
+  { "rfcoc",    0112, 0 },
+  { "sfcoc",    0113, 0 },
+  { "sti",    0114, 0 },
+  { "dtach",    0115, 0 },
+  { "atach",    0116, 0 },
+  { "dvchr",    0117, 0 },
+  { "stdev",    0120, 0 },
+  { "devst",    0121, 0 },
+  { "mount",    0122, 0 },
+  { "dsmnt",    0123, 0 },
+  { "inidr",    0124, 0 },
+  { "sir",    0125, 0 },
+  { "eir",    0126, 0 },
+  { "skpir",    0127, 0 },
+  { "dir",    0130, 0 },
+  { "aic",    0131, 0 },
+  { "iic",    0132, 0 },
+  { "dic",    0133, 0 },
+  { "rcm",    0134, 0 },
+  { "rwm",    0135, 0 },
+  { "debrk",    0136, 0 },
+  { "ati",    0137, 0 },
+  { "dti",    0140, 0 },
+  { "cis",    0141, 0 },
+  { "sircm",    0142, 0 },
+  { "rircm",    0143, 0 },
+  { "rir",    0144, 0 },
+  { "gdsts",    0145, 0 },
+  { "sdsts",    0146, 0 },
+  { "reset",    0147, 0 },
+  { "rpcap",    0150, 0 },
+  { "epcap",    0151, 0 },
+  { "cfork",    0152, 0 },
+  { "kfork",    0153, 0 },
+  { "ffork",    0154, 0 },
+  { "rfork",    0155, 0 },
+  { "rfsts",    0156, 0 },
+  { "sfork",    0157, 0 },
+  { "sfacs",    0160, 0 },
+  { "rfacs",    0161, 0 },
+  { "hfork",    0162, 0 },
+  { "wfork",    0163, 0 },
+  { "gfrkh",    0164, 0 },
+  { "rfrkh",    0165, 0 },
+  { "gfrks",    0166, 0 },
+  { "disms",    0167, 0 },
+  { "haltf",    0170, 0 },
+  { "gtrpw",    0171, 0 },
+  { "gtrpi",    0172, 0 },
+  { "rtiw",    0173, 0 },
+  { "stiw",    0174, 0 },
+  { "sobf",    0175, 0 },
+  { "rwset",    0176, 0 },
+  { "getnm",    0177, 0 },
+  { "get",    0200, 0 },
+  { "sfrkv",    0201, 0 },
+  { "save",    0202, 0 },
+  { "ssave",    0203, 0 },
+  { "sevec",    0204, 0 },
+  { "gevec",    0205, 0 },
+  { "gpjfn",    0206, 0 },
+  { "spjfn",    0207, 0 },
+  { "setnm",    0210, 0 },
+  { "ffufp",    0211, 0 },
+  { "dibe",    0212, 0 },
+  { "fdfre",    0213, 0 },
+  { "gdskc",    0214, 0 },
+  { "lites",    0215, 0 },
+  { "tlink",    0216, 0 },
+  { "stpar",    0217, 0 },
+  { "odtim",    0220, 0 },
+  { "idtim",    0221, 0 },
+  { "odcnv",    0222, 0 },
+  { "idcnv",    0223, 0 },
+  { "nout",    0224, 0 },
+  { "nin",    0225, 0 },
+  { "stad",    0226, 0 },
+  { "gtad",    0227, 0 },
+  { "odtnc",    0230, 0 },
+  { "idtnc",    0231, 0 },
+  { "flin",    0232, 0 },
+  { "flout",    0233, 0 },
+  { "dfin",    0234, 0 },
+  { "dfout",    0235, 0 },
+  { "crdir",    0240, 0 },
+  { "gtdir",    0241, 0 },
+  { "dskop",    0242, 0 },
+  { "spriw",    0243, 0 },
+  { "dskas",    0244, 0 },
+  { "sjpri",    0245, 0 },
+  { "asndp",    0260, 0 },
+  { "reldp",    0261, 0 },
+  { "asndc",    0262, 0 },
+  { "reldc",    0263, 0 },
+  { "strdp",    0264, 0 },
+  { "stpdp",    0265, 0 },
+  { "stsdp",    0266, 0 },
+  { "rdsdp",    0267, 0 },
+  { "watdp",    0270, 0 },
+  { "atpty",    0274, 0 },
+  { "cvskt",    0275, 0 },
+  { "cvhst",    0276, 0 },
+  { "flhst",    0277, 0 },
+  { "gcvec",    0300, 0 },
+  { "scvec",    0301, 0 },
+  { "sttyp",    0302, 0 },
+  { "gttyp",    0303, 0 },
+  { "bpt",    0304, 0 },
+  { "gtdal",    0305, 0 },
+  { "wait",    0306, 0 },
+  { "hsys",    0307, 0 },
+  { "usrio",    0310, 0 },
+  { "peek",    0311, 0 },
+  { "msfrk",    0312, 0 },
+  { "esout",    0313, 0 },
+  { "splfk",    0314, 0 },
+  { "adviz",    0315, 0 },
+  { "jobtm",    0316, 0 },
+  { "delnf",    0317, 0 },
+  { "swtch",    0320, 0 },
+  { "oprfn",    0326, 0 },
+
+  { "sndim",    0750, 0 },
+  { "rcvim",    0751, 0 },
+  { "asnsq",    0752, 0 },
+  { "relsq",    0753, 0 },
+  { "dbgim",    0766, 0 },
+  { "mrpac",    0772, 0 },
+  { "ttmsg",    0775, 0 },
+  { "exec",     0777, 0 },
+
+  /* AMES */
+  { "aspty",    0360, 0 },
+  { "repty",    0361, 0 },
+  { "psti",    0362, 0 },
+  { "psto",    0363, 0 },
+  { "sibf",    0364, 0 },
+  { "sruba",    0365, 0 },
+
+  /* SUMEX */
+  { "sfpos",    0526, 0 },
+  { "vkeep",    0674, 0 },
+  { "prge",    0675, 0 },
+
+  /* IMSSS */
+  { "pbtin",    0600, 0 },
+  { "ttcvt",    0601, 0 },
+  { "kidno",    0602, 0 },
+  { "logsv",    0603, 0 },
+  { "datsv",    0604, 0 },
+  { "scedr",    0605, 0 },
+  { "sceds",    0606, 0 },
+  { "syslk",    0610, 0 },
+  { "klgot",    0613, 0 },
+  { "klgin",    0623, 0 },
+
+  /* SUMEX and IMSSS */
+  { "cntsz",    0607, 0 },
+  { "pstin",    0611, 0 },
+  { "rand",     0612, 0 },
+  { "ptinf",    0614, 0 },
+  { "gtinf",    0615, 0 },
+  { "delch",    0625, 0 },
+  { "sjpct",    0626, 0 },
+  { "rjpct",    0627, 0 },
+  { "iit",      0630, 0 },
+  { "stcha",    0633, 0 },
+  { "gtblt",    0634, 0 },
+
+  /* Tymnet */
+  { "tymbw",    0651, 0 },
+  { "tymbr",    0652, 0 },
+  { "tymli",    0653, 0 },
+  { "tymop",    0654, 0 },
+};
+
 static int
 spaces (int n)
 {
@@ -512,6 +765,17 @@ disassemble_word (struct pdp10_memory *memory, word_t word,
 	    n += print_val ("%o,", A (word), calli->hint);
 	}
     }
+  else if ((cpu_model & PDP10_T20) && OPCODE (word) == JSYS)
+    {
+      const struct its_oper *oper;
+      oper = lookup_oper (word, jsyses, sizeof jsyses / sizeof jsyses[0]);
+      if (oper)
+	{
+	  n += fprintf (output_file, "%-8s ", oper->name);
+	  if (oper->hint == HINT_CHANNEL || A (word) != 0)
+	    n += print_val ("%o,", A (word), oper->hint);
+	}
+    }
 #if 1
   else if ((cpu_model & PDP10_ITS) && OPCODE_A (word) == ITS_CALL)
     {
@@ -726,6 +990,7 @@ usage_machine (void)
 {
   fprintf (stderr, "Valid machines are: 166, KA10, KI10, KL10, and KS10.\n");
   fprintf (stderr, "For KA/KL/KS, append ITS to get the MIT instructions.\n");
+  fprintf (stderr, "Append T20 to get the JSYS instructions.\n");
 }
 
 int
@@ -764,6 +1029,11 @@ parse_machine (const char *string, int *machine)
 	*machine = PDP10_KA10_SAIL;
       if (*machine & PDP10_KL10)
 	*machine = PDP10_KL10_SAIL;
+    }
+
+  if (strcasestr (string, "T20"))
+    {
+      *machine |= PDP10_T20;
     }
 
   return 0;
