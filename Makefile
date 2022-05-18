@@ -11,7 +11,7 @@ LIBWORD = libword/libword.a
 OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o weenix.o
 
-UTILS =	cat36 itsarc magdmp magfrm dskdmp dump \
+UTILS =	cat36 cut36 itsarc magdmp magfrm dskdmp dump \
 	macdmp macro-tapes tape-dir harscntopbm palx cross \
 	ipak kldcp klfedr scrmbl unscr tvpic tito dart od10 \
 	constantinople dumper mini-dumper linum tendmp
@@ -38,6 +38,9 @@ $(LIBWORD):
 	cd libword && make
 
 cat36: cat36.o $(LIBWORD)
+	$(CC) $(CFLAGS) $^ -o $@
+
+cut36: cut36.o $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
 dump: dump.c $(OBJS) libfiles.a $(LIBWORD)
