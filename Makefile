@@ -13,9 +13,10 @@ OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o weenix.o
 
 UTILS = acct calcomp cat36 classify-tape constantinople cross dart	\
-        dskdmp dump dumper harscntopbm ipak itsarc kldcp klfedr linum	\
-        macdmp macro-tapes magdmp magfrm mini-dumper od10 old-cpio	\
-        palx plt scrmbl tape-dir tendmp tito tvpic unscr
+        decdmp dskdmp dump dumper harscntopbm ipak itsarc kldcp		\
+        klfedr linum macdmp macro-tapes magdmp magfrm mini-dumper	\
+        od10 old-cpio palx plt scrmbl tape-dir tendmp tito tvpic	\
+        unscr
 
 all: dis10 $(UTILS) check
 
@@ -52,6 +53,9 @@ macdmp: macdmp.c $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
 tendmp: tendmp.o dec.o $(OBJS) libfiles.a $(LIBWORD)
+	$(CC) $(CFLAGS) $^ -o $@
+
+decdmp: decdmp.o $(OBJS) libfiles.a $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
 magdmp: magdmp.c $(OBJS) $(LIBWORD)
