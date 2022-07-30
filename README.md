@@ -27,6 +27,7 @@ is elsewhere: http://github.com/larsbrinkhoff/mldev
 - Add or delete DEC-style text file line numbers.
 - Extract files from a DECtape image in TENDMP/DTBOOT format.
 - Create a TENDMP/DTBOOT image.
+- Print entried in a WAITS accounting file.
 
 ## File formats supported.
 

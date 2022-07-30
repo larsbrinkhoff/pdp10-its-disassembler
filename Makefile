@@ -14,7 +14,7 @@ OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 UTILS =	cat36 itsarc magdmp magfrm dskdmp dump \
 	macdmp macro-tapes tape-dir harscntopbm palx cross \
 	ipak kldcp klfedr scrmbl unscr tvpic tito dart od10 \
-	constantinople dumper mini-dumper linum tendmp
+	constantinople dumper mini-dumper linum tendmp acct
 
 all: dis10 $(UTILS) check
 
@@ -68,6 +68,9 @@ macro-tapes: macro-tapes.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
 tape-dir: tape-dir.o $(OBJS) $(LIBWORD)
+	$(CC) $(CFLAGS) $^ -o $@
+
+acct: acct.o dec.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
 tito: tito.o $(OBJS) $(LIBWORD)
