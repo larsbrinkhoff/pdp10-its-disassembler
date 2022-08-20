@@ -3,12 +3,16 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #define RECORD_SIZE 5120
 static uint8_t buffer[2 * RECORD_SIZE];
 static uint32_t buf_size = RECORD_SIZE;
 static uint8_t *ptr = &buffer[RECORD_SIZE];
 static char name[65535];
+static int extract = 0;
 
 static uint8_t
 read_frame (void)
@@ -115,11 +119,47 @@ read_octal (uint8_t *data, int size)
 }
 
 static void
+mkdirs (char *dir)
+{
+  char *p = dir;
+  for (;;)
+    {
+      p = strchr (p, '/');
+      if (p == NULL)
+        return;
+      *p = 0;
+      mkdir (dir, 0700);
+      *p++ = '/';
+    }
+}
+
+static FILE *
+open_file (char *name, mode_t mode)
+{
+  int fd;
+
+  if (*name == '/')
+    name++;
+
+  mkdirs (name);
+
+  if (mode & 040000)
+    {
+      mkdir (name, mode & 0777);
+      return NULL;
+    }
+
+  fd = creat (name, mode & 0777);
+  return fdopen (fd, "w");
+}
+
+static void
 read_file (void)
 {
   uint32_t i, mode, uid, gid, links, mtime, name_size, file_size;
   uint8_t *data;
   uint8_t adjust = 0;
+  FILE *f = NULL;
   time_t t;
   char *s;
 
@@ -172,12 +212,20 @@ read_file (void)
       printf ("%06o %3u %5u %5u %7u %s %s\n",
               mode, links, uid, gid, file_size, s, name);
 
-      if (file_size & 1)
-        file_size += adjust;
+      if (extract)
+        f = open_file (name, mode);
+
+      /* The file data must start on an even boundary. */
+      if ((ptr - buffer) & 1)
+        read_data (adjust);
       for (i = 0; i < file_size; i++)
         {
           data = read_data (1);
+          if (f)
+            fputc (*data, f);
         }
+      if (f)
+        fclose (f);
     }
 
   /* The next file header must start on an even boundary. */
@@ -186,8 +234,14 @@ read_file (void)
 
 }
 
-int main (void)
+int main (int argc, char **argv)
 {
+  if (argc == 2 && strcmp (argv[1], "-x") == 0)
+    {
+      extract = 1;
+      umask (0);
+    }
+
   for (;;)
     read_file ();
 
