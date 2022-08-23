@@ -20,16 +20,17 @@
 static int big_endian = 0;
 static jmp_buf jb;
 
-static void
+static FILE *
 exit_at_eot (void)
 {
   printf ("Error reading tape image\n");
   exit (1);
+  return NULL;
 }
 
-static void (*eot) (void) = exit_at_eot;
+static FILE *(*eot) (void) = exit_at_eot;
 
-void end_of_tape (void (*fn) (void))
+void end_of_tape (FILE *(*fn) (void))
 {
   eot = fn;
 }
@@ -86,7 +87,7 @@ read_record (FILE *f, uint8_t *buffer, uint32_t n)
   uint32_t len, len2;
 
   if (setjmp (jb) != 0)
-    eot ();
+    f = eot ();
 
   read_octets (f, size, 4);
   len = read_reclen (size);

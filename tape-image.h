@@ -17,4 +17,4 @@
 #include <stdint.h>
 
 extern uint32_t read_record (FILE *f, uint8_t *buffer, uint32_t n);
-extern void end_of_tape (void (*fn) (void));
+extern void end_of_tape (FILE *(*fn) (void));
