@@ -15,7 +15,7 @@ UTILS =	cat36 itsarc magdmp magfrm dskdmp dump \
 	macdmp macro-tapes tape-dir harscntopbm palx cross \
 	ipak kldcp klfedr scrmbl unscr tvpic tito dart od10 \
 	constantinople dumper mini-dumper linum tendmp acct \
-	old-cpio
+	old-cpio lmfl-dump
 
 all: dis10 $(UTILS) check
 
@@ -87,6 +87,9 @@ mini-dumper: dumper
 	ln -f $< $@
 
 old-cpio: old-cpio.o
+	$(CC) $(CFLAGS) $^ -o $@
+
+lmfl-dump: lmfl-dump.o
 	$(CC) $(CFLAGS) $^ -o $@
 
 od10: od10.o $(OBJS) $(LIBWORD)
