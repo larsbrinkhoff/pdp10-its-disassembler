@@ -14,9 +14,25 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include <stdlib.h>
+#include <setjmp.h>
 #include "tape-image.h"
 
 static int big_endian = 0;
+static jmp_buf jb;
+
+static void
+exit_at_eot (void)
+{
+  printf ("Error reading tape image\n");
+  exit (1);
+}
+
+static void (*eot) (void) = exit_at_eot;
+
+void end_of_tape (void (*fn) (void))
+{
+  eot = fn;
+}
 
 static void
 read_octets (uint8_t *buffer, int n)
@@ -27,10 +43,7 @@ read_octets (uint8_t *buffer, int n)
     {
       c = getchar ();
       if (c == EOF)
-        {
-          printf ("Error reading tape image\n");
-          exit (1);
-        }
+        longjmp (jb, 1);
       *buffer++ = c;
     }
 }
@@ -71,6 +84,9 @@ read_record (FILE *f, uint8_t *buffer, uint32_t n)
 {
   uint8_t size[5];
   uint32_t len, len2;
+
+  if (setjmp (jb) != 0)
+    eot ();
 
   read_octets (size, 4);
   len = read_reclen (size);
