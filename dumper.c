@@ -494,7 +494,7 @@ read_tape (FILE *f)
   word = get_word (f);
 
   word = read_tape_header (f, word);
-  for (;;)
+  while (word != -1)
     {
       word = read_record (f, word);
       switch ((01000000000000LL - block[4]) & 0777777777777LL)
