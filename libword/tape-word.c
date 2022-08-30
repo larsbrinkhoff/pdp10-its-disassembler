@@ -275,11 +275,15 @@ get_tape_word (FILE *f)
 	  words = get_tape_record (f, &buffer);
 	  if (words == 0)
 	    {
-	      /* Seen two tape marks.  Is this pysical or logical EOT? */
-	      words = get_tape_record (f, &buffer);
-	      if (feof (f))
-		/* End of input file means physical end of tape. */
-		return -1;
+	      while (words == 0)
+		{
+		  /* Seen two or more tape marks.  Is this pysical or
+		     logical EOT? */
+		  words = get_tape_record (f, &buffer);
+		  if (feof (f))
+		    /* End of input file means physical end of tape. */
+		    return -1;
+		}
 	      /* More data in input file; it was logical end of tape. */
 	      tape_bits = START_TAPE;
 	    }
