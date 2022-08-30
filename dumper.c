@@ -62,6 +62,8 @@ static int file_number;
 static int page_number;
 static int record_number;
 static int format;
+static int word_bytes;
+static word_t file_bytes;
 
 /*
 Format:
@@ -164,6 +166,7 @@ static void
 close_file (void)
 {
   fprintf (debug, "\nCLOSE %s", file_path);
+  flush_word (output);
   fclose (output);
   output = NULL;
   utimes (file_path, timestamp);
@@ -444,22 +447,30 @@ read_tape_header (FILE *f, word_t word)
 static void
 read_file (int offset)
 {
+  int bits_per_byte;
   char name[100];
   char *p;
 
   if (offset != 0206)
-    return;
+    {
+      if (output != NULL)
+	close_file ();
+      return;
+    }
 
   read_asciz (name, &data[0]);
   p = strchr (name, ';');
   if (p)
     *p = 0;
+  output = fopen (name, "wb");
   fprintf (stderr, " %-40s", name);
   print_timestamp (stderr, block[offset + 5]);
   fprintf (stderr, " %4d", right (block[offset + 011]));
-  fprintf (stderr, " %lld(%lld)\n",
-	   block[offset + 012],
-	   (block[offset + 011] >> 24) & 077);
+  file_bytes = block[offset + 012];
+  bits_per_byte = (block[offset + 011] >> 24) & 077;
+  word_bytes = 36 / bits_per_byte;
+  fprintf (stderr, " %lld(%d)\n",
+	   file_bytes, bits_per_byte);
 
 #if 0
   fprintf (stderr, "006: %012llo file name\n", data[0]);
@@ -484,6 +495,9 @@ read_file (int offset)
 static void
 read_data (void)
 {
+  int i;
+  for (i = 0; i < 512 && file_bytes >= 0; i++, file_bytes -= word_bytes)
+    write_word (output, data[i]);
 }
 
 static void
