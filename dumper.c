@@ -25,6 +25,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include "dis.h"
+#include "mkdirs.h"
 
 /* Record types. */
 #define DATA  0  /* Contents of file page. */
@@ -53,7 +54,7 @@ static FILE *debug;
 
 static FILE *output;
 static char file_path[100];
-static struct timeval timestamp[2];
+static struct timeval tv[2];
 static int file_argc;
 static char** file_argv;
 static int saveset_number;
@@ -120,7 +121,6 @@ static void
 print_timestamp (FILE *f, word_t timestamp)
 {
   char string[100];
-  struct timeval tv;
   time_t t;
   struct tm *tm;
 
@@ -130,14 +130,15 @@ print_timestamp (FILE *f, word_t timestamp)
       return;
     }
 
-  unix_timestamp (&tv, timestamp);
-  t = tv.tv_sec;
+  unix_timestamp (tv, timestamp);
+  tv[1] = tv[0];
+  t = tv[0].tv_sec;
   tm = gmtime (&t);
   strftime (string, sizeof string, "%Y-%m-%d %H:%M:%S", tm);
   if (1)
     fputs (string, f);
   else
-    fprintf (f, "%s.%02ld", string, tv.tv_usec / 10000);
+    fprintf (f, "%s.%02ld", string, tv[0].tv_usec / 10000);
 }
 
 /* Convert a Unix time_t to TOPS-20 or TENEX timestamp. */
@@ -169,24 +170,59 @@ close_file (void)
   flush_word (output);
   fclose (output);
   output = NULL;
-  utimes (file_path, timestamp);
+  utimes (file_path, tv);
 }
 
 /* Convert TENEX file name to an acceptable Unix name. */
-static char *
-mangle (char *string)
+static void
+mangle (void)
 {
-  char *p;
-  while (*string == ' ')
-    string++;
-  p = string;
-  for (p = string; *p != 0; p++)
+  int dir = 0, ver = 1;
+  char *p = file_path;
+  char *q = file_path;
+
+  if (*p == '<')
     {
-      if (*p == ' ')
-	*p = 0;
-      *p = tolower (*p);
-    }      
-  return string;
+      dir = 1;
+      p++;
+    }
+
+  for (; *p != 0; p++)
+    {
+      switch (*p)
+	{
+	case '>':
+	  if (dir)
+	    {
+	      *q++ = '/';
+	      dir = 0;
+	    }
+	  else
+	    *q++ = '>';
+	  break;
+	case '.':
+	  *q++ = (dir && format > 0) ? '/' : '.';
+	  break;
+	case ';':
+	  if (format == 0 && ver)
+	    *q++ = dir ? *p : '.';
+	  else
+	    *q++ = *p;
+          ver = 0;
+	  break;
+	case '/':
+	  *q++ = '\\';
+	  break;
+	case 026:
+	  p++;
+	  /* Fall through. */
+	default:
+	  *q++ = tolower (*p);
+	  break;
+	}
+    }
+
+  *q = 0;
 }
 
 static char *
@@ -285,49 +321,10 @@ unmangle (char *file_name, char *device, char *name,
 }
 
 static void
-open_file (char *name, char *ext, char *prj, char *prg)
+open_file (void)
 {
-  name = mangle (name);
-  ext = mangle (ext);
-  prj = mangle (prj);
-  prg = mangle (prg);
-
-#if 0
-  dev = find (&name, ":", NULL);
-  if (dev == NULL)
-    dev = device;
-  if (*name == '<')
-    {
-      dir = find (&name, ">", NULL);
-      if (dir == NULL)
-	;
-    }
-  nam = find (&name, ".;", name);
-  typ = find (&name, ";", name);
-  ver = name;
-#endif
-
-  fprintf (debug, "\nFile name: \"%s\"", name);
-  fprintf (debug, "\nFile ext: \"%s\"", ext);
-  fprintf (debug, "\nFile project: \"%s\"", prj);
-  fprintf (debug, "\nFile programmer: \"%s\"", prg);
-
-  if (mkdir (prg, 0777) == -1 && errno != EEXIST)
-    fprintf (stderr, "\nError creating output directory %s: %s",
-	     prg, strerror (errno));
-
-  snprintf (file_path, sizeof file_path, "%s/%s", prg, prj);
-  if (mkdir (file_path, 0777) == -1 && errno != EEXIST)
-    fprintf (stderr, "\nError creating output directory %s: %s",
-	     file_path, strerror (errno));
-
-  strcat (file_path, "/");
-  strcat (file_path, name);
-  if (*ext != 0)
-    {
-      strcat (file_path, ".");
-      strcat (file_path, ext);
-    }
+  mangle ();
+  mkdirs (file_path);
 
   fprintf (debug, "\nFILE: %s", file_path);
   output = fopen (file_path, "wb");
@@ -448,7 +445,6 @@ static void
 read_file (int offset)
 {
   int bits_per_byte;
-  char name[100];
   char *p;
 
   if (offset != 0206)
@@ -458,12 +454,15 @@ read_file (int offset)
       return;
     }
 
-  read_asciz (name, &data[0]);
-  p = strchr (name, ';');
+  read_asciz (file_path, &data[0]);
+
+  p = strchr (file_path, ';');
+  if (format == 0 && p != NULL)
+    p = strchr (p + 1, ';');
   if (p)
     *p = 0;
-  output = fopen (name, "wb");
-  fprintf (stderr, " %-40s", name);
+
+  fprintf (stderr, " %-40s", file_path);
   print_timestamp (stderr, block[offset + 5]);
   fprintf (stderr, " %4d", right (block[offset + 011]));
   file_bytes = block[offset + 012];
@@ -472,8 +471,11 @@ read_file (int offset)
   fprintf (stderr, " %lld(%d)\n",
 	   file_bytes, bits_per_byte);
 
+  if (extract)
+    open_file ();
+
 #if 0
-  fprintf (stderr, "006: %012llo file name\n", data[0]);
+  fprintf (stderr, "006: %012llo file file_path\n", data[0]);
   fprintf (stderr, "Timestamp, last write: ");
   print_timestamp (stderr, block[offset + 5]);
   fputc ('\n', stderr);
@@ -496,6 +498,8 @@ static void
 read_data (void)
 {
   int i;
+  if (output == NULL)
+    return;
   for (i = 0; i < 512 && file_bytes >= 0; i++, file_bytes -= word_bytes)
     write_word (output, data[i]);
 }

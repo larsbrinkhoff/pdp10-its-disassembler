@@ -83,7 +83,7 @@ tito: tito.o $(OBJS) $(LIBWORD)
 dart: dart.o dec.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-dumper: dumper.o $(OBJS) $(LIBWORD)
+dumper: dumper.o mkdirs.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
 mini-dumper: dumper
