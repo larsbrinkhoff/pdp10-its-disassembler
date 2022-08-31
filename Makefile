@@ -89,7 +89,7 @@ dumper: dumper.o $(OBJS) $(LIBWORD)
 mini-dumper: dumper
 	ln -f $< $@
 
-old-cpio: old-cpio.o
+old-cpio: old-cpio.o mkdirs.o
 	$(CC) $(CFLAGS) $^ -o $@
 
 od10: od10.o $(OBJS) $(LIBWORD)

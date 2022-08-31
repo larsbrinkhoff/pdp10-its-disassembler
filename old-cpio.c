@@ -22,6 +22,7 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#include "mkdirs.h"
 
 #define RECORD_SIZE 5120
 static uint8_t buffer[2 * RECORD_SIZE];
@@ -132,21 +133,6 @@ read_octal (uint8_t *data, int size)
   memcpy (tmp, data, size);
   tmp[size] = 0;
   return strtoul (tmp, NULL, 8);
-}
-
-static void
-mkdirs (char *dir)
-{
-  char *p = dir;
-  for (;;)
-    {
-      p = strchr (p, '/');
-      if (p == NULL)
-        return;
-      *p = 0;
-      mkdir (dir, 0700);
-      *p++ = '/';
-    }
 }
 
 static FILE *
