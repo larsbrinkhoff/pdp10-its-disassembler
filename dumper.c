@@ -467,7 +467,7 @@ read_file (int offset)
   fprintf (stderr, " %4d", right (block[offset + 011]));
   file_bytes = block[offset + 012];
   bits_per_byte = (block[offset + 011] >> 24) & 077;
-  word_bytes = 36 / bits_per_byte;
+  word_bytes = bits_per_byte ? 36 / bits_per_byte : 0;
   fprintf (stderr, " %lld(%d)\n",
 	   file_bytes, bits_per_byte);
 
