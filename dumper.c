@@ -178,8 +178,14 @@ static void
 mangle (void)
 {
   int dir = 0, ver = 1;
-  char *p = file_path;
+  char *p;
   char *q = file_path;
+
+  p = strchr (file_path, ':');
+  if (p == NULL || p == file_path || p[-1] == 026)
+    p = file_path;
+  else
+    p++;
 
   if (*p == '<')
     {
