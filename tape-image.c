@@ -35,13 +35,13 @@ void end_of_tape (void (*fn) (void))
 }
 
 static void
-read_octets (uint8_t *buffer, int n)
+read_octets (FILE *f, uint8_t *buffer, int n)
 {
   int c, i;
 
   for (i = 0; i < n; i++)
     {
-      c = getchar ();
+      c = fgetc (f);
       if (c == EOF)
         longjmp (jb, 1);
       *buffer++ = c;
@@ -88,7 +88,7 @@ read_record (FILE *f, uint8_t *buffer, uint32_t n)
   if (setjmp (jb) != 0)
     eot ();
 
-  read_octets (size, 4);
+  read_octets (f, size, 4);
   len = read_reclen (size);
   if (len == 0)
     return len;
@@ -119,13 +119,13 @@ read_record (FILE *f, uint8_t *buffer, uint32_t n)
           exit (1);
         }
 
-      read_octets (buffer, len);
-      read_octets (size, 4);
+      read_octets (f, buffer, len);
+      read_octets (f, size, 4);
       len2 = read_reclen (size);
       if (len != len2)
         {
           if (len & 1) {
-            read_octets (size + 4, 1);
+            read_octets (f, size + 4, 1);
             len2 = read_reclen (size + 1);
           }
           if (len != len2)
