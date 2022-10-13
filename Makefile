@@ -17,7 +17,7 @@ UTILS =	cat36 itsarc magdmp magfrm dskdmp dump \
 	constantinople dumper mini-dumper linum tendmp acct \
 	old-cpio classify-tape
 
-all: dis10 $(UTILS) check
+all: dis10 dis11 $(UTILS) check
 
 clean:
 	cd libword; make clean
@@ -30,6 +30,9 @@ clean:
 	rm -f check
 
 dis10: main.o $(OBJS) libfiles.a $(LIBWORD)
+	$(CC) $(CFLAGS) $^ -o $@
+
+dis11: dis11.o pdp11-opc.o memory.o info.o symbols.o libfiles.a $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
 libfiles.a: file.o $(FILES)
