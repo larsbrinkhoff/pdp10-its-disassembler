@@ -20,7 +20,7 @@ UTILS =	cat36 itsarc magdmp magfrm dskdmp dump \
 all: dis10 $(UTILS) check
 
 clean:
-	cd libword; make clean
+	cd libword; $(MAKE) clean
 	rm -f $(OBJS) libfiles.a
 	rm -f dis10 core
 	rm -f $(UTILS)
@@ -36,7 +36,7 @@ libfiles.a: file.o $(FILES)
 	ar -crs $@ $^
 
 $(LIBWORD):
-	cd libword && make
+	cd libword && $(MAKE)
 
 cat36: cat36.o $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
