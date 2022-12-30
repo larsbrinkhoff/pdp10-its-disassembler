@@ -36,7 +36,7 @@ Most tools support these PDP-10 36-bit word encodings:
 - ASCII text, with an additional bit stored in every fifth character.
 - Binary image.
 - Core dump 9-track tape format.
-- DATA8, one 36-bit word stored right alinged per little endian 64-bit word.
+- DATA8, one 36-bit word stored right aligned per little endian 64-bit word.
 - DTA, DECtape image.
 - FASL, Maclisp compiled fast load files.
 - ITS evacuate format.
