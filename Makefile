@@ -28,6 +28,7 @@ clean:
 	for f in $(UTILS); do rm -f $${f}.o; done
 	rm -f out/*
 	rm -f check
+	rm -rf *.dSYM
 
 dis10: main.o $(OBJS) libfiles.a $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
