@@ -15,7 +15,7 @@ UTILS =	cat36 itsarc magdmp magfrm dskdmp dump \
 	macdmp macro-tapes tape-dir harscntopbm palx cross \
 	ipak kldcp klfedr scrmbl unscr tvpic tito dart od10 \
 	constantinople dumper mini-dumper linum tendmp acct \
-	old-cpio classify-tape
+	old-cpio classify-tape plt
 
 all: dis10 $(UTILS) check
 
@@ -79,6 +79,9 @@ acct: acct.o dec.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
 tito: tito.o $(OBJS) $(LIBWORD)
+	$(CC) $(CFLAGS) $^ -o $@
+
+plt: plt.o svg.o $(OBJS) libwords.a
 	$(CC) $(CFLAGS) $^ -o $@
 
 dart: dart.o dec.o $(OBJS) $(LIBWORD)
