@@ -81,7 +81,7 @@ acct: acct.o dec.o $(OBJS) $(LIBWORD)
 tito: tito.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
-plt: plt.o svg.o $(OBJS) libwords.a
+plt: plt.o svg.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
 dart: dart.o dec.o $(OBJS) $(LIBWORD)
