@@ -380,6 +380,12 @@ write_tape_word (FILE *f, word_t word)
     }
   beginning_of_tape = 0;
 
+  if (reclen == sizeof record)
+    {
+      fprintf (stderr, "Output tape record too large.\n");
+      exit (1);
+    }
+
   record[reclen++] = word;
 }
 
