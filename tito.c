@@ -32,6 +32,7 @@ static int mdays[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 static int density;
 static int extract = 0;
 static int verbose = 0;
+static int saveset = 1;
 
 static FILE *list;
 static FILE *info;
@@ -193,6 +194,9 @@ process_header (FILE *f, word_t word, int trailer)
   else
     expect_file (word);
 
+  if (trailer)
+    saveset++;
+
   fprintf (list, "%s of saveset, written by TITO v%o.  ",
 	   trailer ? "End" : "Start", left (word));
   count = right (word);
@@ -282,16 +286,15 @@ open_file (char *directory, char *name, char *ext)
 
   weenixname (name);
   weenixname (ext);
-  strcpy (file_path, directory);
-  strcat (file_path, "/");
-  strcat (file_path, name);
-  if (*ext != 0)
-    {
-      strcat (file_path, ".");
-      strcat (file_path, ext);
-    }
+  sprintf (file_path, "%s/%s%s%s", directory, name, *ext ? "." : "", ext);
 
   fprintf (info, "FILE: %s\n", file_path);
+  output = fopen (file_path, "rb");
+  if (output != NULL)
+    {
+      fclose (output);
+      sprintf (file_path, "%s/%s.%s.%d", directory, name, ext, saveset);
+    }
   output = fopen (file_path, "wb");
   if (output == NULL)
     fprintf (stderr, "Error opening output file %s: %s\n",
