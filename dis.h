@@ -69,6 +69,7 @@ extern struct file_format raw_file_format;
 extern struct file_format rim10_file_format;
 extern struct file_format sblk_file_format;
 extern struct file_format shr_file_format;
+extern struct file_format simh_file_format;
 extern struct file_format tenex_file_format;
 
 extern void     usage_file_format (void);

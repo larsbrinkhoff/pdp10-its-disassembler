@@ -57,6 +57,7 @@ Most tools that work with executable programs support these formats:
 - TOPS-10 highseg sharable .SHR and nonsharable .HGH format.
 - TOPS-20 and TOPS-10 sharable save .EXE files.
 - TENEX sharable save .SAV files.
+- SIMH deposit commands; output only.
 
 In addition, some mini and micro computer program formats are supported:
 
