@@ -57,8 +57,115 @@ write_simh (FILE *f, struct pdp10_memory *memory)
     fprintf (f, ";execute %012llo\n", start_instruction);
 }
 
+static int
+whitespace(char c)
+{
+  switch (c)
+    {
+    case ' ':
+    case '\t':
+    case '\r':
+    case '\n':
+      return 1;
+    default:
+      return 0;
+    }
+}
+
+static int
+whitespace_or_nul(char c)
+{
+  return whitespace (c) || c == 0;
+}
+
+static void
+fatal (char *format, char *line)
+{
+  fprintf (stderr, format, line);
+  exit (1);
+}
+
+static void
+deposit (char *line, struct pdp10_memory *memory)
+{
+  char *p;
+  word_t *data;
+  unsigned long x, address = strtoul (line, &p, 8);
+  if (!whitespace (*p))
+    fatal ("Invalid DEPOSIT arguments: \"%s\"\n", line);
+
+  while (whitespace(*p))
+    p++;
+  if (*p == 0)
+    fatal ("Invalid DEPOSIT arguments: \"%s\"\n", line);
+
+  data = malloc (sizeof (word_t));
+  if (data == NULL)
+    {
+      fprintf (stderr, "Out of memory\n");
+      exit (1);
+    }
+  x = strtoul (p, &p, 8);
+  if (!whitespace_or_nul (*p))
+    fatal ("Invalid DEPOSIT arguments: \"%s\"\n", line);
+
+  *data = x;
+  add_memory (memory, address, 1, data);
+}
+
+static void
+start (char *line)
+{
+  char *p;
+  unsigned long address = strtoul (line, &p, 8);
+  if (p == line || !whitespace_or_nul (*p))
+    fatal ("Invalid GO argument: \"%s\"\n", line);
+  start_instruction = JRST | address;
+}
+
+static void
+read_line (char *line, struct pdp10_memory *memory)
+{
+  char *p = line;
+  size_t n;
+
+  while (whitespace(*p))
+    p++;
+  if (*p == 0 || *p == ';' || *p == '#')
+    return;
+  line = p++;
+  while (!whitespace_or_nul(*p))
+    p++;
+  if (*p == 0)
+    fatal ("SIMH command has no argument: %s\n", line);
+  *p++ = 0;
+  n = strlen(line);
+  if (strncasecmp (line, "deposit", n) == 0)
+    deposit (p, memory);
+  else if (strncasecmp (line, "go", n) == 0)
+    start (p);
+  else
+    fatal ("Unsupported SIMH command: %s\n", line);
+}
+
+static void
+read_simh (FILE *f, struct pdp10_memory *memory, int cpu_model)
+{
+  static char line[100];
+  (void)cpu_model;
+
+  fprintf (output_file, ";SIMH script\n\n");
+
+  for (;;)
+    {
+      if (fgets (line, sizeof line, f) == NULL)
+	return;
+      read_line (line, memory);
+    }
+}
+
 struct file_format simh_file_format = {
   "simh",
-  NULL,
+  read_simh,
   write_simh
 };
