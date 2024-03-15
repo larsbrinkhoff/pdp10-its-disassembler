@@ -4,7 +4,7 @@ CFLAGS = -g -W -Wall -Ilibword
 FILES =  sblk-file.o pdump-file.o dmp-file.o raw-file.o exe-file.o \
 	 mdl-file.o rim10-file.o fasl-file.o palx-file.o lda-file.o \
 	 cross-file.o hex-file.o atari-file.o iml-file.o exb-file.o \
-	 tenex-file.o csave-file.o hiseg-file.o
+	 tenex-file.o csave-file.o hiseg-file.o simh-file.o
 
 LIBWORD = libword/libword.a
 
