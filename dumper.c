@@ -437,9 +437,22 @@ read_tape_header (FILE *f, word_t word)
 
   word = read_record (f, word);
 
-  //fprintf (stderr, "006: %012llo format\n", data[0]);
+  // Check tape format! Otherwise breaks e.g. on Install tapes (which aren't in dumper format).
+  if ((data[0] < 4) || (data[0] > 6)) {
+    // Formats older than 4 not supported, and 6 was the highest (TOPS-20 v6-7).
+    // If you want to support older fmts, write the code. :-)
+    fprintf (stderr, "Bad dumper tape format %012llo\n", data[0]);
+    return -1;
+  }
 
-  read_asciz (name, &data[3]);
+  // Get the saveset name from the right place.
+  // In TOPS-20 v4-5, see DUMPER.MAC, label SETHDR.
+  // In TOPS-20 v6-7, see DUMPER.MAC, label NOSPCL.
+  if (data[1] == 0) {		 // v6-7: if no pointer,
+    read_asciz(name, &data[data[0] > 4 ? 020 : 03]); // use standard offset (SV.MSG vs BFMSG)
+  } else {
+    read_asciz(name, &data[data[1]]); // else get the ss name via pointer
+  }
   fprintf (stderr, "DUMPER tape #%d, %s, ", right (block[2]), name);
   print_timestamp (stderr, data[2]);
   fputc ('\n', stderr);
@@ -543,7 +556,7 @@ read_tape (FILE *f)
 	case FILL:
 	  break;
 	default:
-	  fprintf (stderr, "Uknown record type.\n");
+	  fprintf (stderr, "Unknown record type %#llo.\n", word);
 	  exit (1);
 	  break;
 	}
