@@ -206,7 +206,10 @@ int get_7track_record (FILE *f, word_t **buffer)
   int i, x, reclen;
   word_t *p;
 
+  //fprintf (stderr, "position: %08lX\n", ftell (f));
   reclen = get_reclen (f);
+  //fprintf (stderr, "reclen1: %08X\n", reclen);
+  reclen &= 0xFFFFFF;
   if (reclen == 0)
     return 0;
   else if (reclen & 0x80000000)
@@ -217,9 +220,11 @@ int get_7track_record (FILE *f, word_t **buffer)
 
   if (reclen % 6)
     {
+      /*
       fprintf (stderr, "Not a 7-track tape image.\n"
 	       "reclen = %d\n", reclen);
       exit (1);
+      */
     }
   
   *buffer = malloc (sizeof (word_t) * (reclen/6));
@@ -232,12 +237,16 @@ int get_7track_record (FILE *f, word_t **buffer)
   for (i = 0, p = *buffer; i < (reclen / 6); i++)
     *p++ = get_7track_word (f);
 
+  for (i = 0; i < (reclen % 6); i++)
+    fgetc (f);
   x = get_reclen (f);
+  //fprintf (stderr, "reclen2: %08X\n", x);
+  x &= 0xFFFFFF;
   if (x != reclen)
     {
       fprintf (stderr, "Error in tape image format.\n"
 	       "%d != %d\n", reclen, x);
-      exit (1);
+      //exit (1);
     }
 
   if (reclen == 0)

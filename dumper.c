@@ -544,7 +544,7 @@ read_tape (FILE *f)
 	  break;
 	default:
 	  fprintf (stderr, "Uknown record type.\n");
-	  exit (1);
+	  //exit (1);
 	  break;
 	}
     }
@@ -804,7 +804,7 @@ main (int argc, char **argv)
   else
     format = 0;
 
-  while ((opt = getopt (argc, argv, "ctvx0123456f:W:C:")) != -1)
+  while ((opt = getopt (argc, argv, "ctvx012345679f:W:C:")) != -1)
     {
       switch (opt)
 	{
