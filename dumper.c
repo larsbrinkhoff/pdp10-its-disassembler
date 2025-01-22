@@ -435,12 +435,21 @@ static word_t
 read_tape_header (FILE *f, word_t word)
 {
   char name[100];
+  int bfmsg;
 
   word = read_record (f, word);
 
   //fprintf (stderr, "006: %012llo format\n", data[0]);
 
-  read_asciz (name, &data[3]);
+  if (format == 0)
+    bfmsg = 0;
+  else {
+    bfmsg = data[1];
+    if (bfmsg == 0)
+      bfsmsg = format > 4 ? 10 : 3;
+  }
+
+  read_asciz (name, &data[bfmsg]);
   fprintf (stderr, "DUMPER tape #%d, %s", right (block[2]), name);
   if (format > 0) {
     fputs (", ", stderr);
@@ -722,7 +731,7 @@ write_tape (FILE *f)
   struct word_format *tmp = input_word_format;
   input_word_format = output_word_format;
   output_word_format = tmp;
-  int i, bfmsg = 0;
+  int i, bfmsg;
 
   if (f == NULL)
     f = stdout;
@@ -734,13 +743,20 @@ write_tape (FILE *f)
   if (format == 0)
     {
       record_number = 2;
+      bfmsg = 0;
     }
   else
     {
       record_number = 1;
       data[bfmsg++] = format;
-      bfmsg++;
+      bfmsg++; // Filled in below.
       data[bfmsg++] = tops20_timestamp (time (NULL));
+      if (format > 4)
+	{
+	  // Unknown fields for now.
+	  memset(data + bfmsg, 0, 13 * sizeof (word_t));
+	  bfmsg += 13;
+	}
       data[1] = bfmsg;
     }
   write_asciz ("Saveset name", data + bfmsg);
