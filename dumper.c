@@ -440,8 +440,11 @@ read_tape_header (FILE *f, word_t word)
   //fprintf (stderr, "006: %012llo format\n", data[0]);
 
   read_asciz (name, &data[3]);
-  fprintf (stderr, "DUMPER tape #%d, %s, ", right (block[2]), name);
-  print_timestamp (stderr, data[2]);
+  fprintf (stderr, "DUMPER tape #%d, %s", right (block[2]), name);
+  if (format > 0) {
+    fputs (", ", stderr);
+    print_timestamp (stderr, data[2]);
+  }
   fputc ('\n', stderr);
 
   return word;
