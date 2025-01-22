@@ -65,6 +65,7 @@ static int record_number;
 static int format;
 static int word_bytes;
 static word_t file_bytes;
+static word_t file_octets;
 
 /*
 Format:
@@ -440,64 +441,64 @@ read_tape_header (FILE *f, word_t word)
   //fprintf (stderr, "006: %012llo format\n", data[0]);
 
   read_asciz (name, &data[3]);
-  fprintf (stderr, "DUMPER tape #%d, %s, ", right (block[2]), name);
-  print_timestamp (stderr, data[2]);
+  fprintf (stderr, "DUMPER tape #%d, %s", right (block[2]), name);
+  if (format > 0) {
+    fputs (", ", stderr);
+    print_timestamp (stderr, data[2]);
+  }
   fputc ('\n', stderr);
 
   return word;
 }
 
 static void
+print_info (FILE *f, word_t *fdb)
+{
+  int bits_per_byte, file_words;
+
+  print_timestamp (f, fdb[5]);
+  fprintf (f, " %4d", right (fdb[011]));
+  file_bytes = fdb[012];
+  bits_per_byte = (fdb[011] >> 24) & 077;
+  word_bytes = bits_per_byte ? 36 / bits_per_byte : 0;
+  file_words = file_bytes / word_bytes;
+  file_octets = 5 * file_words;
+  file_octets += ((file_bytes % word_bytes) * bits_per_byte + 7) / 8;
+  fprintf (f, " %lld(%d)\n",
+	   file_bytes, bits_per_byte);
+}
+
+static void
 read_file (int offset)
 {
-  int bits_per_byte;
   char *p;
 
   if (offset != 0206)
     {
+      if (format == 0)
+	print_info (stderr, block + offset);
+
       if (output != NULL)
 	close_file ();
-      return;
     }
+  else
+    {
+      read_asciz (file_path, &data[0]);
 
-  read_asciz (file_path, &data[0]);
+      p = strchr (file_path, ';');
+      if (format == 0 && p != NULL)
+	p = strchr (p + 1, ';');
+      if (p)
+	*p = 0;
 
-  p = strchr (file_path, ';');
-  if (format == 0 && p != NULL)
-    p = strchr (p + 1, ';');
-  if (p)
-    *p = 0;
+      fprintf (stderr, " %-40s", file_path);
 
-  fprintf (stderr, " %-40s", file_path);
-  print_timestamp (stderr, block[offset + 5]);
-  fprintf (stderr, " %4d", right (block[offset + 011]));
-  file_bytes = block[offset + 012];
-  bits_per_byte = (block[offset + 011] >> 24) & 077;
-  word_bytes = bits_per_byte ? 36 / bits_per_byte : 0;
-  fprintf (stderr, " %lld(%d)\n",
-	   file_bytes, bits_per_byte);
+      if (format > 0)
+	print_info (stderr, block + offset);
 
-  if (extract)
-    open_file ();
-
-#if 0
-  fprintf (stderr, "006: %012llo file file_path\n", data[0]);
-  fprintf (stderr, "Timestamp, last write: ");
-  print_timestamp (stderr, block[offset + 5]);
-  fputc ('\n', stderr);
-  fprintf (stderr, "Timestamp, creation: ");
-  print_timestamp (stderr, block[offset + 013]);
-  fputc ('\n', stderr);
-  fprintf (stderr, "Timestamp, user write: ");
-  print_timestamp (stderr, block[offset + 014]);
-  fputc ('\n', stderr);
-  fprintf (stderr, "Timestamp, last nonwrite: ");
-  print_timestamp (stderr, block[offset + 015]);
-  fputc ('\n', stderr);
-
-  for (i = offset; i < offset + 030; i++)
-    fprintf (stderr, "%03o: %012llo\n", i, block[i]);
-#endif
+      if (extract)
+	open_file ();
+    }
 }
 
 static void
