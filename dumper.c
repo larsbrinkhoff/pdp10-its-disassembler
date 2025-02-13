@@ -493,6 +493,7 @@ read_file (int offset)
 
       fprintf (stderr, " %-40s", file_path);
 
+      file_bytes = 0777777777777LL;
       if (format > 0)
 	print_info (stderr, block + offset);
 
