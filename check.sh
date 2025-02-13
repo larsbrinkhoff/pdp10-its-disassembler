@@ -100,6 +100,7 @@ test_dump ts.srccom   "-Wits -Opdump"
 test_dump l.bin       "-Fpalx -Xoct -Oraw"
 test_dump logo.ptp    "-Fhex -Xoct -Oraw"
 test_dump supdup.bin  "-Wits -Fcross -Xoct -Oraw"
+test_dump nswit.bin   "-Fpalx -Oodt"
 
 test_linum -a linum-1.txt
 test_linum -df linum-1.txt
