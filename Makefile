@@ -1,21 +1,20 @@
 
 CFLAGS = -g -W -Wall -Ilibword
 
-FILES =  sblk-file.o pdump-file.o dmp-file.o raw-file.o exe-file.o \
-	 mdl-file.o rim10-file.o fasl-file.o palx-file.o lda-file.o \
-	 cross-file.o hex-file.o atari-file.o iml-file.o exb-file.o \
-	 tenex-file.o csave-file.o hiseg-file.o simh-file.o odt-file.o
+FILES = atari-file.o cross-file.o csave-file.o dmp-file.o exb-file.o	\
+        exe-file.o fasl-file.o hex-file.o hiseg-file.o iml-file.o	\
+        lda-file.o mdl-file.o odt-file.o palx-file.o pdump-file.o	\
+        raw-file.o rim10-file.o sblk-file.o simh-file.o tenex-file.o
 
 LIBWORD = libword/libword.a
 
 OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 	timing.o timing_ka10.o timing_ki10.o memory.o weenix.o
 
-UTILS =	cat36 itsarc magdmp magfrm dskdmp dump \
-	macdmp macro-tapes tape-dir harscntopbm palx cross \
-	ipak kldcp klfedr scrmbl unscr tvpic tito dart od10 \
-	constantinople dumper mini-dumper linum tendmp acct \
-	old-cpio classify-tape plt
+UTILS = acct cat36 classify-tape constantinople cross dart dskdmp	\
+        dump dumper harscntopbm ipak itsarc kldcp klfedr linum macdmp	\
+        macro-tapes magdmp magfrm mini-dumper od10 old-cpio palx plt	\
+        scrmbl tape-dir tendmp tito tvpic unscr
 
 all: dis10 $(UTILS) check
 
