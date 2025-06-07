@@ -14,7 +14,7 @@ OBJS =	pdp10-opc.o info.o dis.o symbols.o \
 UTILS = acct cat36 classify-tape constantinople cross dart dskdmp	\
         dump dumper harscntopbm ipak itsarc kldcp klfedr linum macdmp	\
         macro-tapes magdmp magfrm mini-dumper od10 old-cpio palx plt	\
-        scrmbl tape-dir tendmp tito tvpic unscr
+        scrmbl tape-dir tendmp tito tvpic unscr calcomp
 
 all: dis10 $(UTILS) check
 
@@ -81,6 +81,9 @@ tito: tito.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
 plt: plt.o svg.o $(OBJS) $(LIBWORD)
+	$(CC) $(CFLAGS) $^ -o $@
+
+calcomp: calcomp.o svg.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
 dart: dart.o dec.o $(OBJS) $(LIBWORD)
