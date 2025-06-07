@@ -2,6 +2,7 @@
 *.o
 *.dSYM
 acct
+calcomp
 cat36
 check
 classify-tape
