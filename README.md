@@ -28,6 +28,7 @@ is elsewhere: http://github.com/larsbrinkhoff/mldev
 - Extract files from a DECtape image in TENDMP/DTBOOT format.
 - Create a TENDMP/DTBOOT image.
 - Print entried in a WAITS accounting file.
+- Convert a Calcomp plot file to SVG.
 
 ## File formats supported.
 
