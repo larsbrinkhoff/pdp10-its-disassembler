@@ -3,8 +3,9 @@ CFLAGS = -g -W -Wall -Ilibword
 
 FILES = atari-file.o cross-file.o csave-file.o dmp-file.o exb-file.o	\
         exe-file.o fasl-file.o hex-file.o hiseg-file.o iml-file.o	\
-        lda-file.o mdl-file.o odt-file.o palx-file.o pdump-file.o	\
-        raw-file.o rim10-file.o sblk-file.o simh-file.o tenex-file.o
+        imlac-pt-file.o lda-file.o mdl-file.o odt-file.o palx-file.o    \
+	pdump-file.o raw-file.o rim10-file.o sblk-file.o simh-file.o    \
+        tenex-file.o
 
 LIBWORD = libword/libword.a
 

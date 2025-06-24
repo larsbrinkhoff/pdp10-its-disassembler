@@ -33,6 +33,7 @@ static struct file_format *file_formats[] = {
   &hex_file_format,
   &hiseg_file_format,
   &iml_file_format,
+  &imlac_pt_file_format,
   &lda_file_format,
   &mdl_file_format,
   &nsave_file_format,
