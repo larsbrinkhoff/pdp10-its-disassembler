@@ -51,26 +51,27 @@ read_page (FILE *f, word_t *data)
 }
 
 static void
-get_page (FILE *f, int page, word_t *map, struct pdp10_memory *memory)
+get_page (FILE *f, word_t map, struct pdp10_memory *memory)
 {
-  word_t *data, *core = NULL;
-  int i, address;
+  word_t *data;
+  int page, address;
 
-  for (i = 0; i < PAGESIZE; i++)
-    {
-      if (RH (map[i]) == 0 || RH (map[i]) != page)
-	continue;
+  page = RH (map);
+  if (page == 0)
+    return;
 
-      address = (LH (map[i]) & 0777) * PAGESIZE;
-      data = malloc (PAGESIZE * sizeof (word_t));
-      if (core == NULL)
-	read_page (f, core = data);
-      else
-	memcpy (data, core, PAGESIZE * sizeof (word_t));
-      add_memory (memory, address, PAGESIZE, data);
-      if ((map[i] & PAGE_WRITE) == 0)
-	purify_memory (memory, address, PAGESIZE);
-    }
+  page--;
+  fprintf (stderr, "Seek to file page %o, position %lu\n",
+	   page, (long)(PAGESIZE * page));
+  seek_word (f, PAGESIZE * page);
+
+  address = (LH (map) & 0777) * PAGESIZE;
+  fprintf (stderr, "Virtual address %d\n", address);
+  data = malloc (PAGESIZE * sizeof (word_t));
+  read_page (f, data);
+  add_memory (memory, address, PAGESIZE, data);
+  if ((map & PAGE_WRITE) == 0)
+    purify_memory (memory, address, PAGESIZE);
 }
 
 static void
@@ -131,8 +132,13 @@ read_tenex (FILE *f, struct pdp10_memory *memory, int cpu_model)
   for (i = 0; i < 2 * PAGESIZE - count - 2; i++)
     get_word (f);
 
-  for (i = 2; i <= end; i++)
-    get_page (f, i, map, memory);
+  for (i = 0; i < count; i++) {
+    fprintf (stderr, "Get page %d %012llo\n", i, map[i]);
+    get_page (f, map[i], memory);
+  }
+
+  end++;
+  seek_word (f, PAGESIZE * end);
 
   while (!feof (f))
     {
