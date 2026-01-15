@@ -38,6 +38,8 @@ struct pdp10_file;
 struct pdp10_memory;
 extern word_t start_instruction;
 extern FILE *output_file;
+extern int output_file_image_start_address;
+extern int output_file_image_end_address;
 
 struct file_format {
   const char *name;
@@ -82,7 +84,7 @@ extern void	read_raw_at (FILE *f, struct pdp10_memory *memory,
 			     int address);
 extern void	write_raw_at (FILE *f, struct pdp10_memory *memory,
 			      int address);
-extern void	write_sblk_core (FILE *f, struct pdp10_memory *, int begin);
+extern void	write_sblk_core (FILE *f, struct pdp10_memory *);
 extern void	write_sblk_symbols (FILE *f);
 extern void	write_dec_symbols (struct pdp10_memory *memory);
 extern void	sblk_info (FILE *f, word_t word0, int cpu_model);

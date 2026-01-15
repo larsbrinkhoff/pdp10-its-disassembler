@@ -21,6 +21,8 @@
 
 struct file_format *input_file_format = NULL;
 struct file_format *output_file_format = NULL;
+int output_file_image_start_address = 0;
+int output_file_image_end_address = 01000000;
 
 static struct file_format *file_formats[] = {
   &atari_file_format,

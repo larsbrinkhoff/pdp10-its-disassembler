@@ -106,19 +106,24 @@ write_block (FILE *f, struct pdp10_memory *memory, int start, int end)
 }
 
 void
-write_sblk_core (FILE *f, struct pdp10_memory *memory, int begin)
+write_sblk_core (FILE *f, struct pdp10_memory *memory)
 {
-  int start, length;
+  int start, end, length;
   int i, n;
 
   for (i = 0; i < memory->areas; i++)
     {
       start = memory->area[i].start;
-      if (memory->area[i].end <= begin)
+      end = memory->area[i].end;
+      if (start >= output_file_image_end_address)
 	continue;
-      if (start < begin)
-	start = begin;
-      length = memory->area[i].end - start;
+      if (end <= output_file_image_start_address)
+	continue;
+      if (start < output_file_image_start_address)
+	start = output_file_image_start_address;
+      if (end > output_file_image_end_address)
+	end = output_file_image_end_address;
+      length = end - start;
       while (length > 0)
 	{
 	  n = length > 512 ? 512 : length;
@@ -172,7 +177,7 @@ static void
 write_sblk (FILE *f, struct pdp10_memory *memory)
 {
   write_word (f, JRST_1);
-  write_sblk_core (f, memory, 0);
+  write_sblk_core (f, memory);
   write_word (f, start_instruction);
   write_sblk_symbols (f);
   write_word (f, start_instruction);
