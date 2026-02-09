@@ -38,6 +38,9 @@ get_core_word (FILE *f)
          ((word_t)get_byte (f) <<  4) |
           (word_t)get_byte (f);
 
+  if (feof (f))
+    return -1;
+
   return word;
 }
 
