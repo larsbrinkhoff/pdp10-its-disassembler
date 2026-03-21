@@ -452,11 +452,15 @@ read_file (FILE *f, int i)
 static int
 core_size (FILE *f)
 {
+  int core = 0;
+  int i;
   struct pdp10_memory memory;
   init_memory (&memory);
   input_file_format->read (f, &memory, 0);
   rewind_word (f);
-  return memory.area[memory.areas-1].end - memory.area[0].start;
+  for (i = 0; i < memory.areas; i++)
+    core += memory.area[i].end - memory.area[i].start;
+  return core;
 }
 
 static int
@@ -530,6 +534,11 @@ create_file (char *name)
   fn2 &= 0777777000000LL;
   if (csave_type (f, fn2))
     core = (core_size (f) + 1023) / 1024 - 1;
+  if (core > 077)
+    {
+      fprintf (stderr, "Warning: core size %dK exceeds maximum.\n", core);
+      core = 077;
+    }
   fn2 |= core << 12;
   i = allocate_dir (fn1, fn2);
   read_file (f, i);
