@@ -33,6 +33,7 @@ static int density;
 static int extract = 0;
 static int verbose = 0;
 static int saveset = 1;
+static int tito_flag = -1;
 
 static FILE *list;
 static FILE *info;
@@ -338,7 +339,7 @@ process_file_header (FILE *f, word_t word)
     fprintf (stderr, "EXPECTED 0\n");
   fprintf (info, "Count for extended lookup: %d\n", right (block[2]));
 
-  if (first_file)
+  if (first_file && tito_flag)
     {
       fprintf (list, "System: ");
       print_ascii (list, block[073]);
@@ -353,12 +354,15 @@ process_file_header (FILE *f, word_t word)
   unix_time (&timestamp[0], t);
   unix_time (&timestamp[1], t);
 
-  sixbit_to_ascii (block[071], sixbit);
-  strcpy (directory, sixbit);
-  sixbit_to_ascii (block[072], sixbit);
-  strcat (directory, sixbit);
+  if (tito_flag)
+    {
+      sixbit_to_ascii (block[071], sixbit);
+      strcpy (directory, sixbit);
+      sixbit_to_ascii (block[072], sixbit);
+      strcat (directory, sixbit);
+    }
 
-  if (left (block[5]) == 0654644)
+  if (left (block[5]) == 0654644 && tito_flag)
     {
       fprintf (list, "   (UFD)          ");
       sixbit_to_ascii (block[031], sixbit);
@@ -372,13 +376,23 @@ process_file_header (FILE *f, word_t word)
     {
       sixbit_to_ascii (block[4], name);
       sixbit_to_ascii (block[5] & 0777777000000LL, ext);
-      strcat (directory, " ");
-      *strchr (directory, ' ') = ')';
-      fprintf (list, "   (%s %s.%s ", directory, name, ext);
+      if (tito_flag)
+	{
+	  strcat (directory, " ");
+	  *strchr (directory, ' ') = ')';
+	  fprintf (list, "   (%s %s.%s ", directory, name, ext);
+	}
+      else
+	{
+	  fprintf (list, "   %s.%s ", name, ext);
+	}
       ext[3] = '\0';
       print_timestamp (list, t);
       fprintf (list, "   [%o,%o]\n", left (block[3]), right (block[3]));
-      *strchr (directory, ')') = ' ';
+      if (!tito_flag)
+	sprintf (directory, "[%o,%o]", left (block[3]), right (block[3]));
+      if (tito_flag)
+	*strchr (directory, ')') = ' ';
     }
 
   switch (right (block[1]))
@@ -401,8 +415,11 @@ process_file_header (FILE *f, word_t word)
   word = get_word (f);
   if (extract && left (block[5]) != 0654644)
     {
+      int offset = tito_flag ? 0101 : 043;
       open_file (directory, name, ext);
-      write_data (block + 0101, size - 0101);
+      if (!tito_flag)
+	size++;
+      write_data (block + offset, size - offset);
       if (!data_record (word))
 	close_file (block[size - 1]);
     }
@@ -479,7 +496,7 @@ process_saveset (FILE *f)
 static void
 usage (const char *x)
 {
-  fprintf (stderr, "Usage: %s -t|-x [-v] [-7] [-Wformat] [-f file]\n", x);
+  fprintf (stderr, "Usage: %s [-T|-F] -t|-x [-v] [-7] [-Wformat] [-f file]\n", x);
   usage_word_format ();
   exit (1);
 }
@@ -496,7 +513,7 @@ main (int argc, char **argv)
   if (argc == 1)
     usage (argv[0]);
 
-  while ((opt = getopt (argc, argv, "tvx7f:W:")) != -1)
+  while ((opt = getopt (argc, argv, "tvx7f:W:TF")) != -1)
     {
       switch (opt)
 	{
@@ -530,6 +547,12 @@ main (int argc, char **argv)
 	  if (parse_output_word_format (optarg))
 	    usage (argv[0]);
 	  break;
+	case 'T':
+	  tito_flag = 1;
+	  break;
+	case 'F':
+	  tito_flag = 0;
+	  break;
 	default:
 	  usage (argv[0]);
 	}
@@ -543,6 +566,25 @@ main (int argc, char **argv)
     list = info = fopen ("/dev/null", "w");
   else if (verbose == 1)
     info = fopen ("/dev/null", "w");
+
+  if (tito_flag == -1)
+    {
+      /* No -F or -T given; figure out if this is failsafe or tito. */
+      const char *p = strrchr (argv[0], '/');
+      if (p == NULL)
+        p = argv[0];
+      else
+	p++;
+      if (p[0] == 't')
+	tito_flag = 1;
+      else if (p[0] == 'f')
+	tito_flag = 0;
+      else
+	{
+	  fprintf (stderr, "Input format not selected; use -T or -F.\n");
+	  exit (1);
+	}
+    }
 
   for (;;)
     process_saveset (f);
