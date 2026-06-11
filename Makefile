@@ -16,7 +16,7 @@ UTILS = acct calcomp cat36 classify-tape constantinople cross dart	\
         decdmp dskdmp dump dumper harscntopbm ipak itsarc kldcp		\
         klfedr linum macdmp macro-tapes magdmp magfrm mini-dumper	\
         od10 old-cpio palx plt scrmbl tape-dir tendmp tito tvpic	\
-        unscr
+        unscr failsafe
 
 all: dis10 $(UTILS) check
 
@@ -81,6 +81,9 @@ classify-tape: classify-tape.o tape-image.o
 
 acct: acct.o dec.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
+
+failsafe: tito
+	ln -f tito failsafe
 
 tito: tito.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
