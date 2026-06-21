@@ -23,35 +23,33 @@
 static word_t
 get_oct_word (FILE *f)
 {
-  static char line[100];
   word_t word;
-  char *p;
-  int i;
+  int i, c;
 
-  for (;;)
+  do
     {
-    next:
-      p = fgets (line, sizeof line, f);
-      if (p == NULL)
+      c = fgetc (f);
+      if (c == EOF)
         return -1;
-
-      while (strchr (" \t", *p))
-        p++;
-
-      word = 0;
-      for (i = 0; i < 12; i++)
-        {
-          if (!strchr ("01234567", *p))
-            goto next;
-          word <<= 3;
-          word += *p++ - '0';
-        }
-
-      if (strchr ("01234567", *p))
-        goto next;
-
-      return word;
     }
+  while (strchr (" \t", c));
+
+  if (!strchr ("01234567", c))
+    return -1;
+
+  word = 0;
+  for (i = 0; i < 12; i++)
+    {
+      word <<= 3;
+      word += c - '0';
+      c = fgetc (f);
+      if (c == EOF)
+        return -1;
+      if (!strchr ("01234567", c))
+        break;
+    }
+
+  return word;
 }
 
 static void
