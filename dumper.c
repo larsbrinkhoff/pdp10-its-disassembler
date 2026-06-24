@@ -464,15 +464,21 @@ static void
 print_info (FILE *f, word_t *fdb)
 {
   int bits_per_byte, file_words;
+  int file_pages = right (fdb[011]);
 
   print_timestamp (f, fdb[5]);
-  fprintf (f, " %4d", right (fdb[011]));
+  fprintf (f, " %4d", file_pages);
   file_bytes = fdb[012];
   bits_per_byte = (fdb[011] >> 24) & 077;
-  word_bytes = bits_per_byte ? 36 / bits_per_byte : 0;
-  file_words = file_bytes / word_bytes;
-  file_octets = 5 * file_words;
-  file_octets += ((file_bytes % word_bytes) * bits_per_byte + 7) / 8;
+  if (file_bytes == 0)
+    file_octets = 5 * 512 * file_pages;
+  else {
+    word_bytes = bits_per_byte ? 36 / bits_per_byte : 0;
+    file_words = file_bytes / word_bytes;
+    file_octets = 5 * file_words;
+    file_octets += ((file_bytes % word_bytes) * bits_per_byte + 7) / 8;
+  }
+    file_octets = 5 * 512 * file_pages;
   fprintf (f, " %lld(%d)\n",
 	   file_bytes, bits_per_byte);
 }
@@ -516,7 +522,7 @@ read_data (void)
   int i;
   if (output == NULL)
     return;
-  for (i = 0; i < 512 && file_bytes >= 0; i++, file_bytes -= word_bytes)
+  for (i = 0; i < 512; i++)
     write_word (output, data[i]);
 }
 
