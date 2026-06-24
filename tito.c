@@ -46,14 +46,16 @@ static int first_file;
 static int
 february (int year)
 {
-  if (year < 1964 || year > 1999)
+  if (year < 1964)
     {
       fprintf (stderr, "Anachronistic timestamp: year %d\n", year);
-      exit (1);
     }
 
-  /* This is good for the range 1964-1999, which is all we care about. */
-  if ((year % 4) == 0)
+  if ((year % 400) == 0)
+    return 29;
+  else if ((year % 100) == 0)
+    return 28;
+  else if ((year % 4) == 0)
     return 29;
   else
     return 28;
@@ -67,11 +69,8 @@ compute_date (word_t word, int *year, int *month, int *day)
   *month = 0;
 
   mdays[1] = february (*year);
-  for (;;)
+  while (*day >= mdays[*month])
     {
-      if (*day < mdays[*month])
-	return;
-
       *day -= mdays[*month];
       (*month)++;
       if (*month == 12)
