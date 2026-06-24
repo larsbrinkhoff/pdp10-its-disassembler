@@ -445,6 +445,11 @@ read_tape_header (FILE *f, word_t word)
     bfmsg = 0;
   else {
     bfmsg = data[1];
+    if (bfmsg > 500)
+      {
+	fprintf (stderr, "BFMSG is too large.");
+	exit (1);
+      }
     if (bfmsg == 0)
       bfmsg = format > 4 ? 10 : 3;
   }
@@ -737,7 +742,7 @@ write_tape (FILE *f)
   struct word_format *tmp = input_word_format;
   input_word_format = output_word_format;
   output_word_format = tmp;
-  int i, bfmsg;
+  int i, bfmsg = 0;
 
   if (f == NULL)
     f = stdout;
@@ -749,7 +754,6 @@ write_tape (FILE *f)
   if (format == 0)
     {
       record_number = 2;
-      bfmsg = 0;
     }
   else
     {
