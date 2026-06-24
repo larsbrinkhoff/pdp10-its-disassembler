@@ -115,12 +115,14 @@ int get_9track_record (FILE *f, word_t **buffer)
     return 0;
   else if (reclen & 0x80000000)
     {
+      return 0;
       tape_hook (reclen);
       return get_tape_record (f, buffer);
     }
 
   if (reclen % 5)
     {
+      return 0;
       fprintf (stderr, "Not a CORE DUMP tape image.\n"
 	       "reclen = %d\n", reclen);
       exit (1);
