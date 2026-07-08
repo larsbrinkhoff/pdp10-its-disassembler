@@ -15,6 +15,7 @@
 - Make a picture file suitable for displaying on a Knight TV.
 - Write out a core image in some of the supported executable formats.
 - Analyze a CONSTANTS area.
+- Convert fonts to AST format.
 
 A Linux FUSE implementation of the networking filesystem protocol MLDEV
 is elsewhere: http://github.com/larsbrinkhoff/mldev
