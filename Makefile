@@ -136,6 +136,12 @@ scrmbl: scrmbl.o crypt.o $(OBJS) $(LIBWORD)
 unscr: unscr.o crypt.o $(OBJS) $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
+ast: ast.o ft.o
+	$(CC) -o $@ $(CFLAGS) $^ `pkg-config --libs freetype2`
+
+ft.o: ft.c
+	$(CC) -o $@ $(CFLAGS) `pkg-config --cflags freetype2` -c $^
+
 lodepng.c: lodepng/lodepng.cpp
 	cp $< $@
 
