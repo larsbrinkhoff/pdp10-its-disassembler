@@ -106,19 +106,19 @@ seek_word (FILE *f, int position)
 {
   if (input_word_format->seek_word == NULL)
     {
-      input_word_format->rewind_word (f);
+      rewind_word (f);
       while (position-- > 0)
         get_word (f);
       return;
     }
 
-  input_word_format->rewind_word (f);
+  input_word_format->seek_word (f, position);
 }
 
 void
 by_five_octets (FILE *f, int position)
 {
-  input_word_format->rewind_word (f);
+  rewind_word (f);
   fseek (f, 5 * position, SEEK_SET);
 }
 

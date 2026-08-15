@@ -296,7 +296,8 @@ write_rim10 (FILE *f, struct pdp10_memory *memory)
   for (i = 0; i < sizeof midas_rim10 / sizeof midas_rim10[0]; i++)
     write_word (f, midas_rim10[i]);
 
-  write_sblk_core (f, memory, 020);
+  output_file_image_start_address = 020;
+  write_sblk_core (f, memory);
   write_word (f, start_instruction);
 }
 

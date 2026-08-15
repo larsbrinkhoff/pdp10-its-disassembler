@@ -1,13 +1,41 @@
+/* Copyright (C) 2026 Lars Brinkhoff <lars@nocrew.org>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+
 #include <stdio.h>
 #include <getopt.h>
 
 #include "dis.h"
 #include "memory.h"
 
+static int
+octal (const char *address)
+{
+  char *end;
+  unsigned long x = strtoul(address, &end, 8);
+  if (*end != 0)
+    {
+      fprintf (stderr, "Invalid address: %s\n", address);
+      exit (1);
+    }
+  return x;
+}
+
 static void
 usage (char **argv)
 {
-  fprintf (stderr, "Usage: %s [-F<input file format>] [-W<input word format>]\n"
+  fprintf (stderr, "Usage: %s [-F<input file format>] [-W<input word format>] [-s<start address>] [-e<end address>]\n"
                    "   [-O<output file format>] [-X<output word format>] [<files...>]\n\n", argv[0]);
   usage_file_format ();
   usage_word_format ();
@@ -24,7 +52,7 @@ main (int argc, char **argv)
   output_file = stderr;
   file = stdin;
 
-  while ((opt = getopt (argc, argv, "W:X:F:O:")) != -1)
+  while ((opt = getopt (argc, argv, "e:s:W:X:F:O:")) != -1)
     {
       switch (opt)
         {
@@ -43,6 +71,12 @@ main (int argc, char **argv)
         case 'O':
           if (parse_output_file_format (optarg))
             usage (argv);
+          break;
+        case 's':
+          output_file_image_start_address = octal (optarg);
+          break;
+        case 'e':
+          output_file_image_end_address = octal (optarg);
           break;
         default:
           usage (argv);

@@ -1,4 +1,4 @@
-/* Copyright (C) 2022 Lars Brinkhoff <lars@nocrew.org>
+/* Copyright (C) 2022, 2026 Lars Brinkhoff <lars@nocrew.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -77,13 +77,22 @@ write_block (FILE *f, struct pdp10_memory *memory, int address, int length)
 static void
 write_core (FILE *f, struct pdp10_memory *memory)
 {
-  int start, length;
+  int start, end, length;
   int i, n;
 
   for (i = 0; i < memory->areas; i++)
     {
       start = memory->area[i].start;
-      length = memory->area[i].end - start;
+      end = memory->area[i].end;
+      if (start >= output_file_image_end_address)
+	continue;
+      if (end <= output_file_image_start_address)
+	continue;
+      if (start < output_file_image_start_address)
+	start = output_file_image_start_address;
+      if (end > output_file_image_end_address)
+	end = output_file_image_end_address;
+      length = end - start;
       while (length > 0)
 	{
 	  n = length > 512 ? 512 : length;
