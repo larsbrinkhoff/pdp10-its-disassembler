@@ -214,15 +214,15 @@ ascii_word (FILE *f, word_t word, int n)
 
       if (previous_octet == 015)
 	{
+	  previous_octet = -1;
 	  if (c == 012)
 	    fputc (012, f);
 	  else if (c == 015)
-	    fputc2 (0356, 0356, f);
+	    fputc (0356, f), previous_octet = 015;
 	  else if (c == 0177)
 	    fputc2 (0356, 0357, f);
 	  else
 	    fputc2 (0356, c, f);
-	  previous_octet = -1;
 	}
       else if (previous_octet == 0177)
 	{
