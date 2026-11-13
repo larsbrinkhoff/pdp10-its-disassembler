@@ -16,7 +16,7 @@ UTILS = acct calcomp cat36 classify-tape constantinople cross dart	\
         decdmp dskdmp dump dumper harscntopbm ipak itsarc kldcp		\
         klfedr linum macdmp macro-tapes magdmp magfrm mini-dumper	\
         od10 old-cpio palx plt scrmbl tape-dir tendmp tito tvpic	\
-        unscr failsafe
+        unscr failsafe b3d
 
 all: dis10 $(UTILS) check
 
@@ -151,6 +151,9 @@ lodepng.h: lodepng/lodepng.h
 tvpic.o: tvpic.c lodepng.h
 
 tvpic: tvpic.o lodepng.o $(OBJS) $(LIBWORD)
+	$(CC) $(CFLAGS) $^ -o $@
+
+b3d: b3d.o $(LIBWORD)
 	$(CC) $(CFLAGS) $^ -o $@
 
 test/test_write: test/test_write.o $(OBJS) $(LIBWORD)
